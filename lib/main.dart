@@ -31,7 +31,7 @@ class EmptyPage extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'This is an empty page',
+          'This is  empty page',
           style: TextStyle(fontSize: 20),
         ),
       ),
