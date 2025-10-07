@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
+import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -132,6 +133,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Next')),
                                   );
+                                  Navigator.of(
+                                    context,
+                                  ).pushNamed(ProfilePhotoScreen.routname);
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -140,6 +144,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
+
                               child: const Text(
                                 'Next',
                                 style: TextStyle(

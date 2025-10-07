@@ -14,6 +14,7 @@ import 'package:kids_guard/presentation/screens/Languge_Screen/languge_screen.da
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emergency_alerts_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
+import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 
 void main() {
@@ -43,9 +44,9 @@ class App extends StatelessWidget {
         LoginScreenDoctor.routname: (context) => LoginScreenDoctor(),
         SignUpScreenDoctor.routname: (context) => SignUpScreenDoctor(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
+        ProfilePhotoScreen.routname: (context) => ProfilePhotoScreen(),
       },
       theme: AppTheme.lighttheme,
     );
   }
-
 }

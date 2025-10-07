@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/emergency_animation.dart';
 
@@ -59,7 +60,11 @@ class EmergencyAlertsDoctor extends StatelessWidget {
               TextButton(
                 onPressed: () {},
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(
+                      context,
+                    ).pushNamed(CreateAccountScreen.routname);
+                  },
                   child: Text(
                     "Create account",
                     style: Theme.of(context).textTheme.bodySmall,
