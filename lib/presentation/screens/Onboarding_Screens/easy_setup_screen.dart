@@ -52,13 +52,13 @@ class EasySetupScreen extends StatelessWidget {
           ),
           SizedBox(height: 10),
           NextBtn(routname: LoginScreen.routname, text: "Next"),
-          SizedBox(height: 15),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(width: 220),
+              SizedBox(width: 100),
               Image(image: AssetImage("assets/images/ProgressIndicator3.png")),
-              SizedBox(width: 50),
+              SizedBox(width: 20),
               TextButton(
                 onPressed: () {},
                 child: TextButton(

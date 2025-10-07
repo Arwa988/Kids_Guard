@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
-import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 
 class LoginScreenDoctor extends StatefulWidget {

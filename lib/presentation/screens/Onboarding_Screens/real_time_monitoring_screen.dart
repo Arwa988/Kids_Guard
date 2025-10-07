@@ -58,9 +58,9 @@ class _RealTimeState extends State<RealTime> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(width: 220),
+              SizedBox(width: 100),
               Image(image: AssetImage("assets/images/ProgressIndicator.png")),
-              SizedBox(width: 50),
+              SizedBox(width: 20),
               TextButton(
                 onPressed: () {},
                 child: TextButton(

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
-import 'package:kids_guard/presentation/screens/Languge_Screen/languge_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {

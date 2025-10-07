@@ -33,19 +33,6 @@ class WelcomeScreen extends StatelessWidget {
           SizedBox(height: 40),
           NextBtn(routname: LangugeScreen.routname, text: "Get Started"),
           SizedBox(height: 130),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Already have an account?"),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  " Log in",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

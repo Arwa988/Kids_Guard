@@ -3,7 +3,6 @@ import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_b
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/emergency_animation.dart';
 
-
 class EmergencyAlertsDoctor extends StatelessWidget {
   static const String routname = "/emergency_doctor";
 
@@ -50,13 +49,13 @@ class EmergencyAlertsDoctor extends StatelessWidget {
           ),
           SizedBox(height: 10),
           NextBtn(routname: LoginScreenDoctor.routname, text: "Next"),
-          SizedBox(height: 15),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(width: 220),
-              Image(image: AssetImage("assets/images/ProgressIndicator3.png")),
-              SizedBox(width: 50),
+              SizedBox(width: 100),
+              Image(image: AssetImage("assets/images/ProgressIndicator4.png")),
+              SizedBox(width: 20),
               TextButton(
                 onPressed: () {},
                 child: TextButton(

@@ -4,7 +4,6 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animat
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emergency_alerts_doctor_screen.dart';
 
 class RealTimeDoctor extends StatelessWidget {
-
   static const String routname = "/real_time_doctor";
 
   @override
@@ -49,24 +48,28 @@ class RealTimeDoctor extends StatelessWidget {
           ),
           SizedBox(height: 10),
           NextBtn(routname: EmergencyAlertsDoctor.routname, text: "Next"),
-          SizedBox(height: 29),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(width: 220),
-              Image(image: AssetImage("assets/images/ProgressIndicator.png")),
-              SizedBox(width: 50),
-              TextButton(
-                onPressed: () {},
-                child: TextButton(
+          SizedBox(height: 10),
+          SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(width: 100),
+                Image(
+                  image: AssetImage("assets/images/ProgressIndicator5.png"),
+                ),
+                SizedBox(width: 20),
+                TextButton(
                   onPressed: () {},
-                  child: Text(
-                    "Create account",
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Create account",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
