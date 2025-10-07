@@ -27,8 +27,8 @@ class RealTimeDoctor extends StatelessWidget {
           ),
 
           Container(
-            width: 450,
-            height: 450,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.45,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/blueblob.png"),
@@ -37,17 +37,17 @@ class RealTimeDoctor extends StatelessWidget {
             ),
             child: RealTimeAnimation(),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 8),
           Text(
             "Real-Time Monitoring",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 4),
           Text(
             "Real time data access! View live heart rate, \n oxygen level, blood pressure",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 8),
           NextBtn(routname: EmergencyAlertsDoctor.routname, text: "Next"),
           SizedBox(height: 10),
           SafeArea(
@@ -58,7 +58,7 @@ class RealTimeDoctor extends StatelessWidget {
                 Image(
                   image: AssetImage("assets/images/ProgressIndicator5.png"),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 10),
                 TextButton(
                   onPressed: () {},
                   child: TextButton(

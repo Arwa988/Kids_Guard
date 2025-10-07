@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 
 class SignUpScreenDoctor extends StatefulWidget {
   static const String routname = "/signup_screen_doctor";
@@ -18,10 +19,10 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       // send back the email & password to login screen
-      Navigator.pop(context, {
-        'email': emailC.text.trim(),
-        'password': passwordC.text,
-      });
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
+      );
+
     }
   }
 
