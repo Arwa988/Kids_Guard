@@ -17,7 +17,9 @@ class EasySetupScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(LoginScreen.routname);
+                },
                 child: Text(
                   "Skip",
                   style: Theme.of(context).textTheme.bodySmall,

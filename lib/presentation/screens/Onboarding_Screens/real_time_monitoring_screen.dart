@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/emergency_alerts_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/real_time_animation.dart';
@@ -22,7 +23,11 @@ class _RealTimeState extends State<RealTime> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(
+                    context,
+                  ).pushReplacementNamed(LoginScreen.routname);
+                },
                 child: Text(
                   "Skip",
                   style: Theme.of(context).textTheme.bodySmall,
@@ -54,7 +59,7 @@ class _RealTimeState extends State<RealTime> {
           ),
           SizedBox(height: 10),
           NextBtn(routname: EmergencyAlerts.routname, text: "Next"),
-          SizedBox(height: 29),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

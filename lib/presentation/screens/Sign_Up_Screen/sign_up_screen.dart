@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
-import 'package:kids_guard/presentation/screens/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -51,14 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(
-                          context,
-                        ).pushNamed(CreateAccountScreen.routname);
-                      },
-                      icon: Icon(Icons.login),
-                    ),
+                  
                     CustomTextField(
                       controller: emailC,
                       hintText: 'Email',

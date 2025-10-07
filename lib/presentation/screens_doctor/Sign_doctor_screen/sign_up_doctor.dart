@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 
 class SignUpScreenDoctor extends StatefulWidget {
-
   static const String routname = "/signup_screen_doctor";
   @override
   State<SignUpScreenDoctor> createState() => _SignUpScreenState();
@@ -45,7 +45,12 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
               ),
 
               const SizedBox(height: 36),
-
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CreateAccountScreen.routname);
+                },
+                icon: Icon(Icons.login),
+              ),
               Form(
                 key: _formKey,
                 child: Column(

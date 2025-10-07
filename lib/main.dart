@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:kids_guard/core/theme/App_Theme.dart';
-import 'package:kids_guard/presentation/screens/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/easy_setup_screen.dart';

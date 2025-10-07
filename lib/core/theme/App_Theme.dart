@@ -32,19 +32,19 @@ class AppTheme {
       ),
       bodySmall: TextStyle(
         fontSize: 15,
-        color: AppColors.splashScreenLinearBlue,
+        color: AppColors.kTextColor,
         fontWeight: FontWeight.bold,
         fontFamily: "Lexend",
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: AppColors.splashScreenLinearBlue,
+        color: AppColors.kTextColor,
         fontFamily: "Lexend",
       ),
       bodyLarge: TextStyle(
         fontSize: 14,
-        color: AppColors.splashScreenLinearBlue,
+        color: AppColors.kTextColor,
         fontFamily: "Lexend",
       ),
       titleLarge: TextStyle(

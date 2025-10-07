@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/easy_setup_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/emergency_animation.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
@@ -17,7 +18,9 @@ class EmergencyAlerts extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {Navigator.of(
+                    context,
+                  ).pushReplacementNamed(LoginScreen.routname);},
                 child: Text(
                   "Skip",
                   style: Theme.of(context).textTheme.bodySmall,
