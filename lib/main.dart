@@ -16,8 +16,11 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emerge
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   return runApp(App());
 }
 

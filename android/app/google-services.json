@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50621609901",
+    "project_id": "kids-guard-34c0e",
+    "storage_bucket": "kids-guard-34c0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50621609901:android:6220e0441f461f2d85d324",
+        "android_client_info": {
+          "package_name": "com.example.kids_guard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT-SteNfjT_LEpX7wgAmb2DK4GcncU_eY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
