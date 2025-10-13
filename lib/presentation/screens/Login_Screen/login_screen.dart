@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   static const String routname = "/login_screen";
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -16,15 +20,132 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordC = TextEditingController();
   bool _hoverRegister = false;
 
+  // ✅ Regular Email Login
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailC.text.trim(),
+          password: passwordC.text,
+        );
+
+        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      } on FirebaseAuthException catch (e) {
+        String message = '';
+        if (e.code == 'user-not-found') {
+          message = 'No account found for this email.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Wrong password provided for that user.';
+        } else {
+          message = 'Login failed. Please check your email and password.';
+        }
+        _showError(message);
+      } catch (e) {
+        _showError('Error: $e');
+      }
+    }
+  }
+
+  // ✅ Helper for SnackBar messages
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  }
+
+  // ✅ Google Sign-In (Android Only)
+  Future<UserCredential?> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
+      );
+
+      // Always show account chooser
+      await googleSignIn.signOut();
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      _showError("Google sign-in failed: $e");
+      return null;
+    }
+  }
+
+  // ✅ Wrapper for Google Login
+  Future<void> _loginWithGoogle() async {
+    final userCredential = await _signInWithGoogle();
+    if (userCredential == null) return;
+
+    final user = userCredential.user;
+    if (user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Logged in successfully with Google 🎉')),
+      );
+      Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+    }
+  }
+
+  // ✅ Reset Password
+  Future<void> _resetPassword() async {
+    if (emailC.text.trim().isEmpty) {
+      _showError('Please enter your email first.');
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailC.text.trim(),
+      );
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Password Reset Email Sent'),
+          content: const Text(
+            'A reset link has been sent to your email. Please check your inbox to reset your password.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No account found for this email.';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email address.';
+      } else {
+        message = 'Failed to send reset email. Try again later.';
+      }
+      _showError(message);
+    } catch (e) {
+      _showError('Error: $e');
+    }
+  }
+
+  // ✅ UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding:
+          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
-              // Logo only (no "Kids Guard" text), a bit larger
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -33,9 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-
               const SizedBox(height: 36),
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -60,15 +179,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 6),
 
-                    // Centered underline "Forgot password? Reset your password"
                     Center(
                       child: TextButton(
-                        onPressed: () {
-                          // Reset password action (left empty for now)
-                        },
+                        onPressed: _resetPassword,
                         child: const Text(
                           'Forgot password? Reset your password',
                           textAlign: TextAlign.center,
@@ -83,24 +198,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 18),
 
-                    // Login button (full width)
+                    // ✅ Email Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // On success, just show a small confirmation for now
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Logged in',
-                                  style: TextStyle(fontFamily: "Lexend"),
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -119,19 +222,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 14), // same spacing as design
-                    // Google button - same width as Login
+                    const SizedBox(height: 14),
+
+                    // ✅ Google Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: _loginWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 20,
                         ),
                         label: const Text(
-                          'Google',
+                          'Signin with Google',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: "Lexend",
@@ -149,19 +253,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 20),
 
-                    // "Don't have an account? Sign Up" clickable, turn blue on hover
                     MouseRegion(
                       onEnter: (_) => setState(() => _hoverRegister = true),
                       onExit: (_) => setState(() => _hoverRegister = false),
                       child: GestureDetector(
                         onTap: () async {
-                          // go to sign up and await returned data
                           final result = await Navigator.pushNamed(
                             context,
                             SignUpScreen.routname,
                           );
                           if (result != null && result is Map) {
-                            // pre-fill login fields if sign-up returned data
                             emailC.text = result['email'] ?? '';
                             passwordC.text = result['password'] ?? '';
                           }

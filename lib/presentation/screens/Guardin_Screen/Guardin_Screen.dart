@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/guardin_select.dart';
-import 'package:kids_guard/presentation/screens/Onboarding_Screens/real_time_monitoring_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
+import 'package:kids_guard/presentation/screens/Onboarding_Screens/real_time_monitoring_screen.dart';
 
 class GuardinScreen extends StatelessWidget {
   static const String routname = "/select_guardin";
 
-  // ✅ المفتاح للوصول إلى حالة GuardinSelect
   final GlobalKey<GuardinSelectState> guardianKey =
-      GlobalKey<GuardinSelectState>();
+  GlobalKey<GuardinSelectState>();
 
   GuardinScreen({super.key});
 
@@ -51,7 +50,6 @@ class GuardinScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // ✅ اربط الـ widget بالمفتاح
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GuardinSelect(key: guardianKey),
@@ -70,26 +68,42 @@ class GuardinScreen extends StatelessWidget {
                 height: 49,
                 child: ElevatedButton(
                   onPressed: () {
-                    final selectedIndex = guardianKey
-                        .currentState
-                        ?.selectedIndex; // ✅ نقرأ القيمة
-                    // read el choice ely anty a5trtyh
+                    final selectedIndex =
+                        guardianKey.currentState?.selectedIndex;
 
                     if (selectedIndex == 0) {
-                      Navigator.pushReplacementNamed(
+                      // 👩‍👧 Guardian / Mother → go to Guardian Onboarding
+                      Navigator.pushNamed(
                         context,
                         RealTime.routname,
                       );
                     } else if (selectedIndex == 1) {
-                      Navigator.pushReplacementNamed(
+                      // 👩‍⚕️ Doctor → go to Doctor Onboarding
+                      Navigator.pushNamed(
                         context,
                         RealTimeDoctor.routname,
                       );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please select Guardian or Doctor first'),
+                        ),
+                      );
                     }
                   },
-                  child: Text(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text(
                     "Next",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "Lexend",
+                    ),
                   ),
                 ),
               ),

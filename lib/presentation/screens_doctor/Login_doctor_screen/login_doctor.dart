@@ -2,19 +2,166 @@ import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 
 class LoginScreenDoctor extends StatefulWidget {
   static const String routname = "/login_screen_doctor";
+
   @override
-  State<LoginScreenDoctor> createState() => _LoginScreenState();
+  State<LoginScreenDoctor> createState() => _LoginScreenDoctorState();
 }
 
-class _LoginScreenState extends State<LoginScreenDoctor> {
+class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
   bool _hoverRegister = false;
 
+  /// 🔹 Email/Password login
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailC.text.trim(),
+          password: passwordC.text,
+        );
+
+        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      } on FirebaseAuthException catch (e) {
+        String message = '';
+        if (e.code == 'user-not-found') {
+          message = 'No account found for this email.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Wrong password provided for that user.';
+        } else {
+          message = 'Login failed. Please check your email and password.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  /// 🔹 Google Sign-In (Android only, with forced account picker)
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+        "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
+      );
+
+      // 👇 This forces the user to always pick an account
+      await googleSignIn.signOut();
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return; // cancelled
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final user = userCredential.user;
+      if (user != null) {
+        // ✅ Ensure Firestore has the doctor record
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'userId': user.uid,
+          'email': user.email,
+          'role': 'doctor',
+          'createdAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+
+        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google sign-in failed: $e')),
+      );
+    }
+  }
+
+  /// 🔹 Password reset
+  Future<void> _resetPassword() async {
+    final emailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Reset Password'),
+          content: TextField(
+            controller: emailController,
+            decoration: const InputDecoration(
+              hintText: 'Enter your registered email',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+
+                try {
+                  await FirebaseAuth.instance.sendPasswordResetEmail(
+                    email: emailController.text.trim(),
+                  );
+
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Email Sent'),
+                      content: const Text(
+                        'A password reset link has been sent to your email. Please check your inbox.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                } on FirebaseAuthException catch (e) {
+                  String message = '';
+                  if (e.code == 'user-not-found') {
+                    message = 'No user found with this email.';
+                  } else if (e.code == 'invalid-email') {
+                    message = 'Invalid email format.';
+                  } else {
+                    message = 'Failed to send reset email. Please try again.';
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(message)),
+                  );
+                }
+              },
+              child: const Text('Send'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// 🔹 UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +170,6 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
           padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
-              // Logo only (no "Kids Guard" text), a bit larger
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -32,9 +178,7 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
                   fit: BoxFit.cover,
                 ),
               ),
-
               const SizedBox(height: 36),
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -59,15 +203,10 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 6),
-
-                    // Centered underline "Forgot password? Reset your password"
                     Center(
                       child: TextButton(
-                        onPressed: () {
-                          // Reset password action (left empty for now)
-                        },
+                        onPressed: _resetPassword,
                         child: const Text(
                           'Forgot password? Reset your password',
                           textAlign: TextAlign.center,
@@ -79,27 +218,12 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 18),
-
-                    // Login button (full width)
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // On success, just show a small confirmation for now
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Logged in',
-                                  style: TextStyle(fontFamily: "Lexend"),
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -117,28 +241,29 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20),
 
-                    const SizedBox(height: 14), // same spacing as design
-                    // Google button - same width as Login
+                    /// 🔹 Google Login Button
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 52,
                       child: OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: _signInWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
-                          height: 20,
+                          height: 24,
+                          width: 24,
                         ),
                         label: const Text(
-                          'Google',
+                          'Sign in with Google',
                           style: TextStyle(
-                            color: Colors.black,
+                            fontSize: 16,
                             fontFamily: "Lexend",
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: BorderSide(color: Colors.grey.shade300),
+                          side: const BorderSide(color: Colors.grey),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -147,20 +272,16 @@ class _LoginScreenState extends State<LoginScreenDoctor> {
                     ),
 
                     const SizedBox(height: 20),
-
-                    // "Don't have an account? Sign Up" clickable, turn blue on hover
                     MouseRegion(
                       onEnter: (_) => setState(() => _hoverRegister = true),
                       onExit: (_) => setState(() => _hoverRegister = false),
                       child: GestureDetector(
                         onTap: () async {
-                          // go to sign up and await returned data
                           final result = await Navigator.pushNamed(
                             context,
                             SignUpScreenDoctor.routname,
                           );
                           if (result != null && result is Map) {
-                            // pre-fill login fields if sign-up returned data
                             emailC.text = result['email'] ?? '';
                             passwordC.text = result['password'] ?? '';
                           }

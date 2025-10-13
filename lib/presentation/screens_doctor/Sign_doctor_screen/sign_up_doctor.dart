@@ -1,28 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
-import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 
 class SignUpScreenDoctor extends StatefulWidget {
-  static const String routname = "/signup_screen_doctor";
+  static const String routname = "/sign_up_doctor";
+
   @override
-  State<SignUpScreenDoctor> createState() => _SignUpScreenState();
+  State<SignUpScreenDoctor> createState() => _SignUpScreenDoctorState();
 }
 
-class _SignUpScreenState extends State<SignUpScreenDoctor> {
+class _SignUpScreenDoctorState extends State<SignUpScreenDoctor> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
-  final confirmC = TextEditingController();
   bool _hoverLogin = false;
 
-  void _submit() {
+  // Email/Password signup
+  Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      // send back the email & password to login screen
-      Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailC.text.trim(),
+          password: passwordC.text.trim(),
+        );
+
+        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      } on FirebaseAuthException catch (e) {
+        String message = '';
+        if (e.code == 'email-already-in-use') {
+          message = 'This email is already registered.';
+        } else if (e.code == 'invalid-email') {
+          message = 'Invalid email format.';
+        } else if (e.code == 'weak-password') {
+          message = 'Password is too weak.';
+        } else {
+          message = 'Signup failed. Please try again.';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  // Google Sign-In (Android only, with account chooser)
+  Future<UserCredential?> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+        "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
       );
 
+      await googleSignIn.signOut(); // 👈 Forces account picker
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      return userCredential;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Google sign-in failed: $e")),
+      );
+      return null;
     }
   }
 
@@ -34,7 +92,6 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
           padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
-              // Logo only
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -43,9 +100,7 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
                   fit: BoxFit.cover,
                 ),
               ),
-
               const SizedBox(height: 36),
-          
               Form(
                 key: _formKey,
                 child: Column(
@@ -70,21 +125,12 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
                         return null;
                       },
                     ),
-                    CustomTextField(
-                      controller: confirmC,
-                      hintText: 'Confirm Password',
-                      isPassword: true,
-                      validator: (v) =>
-                          v != passwordC.text ? 'Passwords do not match' : null,
-                    ),
-
-                    const SizedBox(height: 18),
-
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _submit,
+                        onPressed: _signUp,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -92,7 +138,7 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
                           ),
                         ),
                         child: const Text(
-                          'Sign up',
+                          'Sign Up',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -102,54 +148,49 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 14),
-
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 52,
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const CreateAccountScreen(),
-                          //   ),
-                          // );
-                        },
-
+                        onPressed: _signInWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
-                          height: 20,
+                          height: 24,
+                          width: 24,
                         ),
-                        label: Text(
-                          'Google',
-                          style: TextStyle(fontFamily: "Lexend"),
+                        label: const Text(
+                          'Sign up with Google',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: "Lexend",
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: BorderSide(color: Colors.grey.shade300),
+                          side: const BorderSide(color: Colors.grey),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 18),
-
+                    const SizedBox(height: 20),
                     MouseRegion(
                       onEnter: (_) => setState(() => _hoverLogin = true),
                       onExit: (_) => setState(() => _hoverLogin = false),
                       child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                         child: Text(
-                          'Already have an account? Log In',
+                          "Already have an account? Login",
                           style: TextStyle(
                             color: _hoverLogin
                                 ? AppColors.kPrimaryColor
                                 : AppColors.kTextColor,
                             fontWeight: FontWeight.w500,
+                            fontFamily: "Lexend",
                           ),
                         ),
                       ),

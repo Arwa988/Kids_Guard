@@ -16,7 +16,11 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emerge
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
+import 'package:kids_guard/presentation/screens/Child_Details_Screen/child_details.dart';
+import 'package:kids_guard/presentation/screens/Choose_Doctor_Screen/choose_doctor.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +52,8 @@ class App extends StatelessWidget {
         SignUpScreenDoctor.routname: (context) => SignUpScreenDoctor(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
         ProfilePhotoScreen.routname: (context) => ProfilePhotoScreen(),
+        ChildDetailsScreen.routname: (context) =>  ChildDetailsScreen(),
+        ChooseDoctorScreen.routname:(context) => ChooseDoctorScreen()
       },
       theme: AppTheme.lighttheme,
     );
