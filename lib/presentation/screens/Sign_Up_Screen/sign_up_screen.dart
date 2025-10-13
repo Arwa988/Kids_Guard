@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 
@@ -36,6 +37,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               // Logo only
+              IconButton(
+                onPressed: () {
+                  Navigator.of(
+                    context,
+                  ).pushReplacementNamed(HomeScreen.routname);
+                },
+                icon: Icon(Icons.g_mobiledata),
+              ),
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -51,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                  
                     CustomTextField(
                       controller: emailC,
                       hintText: 'Email',
