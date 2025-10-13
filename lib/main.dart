@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:kids_guard/core/theme/App_Theme.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
@@ -12,17 +13,18 @@ import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.da
 import 'package:kids_guard/presentation/screens/Splash_Screen/splash_screen.dart';
 import 'package:kids_guard/presentation/screens/Languge_Screen/languge_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emergency_alerts_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  return runApp(App());
-}
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//   return runApp(App());
+// }
 
 class App extends StatelessWidget {
   @override
@@ -48,6 +50,8 @@ class App extends StatelessWidget {
         SignUpScreenDoctor.routname: (context) => SignUpScreenDoctor(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
         ProfilePhotoScreen.routname: (context) => ProfilePhotoScreen(),
+        HomeScreen.routname: (context) => HomeScreen(),
+        HomeScreenDoctor.routname: (context) => HomeScreenDoctor(),
       },
       theme: AppTheme.lighttheme,
     );

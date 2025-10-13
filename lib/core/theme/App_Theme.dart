@@ -59,6 +59,12 @@ class AppTheme {
         color: AppColors.skyBlue,
         fontFamily: "Lexend",
       ),
+      // labelLarge:TextStyle(
+      //   fontSize: 32,
+      //   fontWeight: FontWeight.bold,
+      //   color: AppColors.skyBlue,
+      //   fontFamily: "Lexend",
+      // ),
     ),
   );
 }

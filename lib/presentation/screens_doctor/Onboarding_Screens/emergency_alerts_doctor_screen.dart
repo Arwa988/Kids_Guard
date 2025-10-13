@@ -17,7 +17,9 @@ class EmergencyAlertsDoctor extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(LoginScreenDoctor.routname);
+                },
                 child: Text(
                   "Skip",
                   style: Theme.of(context).textTheme.bodySmall,

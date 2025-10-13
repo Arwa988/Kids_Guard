@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 
 class SignUpScreenDoctor extends StatefulWidget {
   static const String routname = "/signup_screen_doctor";
@@ -22,7 +23,6 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(builder: (context) => const CreateAccountScreen()),
       );
-
     }
   }
 
@@ -35,6 +35,14 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
           child: Column(
             children: [
               // Logo only
+              IconButton(
+                onPressed: () {
+                  Navigator.of(
+                    context,
+                  ).pushReplacementNamed(HomeScreenDoctor.routname);
+                },
+                icon: Icon(Icons.g_mobiledata),
+              ),
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -45,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreenDoctor> {
               ),
 
               const SizedBox(height: 36),
-          
+
               Form(
                 key: _formKey,
                 child: Column(
