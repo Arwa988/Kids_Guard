@@ -13,7 +13,7 @@ class SignUpScreen extends StatefulWidget {
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
-
+// Signup Backend
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
@@ -22,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _hoverLogin = false;
 
   late String userRole;
-
+// set Guardian Signup
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     userRole = args?['role'] ?? 'guardian';
   }
 
-  // ✅ Email Sign-Up
+  //  Email Sign-Up (Create Account)
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -79,12 +79,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  // ✅ Helper: Show snackbar error
+  //  Show snackbar error
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  // ✅ Google Sign-In (Android only)
+  // Google Sign-In (Android only)
   Future<UserCredential?> _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
-      // Force account chooser each time
+      // Force account chooser each time to show account options
       await googleSignIn.signOut();
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -113,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  // ✅ Wrapper for Google Sign-Up
+  //  Wrapper for Google Sign-Up
   Future<void> _signUpWithGoogle() async {
     try {
       final userCredential = await _signInWithGoogle();
@@ -149,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _showError("Google Sign-Up failed: $e");
     }
   }
-
+// Sign up UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(

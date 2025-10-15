@@ -5,13 +5,14 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animat
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/people_animation.dart';
 
 class HomeTabDoctor extends StatelessWidget {
+  static const String routname = "./doctor_home_screen";
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(), // ✅ تمرير ناعم
+        physics: const BouncingScrollPhysics(),
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/images/MotherBg.png"),
               fit: BoxFit.cover,
@@ -33,30 +34,33 @@ class HomeTabDoctor extends StatelessWidget {
                         icon: Icon(
                           Icons.settings,
                           color: AppColors.kPrimaryColor,
+                          size: 30, // ⬆️ increased size
                         ),
                       ),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.notifications,
                         color: AppColors.kPrimaryColor,
+                        size: 30, // ⬆️ increased size
                       ),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
+
 
               // 🔹 Doctor animation centered
               Center(child: DoctorlistAnimation()),
 
-              const SizedBox(height: 20),
+
 
               // 🔹 Body container
               Container(
                 width: double.infinity,
+
                 decoration: BoxDecoration(
                   color: AppColors.HomeScreenBodybg,
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -65,7 +69,7 @@ class HomeTabDoctor extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 16.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16.0,
@@ -81,7 +85,7 @@ class HomeTabDoctor extends StatelessWidget {
                                 bgColor: AppColors.lightBlue,
                               ),
                             ),
-                            const SizedBox(width: 16), // ✅ space between them
+                            const SizedBox(width: 16),
                             Expanded(
                               child: Patient(
                                 text: "Unstable Patient",
@@ -120,7 +124,7 @@ class HomeTabDoctor extends StatelessWidget {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "2",
@@ -143,7 +147,7 @@ class HomeTabDoctor extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
 
                       // 🔸 View patient list
                       Container(
@@ -151,7 +155,7 @@ class HomeTabDoctor extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         height: 120,
                         decoration: BoxDecoration(
-                          color: Color(0xFFC7C5DE),
+                          color: const Color(0xFFC7C5DE),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Padding(

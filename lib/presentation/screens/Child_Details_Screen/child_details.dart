@@ -13,7 +13,7 @@ class ChildDetailsScreen extends StatefulWidget {
   @override
   State<ChildDetailsScreen> createState() => _ChildDetailsScreenState();
 }
-
+//Child Details Backend
 class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final nameC = TextEditingController();
@@ -42,7 +42,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
       final firestore = FirebaseFirestore.instance;
 
-      // Save child details and get the generated document ID
+      // Save child details in the "children" collection
       final docRef = await firestore.collection('children').add({
         'userId': user.uid,
         'name': nameC.text.trim(),
@@ -72,7 +72,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
       Navigator.pushNamed(
         context,
         ChooseDoctorScreen.routname,
-        arguments: {'childId': docRef.id}, // ✅ pass childId here
+        arguments: {'childId': docRef.id}, //  pass childId here
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +82,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
       setState(() => _isLoading = false);
     }
   }
-
+// Child Details UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,7 +299,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   ? null
                                   : () {
                                 if (_formKey.currentState!.validate()) {
-                                  _saveChildDetails();
+                                  _saveChildDetails(); // Save data in firestore fn
                                 }
                               },
                               style: ElevatedButton.styleFrom(

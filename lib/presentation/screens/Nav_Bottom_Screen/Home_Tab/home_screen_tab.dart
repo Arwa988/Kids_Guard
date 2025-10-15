@@ -6,46 +6,49 @@ import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animat
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/home_app_bar_animation.dart';
 
 class HomeScreenTab extends StatelessWidget {
-  static const String routname = "./home_screennnn";
+  static const String routname = "./home_screen";
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image: AssetImage("assets/images/MotherBg.png"),
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Builder(
-                    builder: (context) => IconButton(
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      icon: Icon(
-                        Icons.settings,
-                        color: AppColors.kPrimaryColor,
+              // 🔽 Icons moved down
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        icon: Icon(
+                          Icons.settings,
+                          color: AppColors.kPrimaryColor,
+                          size: 33,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications,
-                      color: AppColors.kPrimaryColor,
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.notifications,
+                        color: AppColors.kPrimaryColor,
+                        size: 33,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+
               const SizedBox(height: 24),
               Center(
                 child: Container(
@@ -65,75 +68,100 @@ class HomeScreenTab extends StatelessWidget {
                     ],
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Image(
                         image: AssetImage("assets/images/happyheart.png"),
                         width: 100,
                         height: 100,
                       ),
-                      const SizedBox(width: 100),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Child Overall Health",
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                          ),
-                          Text(
-                            "Great!",
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Child Overall Health",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            Text(
+                              "Great!",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
+
+              // ✅ Evenly spaced 3 boxes (no overflow)
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // ✅ keeps them centered
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeDetector(
-                    DetectorAnimation: HomeAppBarAnimation(
-                      LottiePath: "assets/lottie/Cloudroboticsabstract.json",
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: HomeDetector(
+                        DetectorAnimation: HomeAppBarAnimation(
+                          LottiePath:
+                          "assets/lottie/Cloudroboticsabstract.json",
+                        ),
+                        text: "Ask The AI Guide",
+                      ),
                     ),
-                    text: "Ask The AI Guide",
                   ),
-                  const SizedBox(width: 8), // ✅ smaller space
-                  HomeDetector(
-                    DetectorAnimation: HomeAppBarAnimation(
-                      LottiePath: "assets/lottie/doctor.json",
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: HomeDetector(
+                        DetectorAnimation: HomeAppBarAnimation(
+                          LottiePath: "assets/lottie/doctor.json",
+                        ),
+                        text: "Ask The Doctor",
+                      ),
                     ),
-                    text: "Ask The Doctor",
                   ),
-                  const SizedBox(width: 8), // ✅ smaller space
-                  HomeDetector(
-                    DetectorAnimation: HomeAppBarAnimation(
-                      LottiePath: "assets/lottie/LocationPin.json",
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: HomeDetector(
+                        DetectorAnimation: HomeAppBarAnimation(
+                          LottiePath: "assets/lottie/LocationPin.json",
+                        ),
+                        text: "Child Location",
+                      ),
                     ),
-                    text: "Child Location",
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+
+              const SizedBox(height: 24),
               Container(
                 width: 500,
-                height: 320,
+                height: 340,
                 decoration: BoxDecoration(
                   color: AppColors.HomeScreenBodybg,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -182,17 +210,25 @@ class HomeScreenTab extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        HealthBox(
-                          boxColor: AppColors.heartRed,
-                          perenctage: "100/75",
-                          symbol: "mmHg",
-                          text: "Blood Pressure",
+                        SizedBox(
+                          width: 175, // 👈 reduced from full width — prevents overflow
+                          height: 120,
+                          child: HealthBox(
+                            boxColor: AppColors.heartRed,
+                            perenctage: "100/75",
+                            symbol: "mmHg",
+                            text: "Blood Pressure",
+                          ),
                         ),
-                        HealthBox(
-                          boxColor: AppColors.HomeScreenBg,
-                          perenctage: "95%",
-                          symbol: "SPO2",
-                          text: "Blood Oxygen",
+                        SizedBox(
+                          width: 175, // 👈 same reduced width for alignment
+                          height: 120,
+                          child: HealthBox(
+                            boxColor: AppColors.HomeScreenBg,
+                            perenctage: "95%",
+                            symbol: "SPO2",
+                            text: "Blood Oxygen",
+                          ),
                         ),
                       ],
                     ),

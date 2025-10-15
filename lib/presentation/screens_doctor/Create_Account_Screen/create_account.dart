@@ -12,7 +12,7 @@ class CreateAccountScreen extends StatefulWidget {
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
   static const String routname = "/create_account";
 }
-
+// Create Account Backend
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   final firstC = TextEditingController();
@@ -32,7 +32,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         );
         return;
       }
-
+// Save data in the doctors collection
       final firestore = FirebaseFirestore.instance;
       await firestore.collection('Doctors').doc(user.uid).set({
         'userId': user.uid,
@@ -56,7 +56,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       setState(() => _isLoading = false);
     }
   }
-
+// Create Account UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,7 +145,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                                   ? null
                                   : () async {
                                 if (_formKey.currentState!.validate()) {
-                                  await _saveDoctorDetails();
+                                  await _saveDoctorDetails(); // send data to firestore
                                 }
                               },
                               style: ElevatedButton.styleFrom(

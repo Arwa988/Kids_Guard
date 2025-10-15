@@ -13,14 +13,14 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-
+//Login Backend
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
   bool _hoverRegister = false;
 
-  // ✅ Regular Email Login
+  // Regular Email Login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: passwordC.text,
         );
 
-        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+        Navigator.pushReplacementNamed(context, '/home_screen');
       } on FirebaseAuthException catch (e) {
         String message = '';
         if (e.code == 'user-not-found') {
@@ -46,12 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ✅ Helper for SnackBar messages
+  // Helper for SnackBar messages
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  // ✅ Google Sign-In (Android Only)
+  //  Google Sign-In (Android Only)
   Future<UserCredential?> _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ✅ Wrapper for Google Login
+  //  Wrapper for Google Login
   Future<void> _loginWithGoogle() async {
     final userCredential = await _signInWithGoogle();
     if (userCredential == null) return;
@@ -90,11 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Logged in successfully with Google 🎉')),
       );
-      Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+      Navigator.pushReplacementNamed(context, '/home_screen'); //go to home page
     }
   }
 
-  // ✅ Reset Password
+  // Reset Password
   Future<void> _resetPassword() async {
     if (emailC.text.trim().isEmpty) {
       _showError('Please enter your email first.');
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ✅ UI
+  // Login UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: _login,// on press: submit data to firebase
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -229,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 50,
                       child: OutlinedButton.icon(
-                        onPressed: _loginWithGoogle,
+                        onPressed: _loginWithGoogle,// onclick: submit data to firebase
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 20,

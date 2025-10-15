@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:kids_guard/core/theme/App_Theme.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
@@ -18,14 +18,16 @@ import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/prof
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 import 'package:kids_guard/presentation/screens/Child_Details_Screen/child_details.dart';
 import 'package:kids_guard/presentation/screens/Choose_Doctor_Screen/choose_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  return runApp(App());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(App());
 }
 
 class App extends StatelessWidget {
@@ -37,7 +39,6 @@ class App extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (context) => SplashScreen(),
         LangugeScreen.routname: (context) => LangugeScreen(),
-        // ignore: equal_keys_in_map
         WelcomeScreen.routname: (context) => WelcomeScreen(),
         RealTime.routname: (context) => RealTime(),
         EmergencyAlerts.routname: (context) => EmergencyAlerts(),
@@ -46,14 +47,19 @@ class App extends StatelessWidget {
         SignUpScreen.routname: (context) => SignUpScreen(),
         GuardinScreen.routname: (context) => GuardinScreen(),
         EmergencyAlertsDoctor.routname: (context) => EmergencyAlertsDoctor(),
-        // ignore: equal_keys_in_map
         RealTimeDoctor.routname: (context) => RealTimeDoctor(),
         LoginScreenDoctor.routname: (context) => LoginScreenDoctor(),
         SignUpScreenDoctor.routname: (context) => SignUpScreenDoctor(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
-        ProfilePhotoScreen.routname: (context) => ProfilePhotoScreen(),
-        ChildDetailsScreen.routname: (context) =>  ChildDetailsScreen(),
-        ChooseDoctorScreen.routname:(context) => ChooseDoctorScreen()
+
+
+        ProfilePhotoScreen.routname: (context) =>
+            ProfilePhotoScreen(userType: "guardian"),
+
+        ChildDetailsScreen.routname: (context) => ChildDetailsScreen(),
+        ChooseDoctorScreen.routname: (context) => ChooseDoctorScreen(),
+        HomeScreen.routname: (context) => HomeScreen(),
+        HomeScreenDoctor.routname: (context) => HomeScreenDoctor(),
       },
       theme: AppTheme.lighttheme,
     );

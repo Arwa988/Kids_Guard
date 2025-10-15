@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 
 class ProfilePhotoScreen extends StatelessWidget {
-  const ProfilePhotoScreen({super.key});
+  final String userType; // "guardian" or "doctor"
+  const ProfilePhotoScreen({super.key, required this.userType});
   static const String routname = "/add_photo";
 
   @override
@@ -11,7 +14,9 @@ class ProfilePhotoScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const CloudDesgin(),
+          const CloudDesgin(), // Background design
+
+          // Center profile photo area
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -19,7 +24,6 @@ class ProfilePhotoScreen extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    // Circle container (unchanged)
                     Container(
                       width: 180,
                       height: 180,
@@ -38,8 +42,8 @@ class ProfilePhotoScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: SizedBox(
-                          width: 80,  // smaller width than circle
-                          height: 80, // smaller height than circle
+                          width: 80,
+                          height: 80,
                           child: Image.asset(
                             "assets/images/person.png",
                             fit: BoxFit.contain,
@@ -47,8 +51,6 @@ class ProfilePhotoScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // "+" Icon at bottom-right
                     Positioned(
                       right: -5,
                       bottom: -5,
@@ -62,10 +64,7 @@ class ProfilePhotoScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.primaryBlue,
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
+                            border: Border.all(color: Colors.white, width: 2),
                           ),
                           child: const Icon(
                             Icons.add,
@@ -76,8 +75,7 @@ class ProfilePhotoScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
-,
+                ),
                 const SizedBox(height: 25),
                 const Text(
                   "Add a profile photo",
@@ -92,49 +90,35 @@ class ProfilePhotoScreen extends StatelessWidget {
             ),
           ),
 
-          /// Bottom buttons area (Skip / Done)
+          // Bottom Done button
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Skip button
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Skip",
-                      style: TextStyle(
-                        fontFamily: "Lexend",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.kTextColor,
-                      ),
-                    ),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (userType == "guardian") {
+                    Navigator.pushReplacementNamed(context, HomeScreen.routname);
+                  } else if (userType == "doctor") {
+                    Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                  
-                  // Done button
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryBlue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      minimumSize: const Size(91, 49),
-                    ),
-                    child: const Text(
-                      "Done",
-                      style: TextStyle(
-                        fontFamily: "Lexend",
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
+                  minimumSize: const Size(150, 50),
+                ),
+                child: const Text(
+                  "Done",
+                  style: TextStyle(
+                    fontFamily: "Lexend",
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
-                ],
+                ),
               ),
             ),
           ),

@@ -10,7 +10,7 @@ class ChooseDoctorScreen extends StatefulWidget {
   @override
   State<ChooseDoctorScreen> createState() => _ChooseDoctorScreenState();
 }
-
+// Choose Doctor Backend
 class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
   final _formKey = GlobalKey<FormState>();
   String? selectedDoctor;
@@ -78,6 +78,7 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                             SizedBox(
                               width: 100,
                               height: 44,
+                              // add the choosed doctor in the child document
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (childId.isEmpty) {

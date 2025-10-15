@@ -5,7 +5,7 @@ import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_u
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 
 class LoginScreenDoctor extends StatefulWidget {
   static const String routname = "/login_screen_doctor";
@@ -13,6 +13,7 @@ class LoginScreenDoctor extends StatefulWidget {
   @override
   State<LoginScreenDoctor> createState() => _LoginScreenDoctorState();
 }
+//Login Backend
 
 class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
   final _formKey = GlobalKey<FormState>();
@@ -20,7 +21,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
   final passwordC = TextEditingController();
   bool _hoverRegister = false;
 
-  /// 🔹 Email/Password login
+  ///  Email/Password login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -29,7 +30,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
           password: passwordC.text,
         );
 
-        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+        Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
       } on FirebaseAuthException catch (e) {
         String message = '';
         if (e.code == 'user-not-found') {
@@ -50,7 +51,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     }
   }
 
-  /// 🔹 Google Sign-In (Android only, with forced account picker)
+  /// Google Sign-In (Android only, with forced account picker)
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -77,7 +78,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
 
       final user = userCredential.user;
       if (user != null) {
-        // ✅ Ensure Firestore has the doctor record
+        //Save data in doctor collection
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'userId': user.uid,
           'email': user.email,
@@ -85,7 +86,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
           'createdAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
 
-        Navigator.pushReplacementNamed(context, GuardinScreen.routname);
+        Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +95,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     }
   }
 
-  /// 🔹 Password reset
+  ///  Password reset
   Future<void> _resetPassword() async {
     final emailController = TextEditingController();
 
@@ -161,7 +162,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     );
   }
 
-  /// 🔹 UI
+  /// Login UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,7 +224,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: _login, // on press : send data to firebase
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -248,7 +249,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                       width: double.infinity,
                       height: 52,
                       child: OutlinedButton.icon(
-                        onPressed: _signInWithGoogle,
+                        onPressed: _signInWithGoogle,// on press : send data to firebase
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 24,
