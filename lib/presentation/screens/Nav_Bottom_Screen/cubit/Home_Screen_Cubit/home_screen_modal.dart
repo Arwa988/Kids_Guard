@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/health_tab.dart';
@@ -8,7 +9,7 @@ import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/cubit/Home_Scr
 
 class HomeScreenModal extends Cubit<HomeSceenState> {
   HomeScreenModal() : super(HomescreenIntialstate());
-  // hold data   handle logic
+
   int selectedIndex = 0;
   List<Widget> screens = [
     HomeScreenTab(),
@@ -16,9 +17,18 @@ class HomeScreenModal extends Cubit<HomeSceenState> {
     HealthTab(),
     ScheduleTab(),
   ];
-  void changeIndex(int index) {
-    emit(HomescreenIntialstate());
-    selectedIndex = index;
+
+ void changeIndex(int index) {
+  // غيّري المؤشر أولاً
+  selectedIndex = index;
+
+  // فعّلي حالة الـ Loading
+  emit(HomescreenLoadingstate());
+
+  // بعد شوية (مثلاً 800ms)، اعرض الشاشة الجديدة
+  Future.delayed(const Duration(milliseconds: 800), () {
     emit(ChangeSelectedIndexState());
-  }
+  });
+}
+
 }

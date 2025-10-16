@@ -12,7 +12,7 @@ class DrawerItemDoc extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.white,
+         color: const Color.fromARGB(255, 0, 79, 215),
           fontSize: 20,
           fontWeight: FontWeight.w100,
         ),

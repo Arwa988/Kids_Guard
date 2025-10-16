@@ -8,13 +8,7 @@ class DrawerDesginDoctor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.textPrimary, AppColors.textSecondary],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        decoration: BoxDecoration(color: AppColors.kLightBlue),
 
         child: Padding(
           padding: EdgeInsets.all(18.0),
@@ -44,8 +38,8 @@ class DrawerDesginDoctor extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     child: Icon(Icons.person),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                     backgroundColor: AppColors.pink,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Profile"),
@@ -58,8 +52,8 @@ class DrawerDesginDoctor extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     child: Icon(Icons.language),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                     backgroundColor: AppColors.pink,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Language"),
@@ -72,8 +66,8 @@ class DrawerDesginDoctor extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     child: Icon(Icons.notifications_rounded),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                     backgroundColor: AppColors.pink,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Notification"),
@@ -87,7 +81,7 @@ class DrawerDesginDoctor extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.palette_sharp),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Color Theme"),
@@ -100,8 +94,8 @@ class DrawerDesginDoctor extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     child: Icon(Icons.star_purple500_sharp),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                backgroundColor: AppColors.pink,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Rate Us"),
@@ -115,7 +109,7 @@ class DrawerDesginDoctor extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.people),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Share with a friend"),
@@ -128,8 +122,8 @@ class DrawerDesginDoctor extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     child: Icon(Icons.login_outlined),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: AppColors.kPrimaryColor,
+                     backgroundColor: AppColors.pink,
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItemDoc(text: "Logout"),

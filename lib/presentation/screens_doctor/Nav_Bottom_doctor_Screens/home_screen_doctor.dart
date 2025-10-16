@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Screen_Doctor_Cubit/home_screen_modal.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Screen_Doctor_Cubit/home_screen_state.dart';
-import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/home_tab.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/wedgit/Drawer_desgin.dart';
 
 // ignore: must_be_immutable
@@ -21,10 +20,14 @@ class HomeScreenDoctor extends StatelessWidget {
           // ✅ Drawer for settings
           drawer: DrawerDesginDoctor(),
 
-          body: viewModal.selectedIndex == 0
-              ? HomeTabDoctor()
+          body: state is HomescreenDocLoadingstate
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blueAccent,
+                    strokeWidth: 4,
+                  ),
+                )
               : viewModal.screens[viewModal.selectedIndex],
-
           // 🔹 Bottom Navigation Bar
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.only(

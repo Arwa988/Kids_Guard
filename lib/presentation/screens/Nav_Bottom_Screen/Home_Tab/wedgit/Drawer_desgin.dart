@@ -9,16 +9,7 @@ class DrawerDesgin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.pink,
-              Color(Colors.pinkAccent.value).withOpacity(0.5),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        decoration: BoxDecoration(color: AppColors.kLightBlue),
 
         child: Padding(
           padding: EdgeInsets.all(18.0),
@@ -36,7 +27,7 @@ class DrawerDesgin extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       fontSize: 33,
                       fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 220, 146, 146),
+                      color: AppColors.kTextColor,
                     ),
                   ),
                 ],
@@ -47,7 +38,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.person),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Profile"),
@@ -61,7 +52,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.language),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Language"),
@@ -75,7 +66,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.notifications_rounded),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Notification"),
@@ -89,7 +80,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.palette_sharp),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Color Theme"),
@@ -103,7 +94,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.star_purple500_sharp),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Rate Us"),
@@ -117,7 +108,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.people),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Share with a friend"),
@@ -131,7 +122,7 @@ class DrawerDesgin extends StatelessWidget {
                   CircleAvatar(
                     child: Icon(Icons.login_outlined),
                     backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
+                    foregroundColor: Color(Colors.blueAccent.value),
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Logout"),

@@ -17,9 +17,17 @@ class HomeScreenModalDoctor extends Cubit<HomeSceenDocState> {
     ScheduleTabDoctor(),
     ChatTab(),
   ];
-  void changeIndex(int index) {
-    emit(HomescreenDocIntialstate());
-    selectedIndex = index;
+ 
+ void changeIndex(int index) {
+  // غيّري المؤشر أولاً
+  selectedIndex = index;
+
+  // فعّلي حالة الـ Loading
+  emit(HomescreenDocLoadingstate());
+
+  // بعد شوية (مثلاً 800ms)، اعرض الشاشة الجديدة
+  Future.delayed(const Duration(milliseconds: 800), () {
     emit(ChangeSelectedDocIndexState());
-  }
+  });
+}
 }

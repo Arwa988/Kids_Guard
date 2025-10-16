@@ -20,11 +20,11 @@ import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/prof
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 // import 'package:firebase_core/firebase_core.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   return runApp(App());
-// }
+void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  return runApp(App());
+}
 
 class App extends StatelessWidget {
   @override
