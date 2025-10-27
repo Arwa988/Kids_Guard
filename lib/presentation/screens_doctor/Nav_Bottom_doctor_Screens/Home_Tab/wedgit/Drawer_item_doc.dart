@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/profile_screen_doc.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 class DrawerItemDoc extends StatelessWidget {
-  String text;
+  final String text;
+  const DrawerItemDoc({required this.text, super.key});
 
-  DrawerItemDoc({required this.text});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -108,8 +110,18 @@ class DrawerItemDoc extends StatelessWidget {
                         else if (text == "Logout") ...[
                             ListTile(
                               title: const Text('Logout'),
-                              onTap: () {
-                                Navigator.pop(context);
+                              onTap: () async {
+                                Navigator.pop(context); // close bottom sheet
+                                await FirebaseAuth.instance.signOut();
+
+                                // navigate to login and clear navigation history
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  LoginScreenDoctor(),
+                                  ),
+                                      (route) => false,
+                                );
                               },
                             ),
                             ListTile(
@@ -128,7 +140,7 @@ class DrawerItemDoc extends StatelessWidget {
       },
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w100,

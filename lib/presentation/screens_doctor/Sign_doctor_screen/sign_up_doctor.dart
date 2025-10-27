@@ -1,106 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 
-class SignUpScreenDoctor extends StatefulWidget {
-  static const String routname = "/sign_up_doctor";
+class DoctorSignUpScreen extends StatefulWidget {
+  const DoctorSignUpScreen({super.key});
+  static const String routname = "/doctor_signup_screen";
 
   @override
-  State<SignUpScreenDoctor> createState() => _SignUpScreenDoctorState();
+  State<DoctorSignUpScreen> createState() => _DoctorSignUpScreenState();
 }
-//Backend of Signup
-class _SignUpScreenDoctorState extends State<SignUpScreenDoctor> {
+// Sign up backend
+class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
   final confirmC = TextEditingController();
   bool _hoverLogin = false;
 
-  // Email/Password signup(create account)
-  Future<void> _signUp() async {
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
+        UserCredential userCredential =
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailC.text.trim(),
           password: passwordC.text.trim(),
         );
 
-        // Navigate to CreateAccountScreen
-        Navigator.pushReplacementNamed(context, CreateAccountScreen.routname);
-      } on FirebaseAuthException catch (e) {
-        String message = '';
-        if (e.code == 'email-already-in-use') {
-          message = 'This email is already registered.';
-        } else if (e.code == 'invalid-email') {
-          message = 'Invalid email format.';
-        } else if (e.code == 'weak-password') {
-          message = 'Password is too weak.';
-        } else {
-          message = 'Signup failed. Please try again.';
+        final user = userCredential.user;
+        if (user == null) return;
+
+        await FirebaseFirestore.instance.collection('doctors').doc(user.uid).set({
+          'email': emailC.text.trim(),
+          'uid': user.uid,
+          'role': 'doctor',
+          'createdAt': Timestamp.now(),
+        });
+
+        if (!user.emailVerified) {
+          await user.sendEmailVerification();
         }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          const SnackBar(
+              content: Text('Account created! Please verify your email.')),
         );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
         );
+      } on FirebaseAuthException catch (e) {
+        _showError(e.message ?? "Signup failed");
       }
     }
   }
 
-  // Google Sign-In
-  Future<UserCredential?> _signInWithGoogle() async {
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _signUpWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-        "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
+        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
-      await googleSignIn.signOut(); // Forces account picker
+      await googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      if (googleUser == null) return null;
+      if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
+      UserCredential userCredential =
       await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = userCredential.user;
+      if (user == null) return;
 
-      // Navigate to CreateAccountScreen
-      Navigator.pushReplacementNamed(context, CreateAccountScreen.routname);
-    } catch (e) {
+      await FirebaseFirestore.instance.collection('doctors').doc(user.uid).set({
+        'email': user.email,
+        'uid': user.uid,
+        'role': 'doctor',
+        'createdAt': Timestamp.now(),
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Google sign-in failed: $e")),
+        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
       );
-      return null;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+      );
+    } catch (e) {
+      _showError("Google Sign-Up failed: $e");
     }
   }
-//Signup UI
+// UI of Signup
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
           child: Column(
             children: [
-              Center(
-                child: Image.asset(
-                  'assets/images/kidsguard.png',
-                  height: 200,
-                  width: 200,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              Image.asset('assets/images/kidsguard.png', height: 200, width: 200),
               const SizedBox(height: 36),
               Form(
                 key: _formKey,
@@ -111,7 +126,7 @@ class _SignUpScreenDoctorState extends State<SignUpScreenDoctor> {
                       hintText: 'Email',
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Enter email';
+                        if (v == null || v.isEmpty) return 'Enter email';
                         if (!v.contains('@')) return 'Invalid email';
                         return null;
                       },
@@ -120,11 +135,9 @@ class _SignUpScreenDoctorState extends State<SignUpScreenDoctor> {
                       controller: passwordC,
                       hintText: 'Password',
                       isPassword: true,
-                      validator: (v) {
-                        if (v == null || v.length < 6)
-                          return 'At least 6 characters';
-                        return null;
-                      },
+                      validator: (v) => v!.length < 6
+                          ? 'Password must be at least 6 characters'
+                          : null,
                     ),
                     CustomTextField(
                       controller: confirmC,
@@ -133,74 +146,40 @@ class _SignUpScreenDoctorState extends State<SignUpScreenDoctor> {
                       validator: (v) =>
                       v != passwordC.text ? 'Passwords do not match' : null,
                     ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _signUp,// on press: send data to firebase
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.kPrimaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            fontFamily: "Lexend",
-                          ),
-                        ),
+                    const SizedBox(height: 18),
+                    ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.kPrimaryColor,
+                        minimumSize: const Size(double.infinity, 52),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
+                      child: const Text('Sign up as Doctor',
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                    ),
+                    const SizedBox(height: 14),
+                    OutlinedButton.icon(
+                      onPressed: _signUpWithGoogle,
+                      icon: Image.asset('assets/images/google.png', height: 20),
+                      label: const Text('Sign up with Google'),
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: OutlinedButton.icon(
-                        onPressed: _signInWithGoogle,// on press: send data to firebase
-                        icon: Image.asset(
-                          'assets/images/google.png',
-                          height: 24,
-                          width: 24,
-                        ),
-                        label: const Text(
-                          'Sign up with Google',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: "Lexend",
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.grey),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    MouseRegion(
-                      onEnter: (_) => setState(() => _hoverLogin = true),
-                      onExit: (_) => setState(() => _hoverLogin = false),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "Already have an account? Login",
-                          style: TextStyle(
+                    const SizedBox(height: 14),
+                    GestureDetector(
+                      onTap: () =>
+                          Navigator.pushNamed(context, LoginScreen.routname),
+                      child: Text(
+                        'Already have an account? Log In',
+                        style: TextStyle(
                             color: _hoverLogin
                                 ? AppColors.kPrimaryColor
-                                : AppColors.kTextColor,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Lexend",
-                          ),
-                        ),
+                                : AppColors.kTextColor),
                       ),
                     ),
                   ],

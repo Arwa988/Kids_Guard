@@ -280,7 +280,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                         onTap: () async {
                           final result = await Navigator.pushNamed(
                             context,
-                            SignUpScreenDoctor.routname,
+                            DoctorSignUpScreen.routname,
                           );
                           if (result != null && result is Map) {
                             emailC.text = result['email'] ?? '';

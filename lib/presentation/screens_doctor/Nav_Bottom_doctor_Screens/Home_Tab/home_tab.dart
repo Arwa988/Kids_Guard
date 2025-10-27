@@ -53,7 +53,13 @@ class HomeTabDoctor extends StatelessWidget {
 
 
               // 🔹 Doctor animation centered
-              Center(child: DoctorlistAnimation()),
+              Center(
+                child: Transform.scale(
+                  scale: 1.3, // 1.0 = original size, 1.5 = 50% bigger
+                  child: DoctorlistAnimation(),
+                ),
+              ),
+
 
 
 

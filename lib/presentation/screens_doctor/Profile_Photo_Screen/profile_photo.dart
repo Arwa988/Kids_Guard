@@ -14,9 +14,7 @@ class ProfilePhotoScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const CloudDesgin(), // Background design
-
-          // Center profile photo area
+          const CloudDesgin(),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -30,9 +28,8 @@ class ProfilePhotoScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
-                            blurStyle: BlurStyle.normal,
-                            blurRadius: 7,
-                            spreadRadius: 5,
+                            blurRadius: 1,
+                            spreadRadius: 1,
                             offset: Offset(0, 3),
                             color: Colors.grey,
                           ),
@@ -41,22 +38,16 @@ class ProfilePhotoScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Center(
-                        child: SizedBox(
-                          width: 80,
-                          height: 80,
-                          child: Image.asset(
-                            "assets/images/person.png",
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                        child: Image.asset("assets/images/person.png",
+                            width: 80, height: 80),
                       ),
                     ),
                     Positioned(
                       right: -5,
-                      bottom: -5,
+                      bottom: -8,
                       child: GestureDetector(
                         onTap: () {
-                          // TODO: Pick image from device or Firebase
+                          // TODO: implement photo picker
                         },
                         child: Container(
                           width: 50,
@@ -66,11 +57,8 @@ class ProfilePhotoScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 2),
                           ),
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 28,
-                          ),
+                          child: const Icon(Icons.add,
+                              color: Colors.white, size: 28),
                         ),
                       ),
                     ),
@@ -89,25 +77,24 @@ class ProfilePhotoScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Bottom Done button
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-            child: Align(
-              alignment: Alignment.bottomCenter,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
               child: ElevatedButton(
                 onPressed: () {
-                  if (userType == "guardian") {
-                    Navigator.pushReplacementNamed(context, HomeScreen.routname);
-                  } else if (userType == "doctor") {
-                    Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
+                  if (userType == "doctor") {
+                    Navigator.pushReplacementNamed(
+                        context, HomeScreenDoctor.routname);
+                  } else {
+                    Navigator.pushReplacementNamed(
+                        context, HomeScreen.routname);
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
+                      borderRadius: BorderRadius.circular(25)),
                   minimumSize: const Size(150, 50),
                 ),
                 child: const Text(

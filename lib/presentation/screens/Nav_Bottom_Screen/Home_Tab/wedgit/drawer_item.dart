@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import '../profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DrawerItem extends StatelessWidget {
   final String text;
@@ -108,8 +110,18 @@ class DrawerItem extends StatelessWidget {
                         else if (text == "Logout") ...[
                             ListTile(
                               title: const Text('Logout'),
-                              onTap: () {
-                                Navigator.pop(context);
+                              onTap: () async {
+                                Navigator.pop(context); // close bottom sheet
+                                await FirebaseAuth.instance.signOut();
+
+                                // navigate to login and clear navigation history
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                      (route) => false,
+                                );
                               },
                             ),
                             ListTile(
@@ -118,7 +130,7 @@ class DrawerItem extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                             ),
-                        ],
+                          ],
                   ],
                 ),
               );
@@ -185,4 +197,3 @@ class _RatingStarsState extends State<_RatingStars> {
     );
   }
 }
-

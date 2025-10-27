@@ -51,7 +51,7 @@ class App extends StatelessWidget {
         EmergencyAlertsDoctor.routname: (context) => EmergencyAlertsDoctor(),
         RealTimeDoctor.routname: (context) => RealTimeDoctor(),
         LoginScreenDoctor.routname: (context) => LoginScreenDoctor(),
-        SignUpScreenDoctor.routname: (context) => SignUpScreenDoctor(),
+        DoctorSignUpScreen.routname: (context) =>  DoctorSignUpScreen(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
 
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/profile_row.dart';
 
@@ -9,18 +11,68 @@ class ProfileScreenDoc extends StatefulWidget {
   @override
   State<ProfileScreenDoc> createState() => _ProfileScreenDocState();
 }
-
+// Backend of Doc profile
 class _ProfileScreenDocState extends State<ProfileScreenDoc> {
-  // Sample data
-  String username = "Maha Ahmed";
-  String email = "MarwaMohamed@gmail.com";
-  String? birthDateString;
-  String age = "40 Years";
-  String phone = "+201229451825";
-  String address = "Alexandria";
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
-  // Edit text field
-  void _editField(String fieldName, String currentValue, ValueChanged<String> onSave) {
+  String firstname = "Loading...";
+  String lastname = "Loading...";
+  String gender = "Loading...";
+  String phoneNumber = "Loading...";
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDoctorData();
+  }
+
+  // Load doctor data from Firestore
+  Future<void> _loadDoctorData() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final docSnap =
+      await _firestore.collection('doctors').doc(currentUser.uid).get();
+
+      if (docSnap.exists) {
+        final data = docSnap.data()!;
+        print("Fetched doctor data: $data");
+
+        setState(() {
+          firstname = data['firstName'] ?? "Not provided";
+          lastname = data['lastName'] ?? "Not provided";
+          gender = data['gender'] ?? "Not provided";
+          phoneNumber = data['phoneNumber'] ?? "Not provided";
+          _isLoading = false;
+        });
+      } else {
+        print("No doctor found for UID: ${currentUser.uid}");
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      print("Error loading doctor data: $e");
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // Update a specific field in Firestore
+  Future<void> _updateField(String fieldName, String newValue) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection("doctors").doc(user.uid).update({
+        fieldName: newValue,
+      });
+    }
+  }
+
+  //  Edit field dialog
+  void _editField(
+      String fieldName, String firestoreKey, String currentValue, ValueChanged<String> onSave) {
     final controller = TextEditingController(text: currentValue);
     final formKey = GlobalKey<FormState>();
 
@@ -32,25 +84,23 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
           key: formKey,
           child: TextFormField(
             controller: controller,
-            keyboardType:
-            fieldName == "Phone number" ? TextInputType.phone : TextInputType.text,
+            keyboardType: fieldName == "Phone Number"
+                ? TextInputType.phone
+                : TextInputType.text,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: fieldName,
             ),
             validator: (value) {
-              if (value == null || value.isEmpty) return "This field is required";
-
-              if (fieldName == "Email") {
-                final emailRegex = RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$');
-                if (!emailRegex.hasMatch(value)) return "Enter a valid email";
+              if (value == null || value.isEmpty) {
+                return "This field is required";
               }
-
-              if (fieldName == "Phone number") {
-                final phoneRegex = RegExp(r'^\+?[0-9]{10,15}$');
-                if (!phoneRegex.hasMatch(value)) return "Enter a valid phone number";
+              if (fieldName == "Phone Number") {
+                final phoneRegex = RegExp(r'^[0-9]{10,15}$');
+                if (!phoneRegex.hasMatch(value)) {
+                  return "Enter a valid phone number";
+                }
               }
-
               return null;
             },
           ),
@@ -61,9 +111,11 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (formKey.currentState!.validate()) {
-                onSave(controller.text);
+                final newValue = controller.text.trim();
+                onSave(newValue);
+                await _updateField(firestoreKey, newValue);
                 Navigator.pop(context);
               }
             },
@@ -73,79 +125,55 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
       ),
     );
   }
-
-  // Birthdate picker
-  void _pickBirthDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000, 1, 1),
-      firstDate: DateTime(1935),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      final now = DateTime.now();
-      int calculatedAge = now.year - picked.year;
-      if (now.month < picked.month ||
-          (now.month == picked.month && now.day < picked.day)) {
-        calculatedAge--;
-      }
-      String two(int n) => n.toString().padLeft(2, '0');
-      final formatted = '${picked.year}-${two(picked.month)}-${two(picked.day)}';
-      setState(() {
-        birthDateString = formatted;
-        age = "$calculatedAge Years";
-      });
-    }
-  }
-
+//Ui of Profile doc
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button
+              // 🔙 Back Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios,
-                          color: AppColors.kTextColor),
-                    ),
-                  ],
+                padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: AppColors.kTextColor),
                 ),
               ),
 
-              // Title + Avatar
+              // 👤 Title + Avatar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 5),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
                       "My Profile",
                       style: TextStyle(
-                        fontSize: 35,
+                        fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: AppColors.kTextColor,
                       ),
                     ),
                     CircleAvatar(
                       radius: 45,
-                      backgroundImage: AssetImage('assets/images/pfp.png'),
+                      backgroundImage:
+                      AssetImage('assets/images/pfp.png'),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Info card
+              // 🧾 Profile Info
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 padding: const EdgeInsets.symmetric(vertical: 8),
@@ -154,53 +182,59 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
+                      color: Colors.grey.withOpacity(0.4),
                       spreadRadius: 2,
                       blurRadius: 6,
-                      offset: const Offset(0, 5),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: Column(
                   children: [
                     ProfileRow(
-                      title: "Username",
-                      value: username,
+                      title: "First Name",
+                      value: firstname,
                       onTap: () => _editField(
-                          "Username", username, (val) => setState(() => username = val)),
+                        "First Name",
+                        "firstName",
+                        firstname,
+                            (val) => setState(() => firstname = val),
+                      ),
                     ),
                     ProfileRow(
-                      title: "Email",
-                      value: email,
+                      title: "Last Name",
+                      value: lastname,
                       onTap: () => _editField(
-                          "Email", email, (val) => setState(() => email = val)),
+                        "Last Name",
+                        "lastName",
+                        lastname,
+                            (val) => setState(() => lastname = val),
+                      ),
                     ),
                     ProfileRow(
-                      title: "Birth Date",
-                      value: birthDateString ?? "Select birth date",
-                      onTap: _pickBirthDate,
-                    ),
-                    ProfileRow(
-                      title: "Age",
-                      value: age,
-                      onTap: _pickBirthDate,
-                    ),
-                    ProfileRow(
-                      title: "Phone number",
-                      value: phone,
+                      title: "Gender",
+                      value: gender,
                       onTap: () => _editField(
-                          "Phone number", phone, (val) => setState(() => phone = val)),
+                        "Gender",
+                        "gender",
+                        gender,
+                            (val) => setState(() => gender = val),
+                      ),
                     ),
                     ProfileRow(
-                      title: "Address",
-                      value: address,
+                      title: "Phone Number",
+                      value: phoneNumber,
                       onTap: () => _editField(
-                          "Address", address, (val) => setState(() => address = val)),
+                        "Phone Number",
+                        "phoneNumber",
+                        phoneNumber,
+                            (val) => setState(() => phoneNumber = val),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 30),
             ],
           ),
         ),

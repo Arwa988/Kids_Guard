@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
@@ -13,6 +12,7 @@ class SignUpScreen extends StatefulWidget {
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
+
 // Signup Backend
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -22,7 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _hoverLogin = false;
 
   late String userRole;
-// set Guardian Signup
+
+  // set Guardian Signup
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -30,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     userRole = args?['role'] ?? 'guardian';
   }
 
-  //  Email Sign-Up (Create Account)
+  // Normal Email Sign-Up (Create Account)
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -42,13 +43,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         final user = userCredential.user;
         if (user == null) return;
-
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'userId': user.uid,
-          'email': emailC.text.trim(),
-          'role': userRole,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
 
         if (!user.emailVerified) {
           await user.sendEmailVerification();
@@ -62,6 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         );
 
+        // Redirect based on role
         if (userRole == 'guardian') {
           Navigator.pushReplacementNamed(context, '/child_details');
         } else if (userRole == 'doctor') {
@@ -92,8 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
-      // Force account chooser each time to show account options
-      await googleSignIn.signOut();
+      await googleSignIn.signOut(); // Force account chooser each time
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return null;
@@ -113,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  //  Wrapper for Google Sign-Up
+  // Google Sign-Up
   Future<void> _signUpWithGoogle() async {
     try {
       final userCredential = await _signInWithGoogle();
@@ -121,20 +115,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       final user = userCredential.user;
       if (user == null) return;
-
-      final userDoc =
-      FirebaseFirestore.instance.collection('users').doc(user.uid);
-      final snapshot = await userDoc.get();
-
-      // Create user doc if not exists
-      if (!snapshot.exists) {
-        await userDoc.set({
-          'userId': user.uid,
-          'email': user.email,
-          'role': userRole,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signed up successfully with Google 🎉')),
@@ -149,7 +129,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _showError("Google Sign-Up failed: $e");
     }
   }
-// Sign up UI
+
+  // Sign up UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 18),
 
-                    // ✅ Regular sign-up button
+                    // Regular sign-up button
                     SizedBox(
                       width: double.infinity,
                       height: 52,

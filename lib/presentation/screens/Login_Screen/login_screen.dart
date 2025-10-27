@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(context, '/home_screen');
       } on FirebaseAuthException catch (e) {
         String message = '';
+        // problem Cases
         if (e.code == 'user-not-found') {
           message = 'No account found for this email.';
         } else if (e.code == 'wrong-password') {
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Helper for SnackBar messages
+  // SnackBar messages
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }

@@ -13,7 +13,8 @@ class ChildDetailsScreen extends StatefulWidget {
   @override
   State<ChildDetailsScreen> createState() => _ChildDetailsScreenState();
 }
-//Child Details Backend
+
+// Backend of Child Details
 class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final nameC = TextEditingController();
@@ -29,6 +30,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
   bool _isLoading = false;
 
+  // Save child + guardian data to Firestore
   Future<void> _saveChildDetails() async {
     try {
       setState(() => _isLoading = true);
@@ -42,7 +44,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
       final firestore = FirebaseFirestore.instance;
 
-      // Save child details in the "children" collection
+      //  Save child details in the "children" collection
       final docRef = await firestore.collection('children').add({
         'userId': user.uid,
         'name': nameC.text.trim(),
@@ -53,26 +55,27 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'surgery': selectedSurgery,
         'allergy': selectedAllergy,
         'diseaseType': selectedDiseaseType,
-        'createdAt': FieldValue.serverTimestamp(),
+
       });
 
-      // Save phone number in "guardian" collection
+      // Merge guardian info (email + phone) instead of overwriting
       await firestore.collection('guardian').doc(user.uid).set({
         'userId': user.uid,
+        'email': user.email,
         'phone': phoneC.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true)); // Merge = don’t delete old fields
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Child and guardian details saved successfully')),
+            content: Text('Child and guardian details saved successfully ✅')),
       );
 
-      // Navigate to ChooseDoctorScreen with childId
+      //  Navigate to ChooseDoctorScreen with childId
       Navigator.pushNamed(
         context,
         ChooseDoctorScreen.routname,
-        arguments: {'childId': docRef.id}, //  pass childId here
+        arguments: {'childId': docRef.id},
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +85,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
       setState(() => _isLoading = false);
     }
   }
-// Child Details UI
+
+  // UI Child Details
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +127,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 4),
+
+                        // Child Name
                         CustomTextField(
                           controller: nameC,
                           hintText: 'Name',
@@ -132,7 +138,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                               ? 'Enter full name'
                               : null,
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
+
+                        // Phone and Birth Date
                         Row(
                           children: [
                             Expanded(
@@ -173,8 +181,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   child: CustomTextField(
                                     controller: birthC,
                                     hintText: 'Birth Date',
-                                    validator: (v) => (v == null ||
-                                        v.trim().isEmpty)
+                                    validator: (v) =>
+                                    (v == null || v.trim().isEmpty)
                                         ? 'Enter birth date'
                                         : null,
                                   ),
@@ -183,12 +191,16 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
+
+                        // Address
                         CustomTextField(
                           controller: addressC,
                           hintText: 'Address',
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
+
+                        // Gender and Weight
                         Row(
                           children: [
                             Expanded(
@@ -206,11 +218,13 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   DropdownMenuItem(
                                       value: 'Male',
                                       child: Text('Male',
-                                          style: TextStyle(color: Colors.black))),
+                                          style:
+                                          TextStyle(color: Colors.black))),
                                   DropdownMenuItem(
                                       value: 'Female',
                                       child: Text('Female',
-                                          style: TextStyle(color: Colors.black))),
+                                          style:
+                                          TextStyle(color: Colors.black))),
                                 ],
                                 onChanged: (v) =>
                                     setState(() => selectedGender = v),
@@ -218,7 +232,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                 v == null ? 'Select gender' : null,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 6),
                             Expanded(
                               child: CustomTextField(
                                 controller: weightC,
@@ -228,7 +242,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
+
+                        // Surgery
                         DropdownButtonFormField<String>(
                           value: selectedSurgery,
                           decoration: InputDecoration(
@@ -240,13 +256,21 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             ),
                           ),
                           items: const [
-                            DropdownMenuItem(value: 'Yes', child: Text('Yes', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'No', child: Text('No', style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Yes',
+                                child: Text('Yes',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'No',
+                                child: Text('No',
+                                    style: TextStyle(color: Colors.black))),
                           ],
                           onChanged: (v) => setState(() => selectedSurgery = v),
                           validator: (v) => v == null ? 'Select surgery' : null,
                         ),
                         const SizedBox(height: 5),
+
+                        // Allergy
                         DropdownButtonFormField<String>(
                           value: selectedAllergy,
                           decoration: InputDecoration(
@@ -258,19 +282,45 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             ),
                           ),
                           items: const [
-                            DropdownMenuItem(value: 'None', child: Text('None', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'I Don\'t Know', child: Text('I Don\'t Know', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Drug Allergies', child: Text('Drug Allergies', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Food Allergies', child: Text('Food Allergies', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Environmental Allergies', child: Text('Environmental Allergies', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Insect Allergies', child: Text('Insect Allergies', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Other', child: Text('Other', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'More Than 1 Type of Allergies', child: Text('More Than 1 Type of Allergies', style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'None',
+                                child: Text('None',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'I Don\'t Know',
+                                child: Text('I Don\'t Know',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Drug Allergies',
+                                child: Text('Drug Allergies',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Food Allergies',
+                                child: Text('Food Allergies',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Environmental Allergies',
+                                child: Text('Environmental Allergies',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Insect Allergies',
+                                child: Text('Insect Allergies',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Other',
+                                child: Text('Other',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'More Than 1 Type of Allergies',
+                                child: Text('More Than 1 Type of Allergies',
+                                    style: TextStyle(color: Colors.black))),
                           ],
                           onChanged: (v) => setState(() => selectedAllergy = v),
                           validator: (v) => v == null ? 'Select allergy' : null,
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 4),
+
+                        // Disease Type
                         DropdownButtonFormField<String>(
                           value: selectedDiseaseType,
                           decoration: InputDecoration(
@@ -282,13 +332,23 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             ),
                           ),
                           items: const [
-                            DropdownMenuItem(value: 'Cardiac Arrhythmia', child: Text('Cardiac Arrhythmia', style: TextStyle(color: Colors.black))),
-                            DropdownMenuItem(value: 'Cyanotic Congenital', child: Text('Cyanotic Congenital', style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Cardiac Arrhythmia',
+                                child: Text('Cardiac Arrhythmia',
+                                    style: TextStyle(color: Colors.black))),
+                            DropdownMenuItem(
+                                value: 'Cyanotic Congenital',
+                                child: Text('Cyanotic Congenital',
+                                    style: TextStyle(color: Colors.black))),
                           ],
-                          onChanged: (v) => setState(() => selectedDiseaseType = v),
-                          validator: (v) => v == null ? 'Select disease type' : null,
+                          onChanged: (v) =>
+                              setState(() => selectedDiseaseType = v),
+                          validator: (v) =>
+                          v == null ? 'Select disease type' : null,
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
+
+                        // Next Button
                         Align(
                           alignment: Alignment.centerRight,
                           child: SizedBox(
@@ -299,7 +359,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   ? null
                                   : () {
                                 if (_formKey.currentState!.validate()) {
-                                  _saveChildDetails(); // Save data in firestore fn
+                                  _saveChildDetails();
                                 }
                               },
                               style: ElevatedButton.styleFrom(

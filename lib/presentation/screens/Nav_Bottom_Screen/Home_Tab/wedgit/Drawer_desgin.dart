@@ -1,10 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/wedgit/drawer_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DrawerDesgin extends StatelessWidget {
   const DrawerDesgin({super.key});
 
+  //  Drawer Backend (fetch name from Firebase)
+  Future<String> _getUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return "Unknown User";
+
+    final firestore = FirebaseFirestore.instance;
+
+    // Try to find in 'children' collection first
+    final childQuery = await firestore
+        .collection('children')
+        .where('userId', isEqualTo: user.uid)
+        .limit(1)
+        .get();
+
+    if (childQuery.docs.isNotEmpty) {
+      final childData = childQuery.docs.first.data();
+      if (childData['name'] != null) {
+        return childData['name'];
+      }
+    }
+
+    // If not found, try in 'guardian' collection
+    final guardianDoc =
+    await firestore.collection('guardian').doc(user.uid).get();
+    if (guardianDoc.exists && guardianDoc.data()?['username'] != null) {
+      return guardianDoc['username'];
+    }
+
+    // Default fallback
+    return "Unknown User";
+  }
+
+  //  Drawer UI
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -19,122 +54,142 @@ class DrawerDesgin extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-
         child: Padding(
-          padding: EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(18.0),
           child: Column(
             children: [
-              SizedBox(height: 50),
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage("assets/images/hana.png"),
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    "Hana Walid",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontSize: 33,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 220, 146, 146),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 50),
+               // Backend
+              ///Show child or guardian name dynamically
+              FutureBuilder<String>(
+                future: _getUserName(),
+                builder: (context, snapshot) {
+                  String displayName = "Loading...";
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    displayName = "Loading...";
+                  } else if (snapshot.hasError) {
+                    displayName = "Error";
+                  } else if (snapshot.hasData) {
+                    displayName = snapshot.data!;
+                  }
+
+                  return Row(
+                    children: [
+                      const CircleAvatar(
+                        backgroundImage: AssetImage("assets/images/hana.png"),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Text(
+                          displayName,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 220, 146, 146),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
-              SizedBox(height: 50),
+
+              const SizedBox(height: 50),
+
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.person),
+                    child: const Icon(Icons.person),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Profile"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Profile"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.language),
+                    child: const Icon(Icons.language),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Language"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Language"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.notifications_rounded),
+                    child: const Icon(Icons.notifications_rounded),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Notification"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Notification"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.palette_sharp),
+                    child: const Icon(Icons.palette_sharp),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Color Theme"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Color Theme"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.star_purple500_sharp),
+                    child: const Icon(Icons.star_purple500_sharp),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Rate Us"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Rate Us"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.people),
+                    child: const Icon(Icons.people),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Share with a friend"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Share with a friend"),
                 ],
               ),
-              SizedBox(height: 16),
-              Image(image: AssetImage("assets/images/Line.png")),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              const Image(image: AssetImage("assets/images/Line.png")),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
-                    child: Icon(Icons.login_outlined),
+                    child: const Icon(Icons.login_outlined),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.pinkAccent.value),
                   ),
-                  SizedBox(width: 24),
-                  DrawerItem(text: "Logout"),
+                  const SizedBox(width: 24),
+                  const DrawerItem(text: "Logout"),
                 ],
               ),
             ],

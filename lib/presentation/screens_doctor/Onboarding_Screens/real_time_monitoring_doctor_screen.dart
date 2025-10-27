@@ -35,8 +35,13 @@ class RealTimeDoctor extends StatelessWidget {
                 fit: BoxFit.fitWidth,
               ),
             ),
-            child: RealTimeAnimation(),
-          ),
+
+              child: Transform.scale(
+                scale: 1.2,
+                child: RealTimeAnimation(),
+              ),
+            ),
+
           SizedBox(height: 8),
           Text(
             "Real-Time Monitoring",
