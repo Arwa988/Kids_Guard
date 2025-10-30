@@ -3,17 +3,58 @@ import 'package:kids_guard/core/constants/app_colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import '../profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DrawerItem extends StatelessWidget {
+class DrawerItem extends StatefulWidget {
   final String text;
   const DrawerItem({required this.text, super.key});
 
   @override
+  State<DrawerItem> createState() => _DrawerItemState();
+}
+
+class _DrawerItemState extends State<DrawerItem> {
+  String? selectedLanguage;
+  String? selectedTheme;
+  String? selectedNotification;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedLanguage = prefs.getString('language') ?? 'English';
+      selectedTheme = prefs.getString('theme') ?? 'Light Mode';
+      selectedNotification = prefs.getString('notification') ?? 'Enable';
+    });
+  }
+
+  Future<void> _savePreference(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
+  }
+
+  void _updatePreference(String key, String value) {
+    _savePreference(key, value);
+    setState(() {
+      if (key == 'language') selectedLanguage = value;
+      if (key == 'theme') selectedTheme = value;
+      if (key == 'notification') selectedNotification = value;
+    });
+    Navigator.pop(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final text = widget.text;
+
     return GestureDetector(
       onTap: () {
         if (text == "Profile") {
-          // Close drawer before navigating
           Navigator.pop(context);
           Navigator.push(
             context,
@@ -53,51 +94,45 @@ class DrawerItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    // 💬 LANGUAGE OPTIONS
+                    // 🌍 LANGUAGE OPTIONS
                     if (text == "Language") ...[
-                      ListTile(
-                        title: const Text('English'),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                      _buildOptionTile(
+                        title: "English",
+                        keyName: "language",
+                        selectedValue: selectedLanguage,
                       ),
-                      ListTile(
-                        title: const Text('Arabic'),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                      _buildOptionTile(
+                        title: "Arabic",
+                        keyName: "language",
+                        selectedValue: selectedLanguage,
                       ),
                     ]
 
                     // 🔔 NOTIFICATION OPTIONS
                     else if (text == "Notification") ...[
-                      ListTile(
-                        title: const Text('Turn On'),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                      _buildOptionTile(
+                        title: "Enable",
+                        keyName: "notification",
+                        selectedValue: selectedNotification,
                       ),
-                      ListTile(
-                        title: const Text('None'),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                      _buildOptionTile(
+                        title: "Turn Off",
+                        keyName: "notification",
+                        selectedValue: selectedNotification,
                       ),
                     ]
 
                     // 🎨 THEME OPTIONS
                     else if (text == "Color Theme") ...[
-                        ListTile(
-                          title: const Text('Light Mode'),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                        _buildOptionTile(
+                          title: "Light Mode",
+                          keyName: "theme",
+                          selectedValue: selectedTheme,
                         ),
-                        ListTile(
-                          title: const Text('Dark Mode'),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                        _buildOptionTile(
+                          title: "Dark Mode",
+                          keyName: "theme",
+                          selectedValue: selectedTheme,
                         ),
                       ]
 
@@ -111,10 +146,8 @@ class DrawerItem extends StatelessWidget {
                             ListTile(
                               title: const Text('Logout'),
                               onTap: () async {
-                                Navigator.pop(context); // close bottom sheet
+                                Navigator.pop(context);
                                 await FirebaseAuth.instance.signOut();
-
-                                // navigate to login and clear navigation history
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -148,6 +181,28 @@ class DrawerItem extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildOptionTile({
+    required String title,
+    required String keyName,
+    required String? selectedValue,
+  }) {
+    final bool isSelected = selectedValue == title;
+
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isSelected ? AppColors.primaryBlue : Colors.black87,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: AppColors.primaryBlue)
+          : null,
+      onTap: () => _updatePreference(keyName, title),
+    );
+  }
 }
 
 class _RatingStars extends StatefulWidget {
@@ -179,7 +234,8 @@ class _RatingStarsState extends State<_RatingStars> {
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Thank you for rating us ${index + 1} stars!'),
+                    content:
+                    Text('Thank you for rating us ${index + 1} stars!'),
                   ),
                 );
               },

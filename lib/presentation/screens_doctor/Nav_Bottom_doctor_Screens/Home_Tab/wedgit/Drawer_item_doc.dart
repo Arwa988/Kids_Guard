@@ -3,17 +3,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/profile_screen_doc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-class DrawerItemDoc extends StatelessWidget {
+
+class DrawerItemDoc extends StatefulWidget {
   final String text;
   const DrawerItemDoc({required this.text, super.key});
 
   @override
+  State<DrawerItemDoc> createState() => _DrawerItemDocState();
+}
+
+class _DrawerItemDocState extends State<DrawerItemDoc> {
+  String _selectedLanguage = 'English';
+  String _selectedNotification = 'Enable';
+  String _selectedTheme = 'Light Mode';
+
+  @override
   Widget build(BuildContext context) {
+    final text = widget.text;
+
     return GestureDetector(
       onTap: () {
         if (text == "Profile") {
-          // Close drawer before navigating
           Navigator.pop(context);
           Navigator.push(
             context,
@@ -57,13 +67,21 @@ class DrawerItemDoc extends StatelessWidget {
                     if (text == "Language") ...[
                       ListTile(
                         title: const Text('English'),
+                        trailing: _selectedLanguage == 'English'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
                         onTap: () {
+                          setState(() => _selectedLanguage = 'English');
                           Navigator.pop(context);
                         },
                       ),
                       ListTile(
                         title: const Text('Arabic'),
+                        trailing: _selectedLanguage == 'Arabic'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
                         onTap: () {
+                          setState(() => _selectedLanguage = 'Arabic');
                           Navigator.pop(context);
                         },
                       ),
@@ -72,14 +90,22 @@ class DrawerItemDoc extends StatelessWidget {
                     // 🔔 NOTIFICATION OPTIONS
                     else if (text == "Notification") ...[
                       ListTile(
-                        title: const Text('Turn On'),
+                        title: const Text('Enable'),
+                        trailing: _selectedNotification == 'Enable'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
                         onTap: () {
+                          setState(() => _selectedNotification = 'Enable');
                           Navigator.pop(context);
                         },
                       ),
                       ListTile(
-                        title: const Text('None'),
+                        title: const Text('Turn Off'),
+                        trailing: _selectedNotification == 'Turn Off'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
                         onTap: () {
+                          setState(() => _selectedNotification = 'Turn Off');
                           Navigator.pop(context);
                         },
                       ),
@@ -89,13 +115,21 @@ class DrawerItemDoc extends StatelessWidget {
                     else if (text == "Color Theme") ...[
                         ListTile(
                           title: const Text('Light Mode'),
+                          trailing: _selectedTheme == 'Light Mode'
+                              ? const Icon(Icons.check, color: Colors.blue)
+                              : null,
                           onTap: () {
+                            setState(() => _selectedTheme = 'Light Mode');
                             Navigator.pop(context);
                           },
                         ),
                         ListTile(
                           title: const Text('Dark Mode'),
+                          trailing: _selectedTheme == 'Dark Mode'
+                              ? const Icon(Icons.check, color: Colors.blue)
+                              : null,
                           onTap: () {
+                            setState(() => _selectedTheme = 'Dark Mode');
                             Navigator.pop(context);
                           },
                         ),
@@ -111,14 +145,13 @@ class DrawerItemDoc extends StatelessWidget {
                             ListTile(
                               title: const Text('Logout'),
                               onTap: () async {
-                                Navigator.pop(context); // close bottom sheet
+                                Navigator.pop(context);
                                 await FirebaseAuth.instance.signOut();
 
-                                // navigate to login and clear navigation history
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>  LoginScreenDoctor(),
+                                    builder: (context) => LoginScreenDoctor(),
                                   ),
                                       (route) => false,
                                 );

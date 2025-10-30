@@ -76,6 +76,7 @@ class DrawerDesgin extends StatelessWidget {
                   return Row(
                     children: [
                       const CircleAvatar(
+                        radius: 30,
                         backgroundImage: AssetImage("assets/images/hana.png"),
                       ),
                       const SizedBox(width: 20),
