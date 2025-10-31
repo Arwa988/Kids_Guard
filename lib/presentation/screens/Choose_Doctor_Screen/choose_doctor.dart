@@ -10,6 +10,7 @@ class ChooseDoctorScreen extends StatefulWidget {
   @override
   State<ChooseDoctorScreen> createState() => _ChooseDoctorScreenState();
 }
+
 // Choose Doctor Backend
 class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -64,11 +65,11 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                         Column(
                           children: [
                             _buildDoctorOption(
-                                'Dr. Sara Mahmoud', 'assets/images/pfp.png'),
+                                'Dr. Sara Mahmoud', 'assets/images/pfp.png', 0),
                             _buildDoctorOption(
-                                'Dr. Ahmed El-Sayed', 'assets/images/pfp.png'),
+                                'Dr. Ahmed El-Sayed', 'assets/images/pfp.png', 1),
                             _buildDoctorOption(
-                                'Dr. Leila Hassan', 'assets/images/pfp.png'),
+                                'Dr. Leila Hassan', 'assets/images/pfp.png', 2),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -78,14 +79,12 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                             SizedBox(
                               width: 100,
                               height: 44,
-                              // add the choosed doctor in the child document
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (childId.isEmpty) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                        content: Text(
-                                            'Child ID is invalid!')));
+                                            content: Text('Child ID is invalid!')));
                                     return;
                                   }
 
@@ -99,21 +98,20 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
 
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Doctor selected successfully!')));
+                                              content: Text(
+                                                  'Doctor selected successfully!')));
 
-                                      Navigator.pushNamed(
-                                          context, '/add_photo');
+                                      Navigator.pushNamed(context, '/add_photo');
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                          content: Text('Error: $e')));
+                                              content: Text('Error: $e')));
                                     }
                                   } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                        content: Text(
-                                            'Please select a doctor first!')));
+                                            content: Text(
+                                                'Please select a doctor first!')));
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -145,8 +143,24 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
     );
   }
 
-  Widget _buildDoctorOption(String name, String imagePath) {
+  Widget _buildDoctorOption(String name, String imagePath, int index) {
     final bool isSelected = selectedDoctor == name;
+
+    // تحديد لون كل دكتور عند الاختيار
+    Color selectedColor;
+    switch (index) {
+      case 0:
+        selectedColor = const Color(0xFFFFC0CB); // Baby Pink
+        break;
+      case 1:
+        selectedColor = const Color(0xFFADD8E6); // Baby Blue
+        break;
+      case 2:
+        selectedColor = const Color(0xFFE6E6FA); // Soft Lavender
+        break;
+      default:
+        selectedColor = Colors.white;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -154,20 +168,22 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
           selectedDoctor = name;
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isSelected ? selectedColor : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.shade300,
+            color: isSelected ? selectedColor.withOpacity(0.8) : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             if (isSelected)
               BoxShadow(
-                color: AppColors.primaryBlue.withAlpha(38),
+                color: selectedColor.withAlpha(60),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -183,16 +199,34 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
             Expanded(
               child: Text(
                 name,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? AppColors.primaryBlue : Colors.black87,
+                  color: Colors.black87,
                 ),
               ),
             ),
             if (isSelected)
-              const Icon(Icons.check_circle,
-                  color: Colors.purpleAccent, size: 24),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(0.7),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(25),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(2),
+                  child: Icon(
+                    Icons.check_circle,
+                    color: Colors.greenAccent,
+                    size: 26,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
