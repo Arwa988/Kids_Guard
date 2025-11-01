@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
@@ -55,7 +55,6 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'surgery': selectedSurgery,
         'allergy': selectedAllergy,
         'diseaseType': selectedDiseaseType,
-
       });
 
       // Merge guardian info (email + phone) instead of overwriting
@@ -64,7 +63,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'email': user.email,
         'phone': phoneC.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true)); // Merge = don’t delete old fields
+      }, SetOptions(merge: true));
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -150,10 +149,10 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                 keyboardType: TextInputType.number,
                                 validator: (v) {
                                   if (v == null || v.trim().isEmpty) {
-                                    return 'Enter phone number';
+                                    return 'Please enter phone number';
                                   }
-                                  if (!RegExp(r'^\d+$').hasMatch(v)) {
-                                    return 'Only numbers';
+                                  if (!RegExp(r'^\d{11}$').hasMatch(v)) {
+                                    return 'Phone number must be 11 digits';
                                   }
                                   return null;
                                 },
@@ -166,14 +165,14 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   FocusScope.of(context).unfocus();
                                   DateTime? picked = await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime(2020, 1, 1),
-                                    firstDate: DateTime(2005),
-                                    lastDate: DateTime.now(),
+                                    initialDate: DateTime(2015, 1, 1),
+                                    firstDate: DateTime(2010, 1, 1),
+                                    lastDate: DateTime(2025, 12, 31),
                                   );
                                   if (picked != null) {
                                     setState(() {
                                       birthC.text =
-                                      "${picked.day}/${picked.month}/${picked.year}";
+                                          "${picked.day}/${picked.month}/${picked.year}";
                                     });
                                   }
                                 },

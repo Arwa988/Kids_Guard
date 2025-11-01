@@ -5,13 +5,17 @@ import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/guardin_se
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/real_time_monitoring_screen.dart';
 
-class GuardinScreen extends StatelessWidget {
+class GuardinScreen extends StatefulWidget {
   static const String routname = "/select_guardin";
 
-  final GlobalKey<GuardinSelectState> guardianKey =
-  GlobalKey<GuardinSelectState>();
+  const GuardinScreen({super.key});
 
-  GuardinScreen({super.key});
+  @override
+  State<GuardinScreen> createState() => _GuardinScreenState();
+}
+
+class _GuardinScreenState extends State<GuardinScreen> {
+  int? selectedIndex; // لا يوجد اختيار افتراضي
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +48,24 @@ class GuardinScreen extends StatelessWidget {
                     Text(
                       "Pick One",
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontFamily: "Lexend",
-                        color: AppColors.splashScreenLinearBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontFamily: "Lexend",
+                            color: AppColors.splashScreenLinearBlue,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GuardinSelect(key: guardianKey),
+                    _buildOption(
+                      index: 0,
+                      label: "Guardian",
+                      icon: Icons.family_restroom,
+                      selectedColor: const Color(0xFFFFC0CB), // baby pink
+                    ),
+                    const SizedBox(height: 10),
+                    _buildOption(
+                      index: 1,
+                      label: "Doctor",
+                      icon: Icons.medical_information,
+                      selectedColor: const Color(0xFFADD8E6), // baby blue
                     ),
                   ],
                 ),
@@ -68,21 +81,10 @@ class GuardinScreen extends StatelessWidget {
                 height: 49,
                 child: ElevatedButton(
                   onPressed: () {
-                    final selectedIndex =
-                        guardianKey.currentState?.selectedIndex;
-
                     if (selectedIndex == 0) {
-                      // 👩‍👧 Guardian / Mother → go to Guardian Onboarding
-                      Navigator.pushNamed(
-                        context,
-                        RealTime.routname,
-                      );
+                      Navigator.pushNamed(context, RealTime.routname);
                     } else if (selectedIndex == 1) {
-                      // 👩‍⚕️ Doctor → go to Doctor Onboarding
-                      Navigator.pushNamed(
-                        context,
-                        RealTimeDoctor.routname,
-                      );
+                      Navigator.pushNamed(context, RealTimeDoctor.routname);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -110,6 +112,77 @@ class GuardinScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildOption({
+    required int index,
+    required String label,
+    required IconData icon,
+    required Color selectedColor,
+  }) {
+    final bool isSelected = selectedIndex == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: isSelected ? selectedColor.withOpacity(0.3) : Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isSelected ? selectedColor : Colors.grey.shade300,
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const SizedBox(width: 15),
+                Icon(
+                  icon,
+                  color: isSelected ? selectedColor : Colors.grey.shade600,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: "Lexend",
+                    color: isSelected ? selectedColor : Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              margin: const EdgeInsets.only(right: 12),
+              child: isSelected
+                  ? Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: selectedColor.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: selectedColor, width: 1.2),
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        color: selectedColor,
+                        size: 14,
+                      ),
+                    )
+                  : const SizedBox(width: 22, height: 22),
+            ),
+          ],
+        ),
       ),
     );
   }
