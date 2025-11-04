@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kids_guard/core/constants/app_colors.dart';
 
+// ignore: must_be_immutable
 class DrawerItem extends StatelessWidget {
   String text;
 

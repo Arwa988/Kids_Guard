@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:kids_guard/core/constants/App_Colors.dart';
-import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
-import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
+
+
+import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
+
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
   static const String routname = "/signup_screen";
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
-
+// Signup Backend
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
@@ -18,16 +25,135 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final confirmC = TextEditingController();
   bool _hoverLogin = false;
 
-  void _submit() {
+  late String userRole;
+// set Guardian Signup
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    userRole = args?['role'] ?? 'guardian';
+  }
+
+  //  Email Sign-Up (Create Account)
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
-      // send back the email & password to login screen
-      Navigator.pop(context, {
-        'email': emailC.text.trim(),
-        'password': passwordC.text,
-      });
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: emailC.text.trim(),
+          password: passwordC.text.trim(),
+        );
+
+        final user = userCredential.user;
+        if (user == null) return;
+
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'userId': user.uid,
+          'email': emailC.text.trim(),
+          'role': userRole,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        if (!user.emailVerified) {
+          await user.sendEmailVerification();
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Account created successfully 🎉. Please verify your email.',
+            ),
+          ),
+        );
+
+        if (userRole == 'guardian') {
+          Navigator.pushReplacementNamed(context, '/child_details');
+        } else if (userRole == 'doctor') {
+          Navigator.pushReplacementNamed(context, '/create_account');
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          _showError('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          _showError('The account already exists for that email.');
+        }
+      } catch (e) {
+        _showError('Error: $e');
+      }
     }
   }
 
+  //  Show snackbar error
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  // Google Sign-In (Android only)
+  Future<UserCredential?> _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId:
+        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
+      );
+
+      // Force account chooser each time to show account options
+      await googleSignIn.signOut();
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      _showError("Google sign-in failed: $e");
+      return null;
+    }
+  }
+
+  //  Wrapper for Google Sign-Up
+  Future<void> _signUpWithGoogle() async {
+    try {
+      final userCredential = await _signInWithGoogle();
+      if (userCredential == null) return;
+
+      final user = userCredential.user;
+      if (user == null) return;
+
+      final userDoc =
+      FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final snapshot = await userDoc.get();
+
+      // Create user doc if not exists
+      if (!snapshot.exists) {
+        await userDoc.set({
+          'userId': user.uid,
+          'email': user.email,
+          'role': userRole,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
+      );
+
+      if (userRole == 'guardian') {
+        Navigator.pushReplacementNamed(context, '/child_details');
+      } else if (userRole == 'doctor') {
+        Navigator.pushReplacementNamed(context, '/create_account');
+      }
+    } catch (e) {
+      _showError("Google Sign-Up failed: $e");
+    }
+  }
+// Sign up UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,14 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               // Logo only
-              IconButton(
-                onPressed: () {
-                  Navigator.of(
-                    context,
-                  ).pushReplacementNamed(HomeScreen.routname);
-                },
-                icon: Icon(Icons.g_mobiledata),
-              ),
+              
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -53,9 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-
               const SizedBox(height: 36),
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -75,8 +192,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Password',
                       isPassword: true,
                       validator: (v) {
-                        if (v == null || v.length < 6)
+                        if (v == null || v.length < 6) {
                           return 'At least 6 characters';
+                        }
                         return null;
                       },
                     ),
@@ -85,11 +203,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Confirm Password',
                       isPassword: true,
                       validator: (v) =>
-                          v != passwordC.text ? 'Passwords do not match' : null,
+                      v != passwordC.text ? 'Passwords do not match' : null,
                     ),
-
                     const SizedBox(height: 18),
 
+                    // ✅ Regular sign-up button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -115,26 +233,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 14),
 
+                    // ✅ Google Sign-Up Button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateAccountScreen(),
-                            ),
-                          );
-                        },
-
+                        onPressed: _signUpWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 20,
                         ),
-                        label: Text(
-                          'Google',
-                          style: TextStyle(fontFamily: "Lexend"),
+                        label: const Text(
+                          'Sign up with Google',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Lexend",
+                          ),
                         ),
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -146,13 +260,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
 
                     MouseRegion(
                       onEnter: (_) => setState(() => _hoverLogin = true),
                       onExit: (_) => setState(() => _hoverLogin = false),
                       child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          LoginScreen.routname,
+                        ),
                         child: Text(
                           'Already have an account? Log In',
                           style: TextStyle(
@@ -160,6 +277,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ? AppColors.kPrimaryColor
                                 : AppColors.kTextColor,
                             fontWeight: FontWeight.w500,
+                            fontFamily: "Lexend",
                           ),
                         ),
                       ),

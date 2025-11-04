@@ -30,8 +30,10 @@ class RealTimeDoctor extends StatelessWidget {
           ),
 
           Container(
-            width: 450,
-            height: 450,
+
+
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/blueblob.png"),

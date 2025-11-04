@@ -18,17 +18,16 @@ class HomeScreenModal extends Cubit<HomeSceenState> {
     ScheduleTab(),
   ];
 
- void changeIndex(int index) {
-  // غيّري المؤشر أولاً
-  selectedIndex = index;
+  void changeIndex(int index) {
+    // غيّري المؤشر أولاً
+    selectedIndex = index;
 
-  // فعّلي حالة الـ Loading
-  emit(HomescreenLoadingstate());
+    // فعّلي حالة الـ Loading
+    emit(HomescreenLoadingstate());
 
-  // بعد شوية (مثلاً 800ms)، اعرض الشاشة الجديدة
-  Future.delayed(const Duration(milliseconds: 800), () {
-    emit(ChangeSelectedIndexState());
-  });
-}
-
+    // بعد شوية (مثلاً 800ms)، اعرض الشاشة الجديدة
+    Future.delayed(const Duration(milliseconds: 800), () {
+      emit(ChangeSelectedIndexState());
+    });
+  }
 }

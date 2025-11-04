@@ -39,6 +39,7 @@ class DrawerDesgin extends StatelessWidget {
                     child: Icon(Icons.person),
                     backgroundColor: AppColors.pink,
                     foregroundColor: Color(Colors.blueAccent.value),
+                 
                   ),
                   SizedBox(width: 24),
                   DrawerItem(text: "Profile"),

@@ -4,6 +4,7 @@ import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/wedgit/Drawer_desgin.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/cubit/Home_Screen_Cubit/home_screen_modal.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/cubit/Home_Screen_Cubit/home_screen_state.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routname = "/home_screen";
@@ -18,16 +19,25 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: AppColors.HomeScreenBg,
           drawer: DrawerDesgin(),
 
-          // ✅ Show CircularProgressIndicator when loading
+          // ✅ Show loading indicator
           body: state is HomescreenLoadingstate
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.blueAccent,
-                    strokeWidth: 4,
+              ? Center(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 105,
+                      height: 100,
+                      alignment: Alignment.center,
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: AppColors.textSecondary,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 )
               : viewModal.screens[viewModal.selectedIndex],
 
+          // ✅ Bottom Navigation Bar
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
@@ -41,7 +51,9 @@ class HomeScreen extends StatelessWidget {
               },
               selectedItemColor: AppColors.kTextColor,
               unselectedItemColor: Colors.grey,
-              selectedIconTheme: IconThemeData(color: AppColors.kTextColor),
+              selectedIconTheme: const IconThemeData(
+                color: AppColors.kTextColor,
+              ),
               unselectedIconTheme: const IconThemeData(color: Colors.grey),
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),

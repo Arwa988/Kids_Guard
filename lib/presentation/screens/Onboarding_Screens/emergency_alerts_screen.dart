@@ -47,7 +47,7 @@ class EmergencyAlerts extends StatelessWidget {
           ),
           SizedBox(height: 5),
           Text(
-            "Got Notified Instantly! if something goes \nwrong, you and your doctor will be alerted right away",
+            "Got Notified Instantly! if something goes wrong,\n you and your doctor will be alerted right away",
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),

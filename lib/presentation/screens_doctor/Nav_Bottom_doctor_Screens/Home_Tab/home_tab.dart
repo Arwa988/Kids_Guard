@@ -11,12 +11,12 @@ class HomeTabDoctor extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(), // ✅ تمرير ناعم
         child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/MotherBg.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage("assets/images/MotherBg.png"),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           child: Column(
             children: [
               // 🔹 App bar icons

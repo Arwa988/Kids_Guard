@@ -6,23 +6,19 @@ import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animat
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/home_app_bar_animation.dart';
 
 class HomeScreenTab extends StatelessWidget {
-  static const String routname = "./home_screennnn";
+  static const String routname = "./home_screen";
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/MotherBg.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 🔽 Top Row of Icons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -46,7 +42,10 @@ class HomeScreenTab extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+
+              const SizedBox(height: 25),
+
+              // 🔽 Health Overview Card
               Center(
                 child: Container(
                   width: double.infinity,
@@ -65,43 +64,48 @@ class HomeScreenTab extends StatelessWidget {
                     ],
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Image(
                         image: AssetImage("assets/images/happyheart.png"),
                         width: 100,
                         height: 100,
                       ),
-                      const SizedBox(width: 100),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Child Overall Health",
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                          ),
-                          Text(
-                            "Great!",
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ],
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Child Overall Health",
+                              style: Theme.of(context).textTheme.titleLarge!
+                                  .copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                            ),
+                            Text(
+                              "Great!",
+                              style: Theme.of(context).textTheme.titleLarge!
+                                  .copyWith(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
+
+              // 🔽 3 Options Row
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // ✅ keeps them centered
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   HomeDetector(
                     DetectorAnimation: HomeAppBarAnimation(
@@ -109,14 +113,14 @@ class HomeScreenTab extends StatelessWidget {
                     ),
                     text: "Ask The AI Guide",
                   ),
-                  const SizedBox(width: 8), // ✅ smaller space
+                  const SizedBox(width: 8),
                   HomeDetector(
                     DetectorAnimation: HomeAppBarAnimation(
                       LottiePath: "assets/lottie/doctor.json",
                     ),
                     text: "Ask The Doctor",
                   ),
-                  const SizedBox(width: 8), // ✅ smaller space
+                  const SizedBox(width: 8),
                   HomeDetector(
                     DetectorAnimation: HomeAppBarAnimation(
                       LottiePath: "assets/lottie/LocationPin.json",
@@ -125,18 +129,22 @@ class HomeScreenTab extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+
+              const SizedBox(height: 24),
+
+              // 🔽 Health Data Container
               Container(
                 width: 500,
-                height: 320,
+                height: 340,
                 decoration: BoxDecoration(
                   color: AppColors.HomeScreenBodybg,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // 🔹 Heart Beats Section
                     Container(
                       width: double.infinity,
                       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -178,21 +186,32 @@ class HomeScreenTab extends StatelessWidget {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 20),
+
+                    // 🔹 Blood Data
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        HealthBox(
-                          boxColor: AppColors.heartRed,
-                          perenctage: "100/75",
-                          symbol: "mmHg",
-                          text: "Blood Pressure",
+                        SizedBox(
+                          width: 175,
+                          height: 120,
+                          child: HealthBox(
+                            boxColor: AppColors.heartRed,
+                            perenctage: "100/75",
+                            symbol: "mmHg",
+                            text: "Blood Pressure",
+                          ),
                         ),
-                        HealthBox(
-                          boxColor: AppColors.HomeScreenBg,
-                          perenctage: "95%",
-                          symbol: "SPO2",
-                          text: "Blood Oxygen",
+                        SizedBox(
+                          width: 175,
+                          height: 120,
+                          child: HealthBox(
+                            boxColor: AppColors.HomeScreenBg,
+                            perenctage: "95%",
+                            symbol: "SPO2",
+                            text: "Blood Oxygen",
+                          ),
                         ),
                       ],
                     ),

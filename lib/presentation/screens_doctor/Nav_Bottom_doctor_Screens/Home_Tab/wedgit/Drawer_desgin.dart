@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
-import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/wedgit/drawer_item.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/wedgit/Drawer_item_doc.dart';
 
 class DrawerDesginDoctor extends StatelessWidget {
