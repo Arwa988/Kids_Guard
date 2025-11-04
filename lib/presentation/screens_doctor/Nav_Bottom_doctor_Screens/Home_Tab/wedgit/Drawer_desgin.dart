@@ -55,10 +55,10 @@ class DrawerDesginDoctor extends StatelessWidget {
               Row(
                 children: [
                   const CircleAvatar(
-                    radius: 30,
+                    radius: 40,
                     backgroundImage: AssetImage("assets/images/hana.png"),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: FutureBuilder<String>(
                       future: _getUserName(),

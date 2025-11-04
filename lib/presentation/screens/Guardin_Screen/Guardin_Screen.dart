@@ -60,7 +60,7 @@ class _GuardinScreenState extends State<GuardinScreen> {
                       icon: Icons.family_restroom,
                       selectedColor: const Color(0xFFFFC0CB), // baby pink
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     _buildOption(
                       index: 1,
                       label: "Doctor",
@@ -130,7 +130,7 @@ class _GuardinScreenState extends State<GuardinScreen> {
         });
       },
       child: Container(
-        height: 60,
+        height: 70,
         decoration: BoxDecoration(
           color: isSelected ? selectedColor.withOpacity(0.3) : Colors.white,
           borderRadius: BorderRadius.circular(15),

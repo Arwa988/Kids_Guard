@@ -76,16 +76,16 @@ class DrawerDesgin extends StatelessWidget {
                   return Row(
                     children: [
                       const CircleAvatar(
-                        radius: 30,
+                        radius: 40,
                         backgroundImage: AssetImage("assets/images/hana.png"),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           displayName,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontSize: 30,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
                             color: const Color.fromARGB(255, 220, 146, 146),
                           ),

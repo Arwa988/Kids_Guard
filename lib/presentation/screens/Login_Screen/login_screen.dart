@@ -88,9 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final user = userCredential.user;
     if (user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logged in successfully with Google 🎉')),
-      );
+
       Navigator.pushReplacementNamed(context, '/home_screen'); //go to home page
     }
   }

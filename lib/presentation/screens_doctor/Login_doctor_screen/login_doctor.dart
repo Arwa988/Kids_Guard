@@ -40,9 +40,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
         } else {
           message = 'Login failed. Please check your email and password.';
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),

@@ -45,10 +45,6 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
           await user.sendEmailVerification();
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Account created! Please verify your email.')),
-        );
 
         Navigator.pushReplacement(
           context,

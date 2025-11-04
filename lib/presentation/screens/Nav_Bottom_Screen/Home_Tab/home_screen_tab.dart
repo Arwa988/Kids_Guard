@@ -70,12 +70,18 @@ class HomeScreenTab extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Image(
-                        image: AssetImage("assets/images/happyheart.png"),
-                        width: 100,
-                        height: 100,
+                      Transform.scale(
+                        scale: 1.2, // 1.0 = normal size, 1.5 = 150% bigger
+                        child: const Image(
+                          image: AssetImage("assets/images/happyheart.png"),
+                          width: 100,
+                          height: 100,
+                        ),
                       ),
-                      const SizedBox(width: 16),
+
+
+
+                  const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -130,15 +136,23 @@ class HomeScreenTab extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 9.0),
                       child: HomeDetector(
-                        DetectorAnimation: HomeAppBarAnimation(
-                          LottiePath: "assets/lottie/doctor.json",
+                        DetectorAnimation: const Padding(
+                          padding: EdgeInsets.only(top: 6.0),
+                          child: Image(
+                            image: AssetImage("assets/images/diagnosis.png"),
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                         text: "Ask The Doctor",
                       ),
                     ),
                   ),
+
+
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -170,7 +184,9 @@ class HomeScreenTab extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                       height: 120,
                       decoration: BoxDecoration(
-                        color: AppColors.heartRed,
+                        color: const Color(0xFFFFB4B4).withOpacity(0.8),
+
+
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
@@ -214,7 +230,8 @@ class HomeScreenTab extends StatelessWidget {
                           width: 175, // 👈 reduced from full width — prevents overflow
                           height: 120,
                           child: HealthBox(
-                            boxColor: AppColors.heartRed,
+                            boxColor: const Color(0xFFF7CFD8),
+
                             perenctage: "100/75",
                             symbol: "mmHg",
                             text: "Blood Pressure",

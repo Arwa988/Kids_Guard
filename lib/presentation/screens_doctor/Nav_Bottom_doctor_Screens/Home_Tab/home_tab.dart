@@ -96,7 +96,7 @@ class HomeTabDoctor extends StatelessWidget {
                               child: Patient(
                                 text: "Unstable Patient",
                                 number: "5",
-                                bgColor: AppColors.heartRed,
+                                bgColor: const Color(0xFFF7CFD8),
                               ),
                             ),
                           ],

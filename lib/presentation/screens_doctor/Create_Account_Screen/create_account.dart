@@ -41,8 +41,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Doctor details saved successfully')));
 
       Navigator.pushReplacement(
         context,

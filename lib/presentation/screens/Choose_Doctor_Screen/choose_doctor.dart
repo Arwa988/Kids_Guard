@@ -96,10 +96,7 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                                           .doc(childId)
                                           .update({'doctor': selectedDoctor});
 
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'Doctor selected successfully!')));
+
 
                                       Navigator.pushNamed(context, '/add_photo');
                                     } catch (e) {

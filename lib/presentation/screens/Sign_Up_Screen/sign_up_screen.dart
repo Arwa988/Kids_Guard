@@ -48,13 +48,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           await user.sendEmailVerification();
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Account created successfully 🎉. Please verify your email.',
-            ),
-          ),
-        );
+
+
 
         // Redirect based on role
         if (userRole == 'guardian') {
@@ -116,9 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final user = userCredential.user;
       if (user == null) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
-      );
+
 
       if (userRole == 'guardian') {
         Navigator.pushReplacementNamed(context, '/child_details');

@@ -65,10 +65,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'createdAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Child and guardian details saved successfully ✅')),
-      );
+
 
       //  Navigate to ChooseDoctorScreen with childId
       Navigator.pushNamed(
