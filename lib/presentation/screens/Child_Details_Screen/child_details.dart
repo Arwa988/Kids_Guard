@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
@@ -44,7 +44,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
 
       final firestore = FirebaseFirestore.instance;
 
-      //  Save child details in the "children" collection
+      // Save child details in the "children" collection
       final docRef = await firestore.collection('children').add({
         'userId': user.uid,
         'name': nameC.text.trim(),
@@ -55,6 +55,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'surgery': selectedSurgery,
         'allergy': selectedAllergy,
         'diseaseType': selectedDiseaseType,
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
       // Merge guardian info (email + phone) instead of overwriting
@@ -65,9 +66,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         'createdAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
-
-
-      //  Navigate to ChooseDoctorScreen with childId
+      // Navigate to ChooseDoctorScreen with childId
       Navigator.pushNamed(
         context,
         ChooseDoctorScreen.routname,
@@ -169,7 +168,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   if (picked != null) {
                                     setState(() {
                                       birthC.text =
-                                          "${picked.day}/${picked.month}/${picked.year}";
+                                      "${picked.day}/${picked.month}/${picked.year}";
                                     });
                                   }
                                 },
@@ -214,13 +213,11 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   DropdownMenuItem(
                                       value: 'Male',
                                       child: Text('Male',
-                                          style:
-                                          TextStyle(color: Colors.black))),
+                                          style: TextStyle(color: Colors.black))),
                                   DropdownMenuItem(
                                       value: 'Female',
                                       child: Text('Female',
-                                          style:
-                                          TextStyle(color: Colors.black))),
+                                          style: TextStyle(color: Colors.black))),
                                 ],
                                 onChanged: (v) =>
                                     setState(() => selectedGender = v),
@@ -262,7 +259,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                     style: TextStyle(color: Colors.black))),
                           ],
                           onChanged: (v) => setState(() => selectedSurgery = v),
-                          validator: (v) => v == null ? 'Select surgery' : null,
+                          validator: (v) =>
+                          v == null ? 'Select surgery' : null,
                         ),
                         const SizedBox(height: 5),
 

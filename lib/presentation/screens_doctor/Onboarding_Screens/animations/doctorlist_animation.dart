@@ -6,9 +6,9 @@ class DoctorlistAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Lottie.asset(
-        "assets/lottie/Medicinepreparation.json",
-        width: 200,
-        height: 200,
+        "assets/lottie/Needdoctor.json",
+        width: 210,
+        height: 210,
       ),
     );
   }

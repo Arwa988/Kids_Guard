@@ -7,14 +7,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 class DrawerDesgin extends StatelessWidget {
   const DrawerDesgin({super.key});
 
-  //  Drawer Backend (fetch name from Firebase)
+  // Fetch child or guardian name from Firebase
   Future<String> _getUserName() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return "Unknown User";
 
     final firestore = FirebaseFirestore.instance;
 
-    // Try to find in 'children' collection first
+    // Check 'children' collection first
     final childQuery = await firestore
         .collection('children')
         .where('userId', isEqualTo: user.uid)
@@ -28,7 +28,7 @@ class DrawerDesgin extends StatelessWidget {
       }
     }
 
-    // If not found, try in 'guardian' collection
+    // Check 'guardian' collection
     final guardianDoc =
     await firestore.collection('guardian').doc(user.uid).get();
     if (guardianDoc.exists && guardianDoc.data()?['username'] != null) {
@@ -39,16 +39,18 @@ class DrawerDesgin extends StatelessWidget {
     return "Unknown User";
   }
 
-  //  Drawer UI
   @override
   Widget build(BuildContext context) {
+    const Color babyBlue = Color(0xFFB4CEFF);
+
     return Drawer(
       child: Container(
+        // ❌ Removed 'const' to avoid constant expression error with LinearGradient
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
-              AppColors.pink,
-              Color(Colors.pinkAccent.value).withOpacity(0.5),
+              Color(0xFFB4CEFF), // baby blue
+              Color(0xFFB4CEFF), // soft blue
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -59,8 +61,8 @@ class DrawerDesgin extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 50),
-               // Backend
-              ///Show child or guardian name dynamically
+
+              // Dynamic username display
               FutureBuilder<String>(
                 future: _getUserName(),
                 builder: (context, snapshot) {
@@ -84,10 +86,13 @@ class DrawerDesgin extends StatelessWidget {
                         child: Text(
                           displayName,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 220, 146, 146),
+                            color: Colors.white, // white text
                           ),
                         ),
                       ),
@@ -98,105 +103,55 @@ class DrawerDesgin extends StatelessWidget {
 
               const SizedBox(height: 50),
 
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.person),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Profile"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.language),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Language"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.notifications_rounded),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Notification"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.palette_sharp),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Color Theme"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.star_purple500_sharp),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Rate Us"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.people),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Share with a friend"),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Image(image: AssetImage("assets/images/Line.png")),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: const Icon(Icons.login_outlined),
-                    backgroundColor: AppColors.pink,
-                    foregroundColor: Color(Colors.pinkAccent.value),
-                  ),
-                  const SizedBox(width: 24),
-                  const DrawerItem(text: "Logout"),
-                ],
-              ),
+              // Drawer items
+              _drawerRow(Icons.person, "Profile", babyBlue),
+              _divider(),
+              _drawerRow(Icons.language, "Language", babyBlue),
+              _divider(),
+              _drawerRow(Icons.notifications_rounded, "Notification", babyBlue),
+              _divider(),
+              _drawerRow(Icons.palette_sharp, "Color Theme", babyBlue),
+              _divider(),
+              _drawerRow(Icons.star_purple500_sharp, "Rate Us", babyBlue),
+              _divider(),
+              _drawerRow(Icons.people, "Share with a friend", babyBlue),
+              _divider(),
+              _drawerRow(Icons.login_outlined, "Logout", babyBlue),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  // Helper method for Drawer row
+  Widget _drawerRow(IconData icon, String text, Color babyBlue) {
+    return Row(
+      children: [
+        CircleAvatar(
+          backgroundColor: Colors.white, // white circle
+          child: Icon(icon, color: babyBlue), // baby blue icon
+        ),
+        const SizedBox(width: 18),
+        DrawerItem(
+          text: text,
+
+        ),
+      ],
+    );
+  }
+
+  // Helper for divider and spacing
+  Widget _divider() {
+    return Column(
+      children: const [
+        SizedBox(height: 10),
+        Divider(
+          color: Colors.white, // white line
+          thickness: 1,
+        ),
+        SizedBox(height: 16),
+      ],
     );
   }
 }

@@ -13,7 +13,8 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-//Login Backend
+
+// Login Backend
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
@@ -32,7 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(context, '/home_screen');
       } on FirebaseAuthException catch (e) {
         String message = '';
-        // problem Cases
         if (e.code == 'user-not-found') {
           message = 'No account found for this email.';
         } else if (e.code == 'wrong-password') {
@@ -47,12 +47,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // SnackBar messages
+  //  SnackBar messages
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  //  Google Sign-In (Android Only)
+  // Google Sign-In (Android Only)
   Future<UserCredential?> _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -81,58 +81,91 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  //  Wrapper for Google Login
+  // Google Login
   Future<void> _loginWithGoogle() async {
     final userCredential = await _signInWithGoogle();
     if (userCredential == null) return;
 
     final user = userCredential.user;
     if (user != null) {
-
-      Navigator.pushReplacementNamed(context, '/home_screen'); //go to home page
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Logged in successfully with Google 🎉')),
+      );
+      Navigator.pushReplacementNamed(context, '/home_screen'); // go to home page
     }
   }
 
   // Reset Password
   Future<void> _resetPassword() async {
-    if (emailC.text.trim().isEmpty) {
-      _showError('Please enter your email first.');
-      return;
-    }
+    final emailController = TextEditingController();
 
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: emailC.text.trim(),
-      );
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Password Reset Email Sent'),
-          content: const Text(
-            'A reset link has been sent to your email. Please check your inbox to reset your password.',
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Reset Password'),
+          content: TextField(
+            controller: emailController,
+            decoration: const InputDecoration(
+              hintText: 'Enter your registered email',
+            ),
           ),
           actions: [
             TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+
+                if (emailController.text.trim().isEmpty) {
+                  _showError('Please enter your email first.');
+                  return;
+                }
+
+                try {
+                  await FirebaseAuth.instance.sendPasswordResetEmail(
+                    email: emailController.text.trim(),
+                  );
+
+                  // Success dialog
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Password Reset Email Sent'),
+                      content: const Text(
+                        'A reset link has been sent to your email. Please check your inbox to reset your password.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                } on FirebaseAuthException catch (e) {
+                  String message = '';
+                  if (e.code == 'user-not-found') {
+                    message = 'No account found for this email.';
+                  } else if (e.code == 'invalid-email') {
+                    message = 'Invalid email address.';
+                  } else {
+                    message = 'Failed to send reset email. Try again later.';
+                  }
+
+                  _showError(message);
+                } catch (e) {
+                  _showError('Error: $e');
+                }
+              },
+              child: const Text('Send'),
+            ),
+            TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: const Text('Cancel'),
             ),
           ],
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      String message = '';
-      if (e.code == 'user-not-found') {
-        message = 'No account found for this email.';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email address.';
-      } else {
-        message = 'Failed to send reset email. Try again later.';
-      }
-      _showError(message);
-    } catch (e) {
-      _showError('Error: $e');
-    }
+        );
+      },
+    );
   }
 
   // Login UI
@@ -179,7 +212,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 6),
-
                     Center(
                       child: TextButton(
                         onPressed: _resetPassword,
@@ -194,15 +226,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 18),
 
-                    // ✅ Email Login Button
+                    // Email Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _login,// on press: submit data to firebase
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -220,15 +251,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 14),
 
-                    // ✅ Google Login Button
+                    //  Google Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: OutlinedButton.icon(
-                        onPressed: _loginWithGoogle,// onclick: submit data to firebase
+                        onPressed: _loginWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 20,
@@ -249,7 +279,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
 
                     MouseRegion(

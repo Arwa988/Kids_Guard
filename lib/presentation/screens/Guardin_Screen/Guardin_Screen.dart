@@ -6,16 +6,15 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_t
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/real_time_monitoring_screen.dart';
 
 class GuardinScreen extends StatefulWidget {
-  static const String routname = "/select_guardin";
-
   const GuardinScreen({super.key});
+  static const String routname = "/select_guardin";
 
   @override
   State<GuardinScreen> createState() => _GuardinScreenState();
 }
 
 class _GuardinScreenState extends State<GuardinScreen> {
-  int? selectedIndex; // لا يوجد اختيار افتراضي
+  int? selectedIndex; // No default selection
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class _GuardinScreenState extends State<GuardinScreen> {
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          CloudDesgin(),
+          const CloudDesgin(),
           Align(
             alignment: AlignmentDirectional.center,
             child: Container(
@@ -48,24 +47,24 @@ class _GuardinScreenState extends State<GuardinScreen> {
                     Text(
                       "Pick One",
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontFamily: "Lexend",
-                            color: AppColors.splashScreenLinearBlue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontFamily: "Lexend",
+                        color: AppColors.splashScreenLinearBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     _buildOption(
                       index: 0,
                       label: "Guardian",
                       icon: Icons.family_restroom,
-                      selectedColor: const Color(0xFFFFC0CB), // baby pink
+                      selectedColor: const Color(0xFFFFC0CB), // Baby Pink
                     ),
                     const SizedBox(height: 20),
                     _buildOption(
                       index: 1,
                       label: "Doctor",
                       icon: Icons.medical_information,
-                      selectedColor: const Color(0xFFADD8E6), // baby blue
+                      selectedColor: const Color(0xFFADD8E6), // Baby Blue
                     ),
                   ],
                 ),
@@ -88,7 +87,8 @@ class _GuardinScreenState extends State<GuardinScreen> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please select Guardian or Doctor first'),
+                          content:
+                          Text('Please select Guardian or Doctor first'),
                         ),
                       );
                     }
@@ -166,19 +166,19 @@ class _GuardinScreenState extends State<GuardinScreen> {
               margin: const EdgeInsets.only(right: 12),
               child: isSelected
                   ? Container(
-                      width: 22,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        color: selectedColor.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: selectedColor, width: 1.2),
-                      ),
-                      child: Icon(
-                        Icons.check,
-                        color: selectedColor,
-                        size: 14,
-                      ),
-                    )
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: selectedColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: selectedColor, width: 1.2),
+                ),
+                child: Icon(
+                  Icons.check,
+                  color: selectedColor,
+                  size: 14,
+                ),
+              )
                   : const SizedBox(width: 22, height: 22),
             ),
           ],

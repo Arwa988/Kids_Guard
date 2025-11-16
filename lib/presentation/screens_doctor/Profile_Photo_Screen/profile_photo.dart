@@ -6,7 +6,9 @@ import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens
 
 class ProfilePhotoScreen extends StatelessWidget {
   final String userType; // "guardian" or "doctor"
-  const ProfilePhotoScreen({super.key, required this.userType});
+
+  const ProfilePhotoScreen({required this.userType, Key? key}) : super(key: key);
+
   static const String routname = "/add_photo";
 
   @override
@@ -14,7 +16,9 @@ class ProfilePhotoScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          const CloudDesgin(),
+          const CloudDesgin(), // Background design
+
+          // Center profile photo area
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -28,8 +32,9 @@ class ProfilePhotoScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: const [
                           BoxShadow(
-                            blurRadius: 1,
-                            spreadRadius: 1,
+                            blurStyle: BlurStyle.normal,
+                            blurRadius: 7,
+                            spreadRadius: 5,
                             offset: Offset(0, 3),
                             color: Colors.grey,
                           ),
@@ -38,16 +43,22 @@ class ProfilePhotoScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Center(
-                        child: Image.asset("assets/images/person.png",
-                            width: 80, height: 80),
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.asset(
+                            "assets/images/person.png",
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
                     ),
                     Positioned(
                       right: -5,
-                      bottom: -8,
+                      bottom: -5,
                       child: GestureDetector(
                         onTap: () {
-                          // TODO: implement photo picker
+                          // TODO: Pick image from device or Firebase
                         },
                         child: Container(
                           width: 50,
@@ -57,8 +68,11 @@ class ProfilePhotoScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 2),
                           ),
-                          child: const Icon(Icons.add,
-                              color: Colors.white, size: 28),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 28,
+                          ),
                         ),
                       ),
                     ),
@@ -77,24 +91,25 @@ class ProfilePhotoScreen extends StatelessWidget {
               ],
             ),
           ),
+
+          // Bottom Done button
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               child: ElevatedButton(
                 onPressed: () {
-                  if (userType == "doctor") {
-                    Navigator.pushReplacementNamed(
-                        context, HomeScreenDoctor.routname);
-                  } else {
-                    Navigator.pushReplacementNamed(
-                        context, HomeScreen.routname);
+                  if (userType == "guardian") {
+                    Navigator.pushReplacementNamed(context, HomeScreen.routname);
+                  } else if (userType == "doctor") {
+                    Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                   minimumSize: const Size(150, 50),
                 ),
                 child: const Text(

@@ -147,7 +147,6 @@ class _DrawerItemDocState extends State<DrawerItemDoc> {
                               onTap: () async {
                                 Navigator.pop(context);
                                 await FirebaseAuth.instance.signOut();
-
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
@@ -212,7 +211,8 @@ class _RatingStarsState extends State<_RatingStars> {
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Thank you for rating us ${index + 1} stars!'),
+                    content:
+                    Text('Thank you for rating us ${index + 1} stars!'),
                   ),
                 );
               },

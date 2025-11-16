@@ -13,15 +13,14 @@ class LoginScreenDoctor extends StatefulWidget {
   @override
   State<LoginScreenDoctor> createState() => _LoginScreenDoctorState();
 }
-//Login Backend
-
+///Login Backend
 class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
   bool _hoverRegister = false;
 
-  ///  Email/Password login
+  /// Email/Password login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -29,7 +28,6 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
           email: emailC.text.trim(),
           password: passwordC.text,
         );
-
         Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
       } on FirebaseAuthException catch (e) {
         String message = '';
@@ -40,7 +38,9 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
         } else {
           message = 'Login failed. Please check your email and password.';
         }
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
@@ -49,16 +49,14 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     }
   }
 
-  /// Google Sign-In (Android only, with forced account picker)
+  /// Google Sign-In (Android only)
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
         "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
       );
-
-      // 👇 This forces the user to always pick an account
-      await googleSignIn.signOut();
+      await googleSignIn.signOut(); // force account chooser
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return; // cancelled
@@ -76,7 +74,6 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
 
       final user = userCredential.user;
       if (user != null) {
-        //Save data in doctor collection
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'userId': user.uid,
           'email': user.email,
@@ -93,7 +90,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     }
   }
 
-  ///  Password reset
+  /// Password reset
   Future<void> _resetPassword() async {
     final emailController = TextEditingController();
 
@@ -112,12 +109,10 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
             TextButton(
               onPressed: () async {
                 Navigator.pop(context);
-
                 try {
                   await FirebaseAuth.instance.sendPasswordResetEmail(
                     email: emailController.text.trim(),
                   );
-
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -142,10 +137,8 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                   } else {
                     message = 'Failed to send reset email. Please try again.';
                   }
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(message)),
-                  );
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(message)));
                 }
               },
               child: const Text('Send'),
@@ -166,7 +159,8 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding:
+          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
               Center(
@@ -222,7 +216,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: _login, // on press : send data to firebase
+                        onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.kPrimaryColor,
                           shape: RoundedRectangleBorder(
@@ -241,13 +235,11 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    /// 🔹 Google Login Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
                       child: OutlinedButton.icon(
-                        onPressed: _signInWithGoogle,// on press : send data to firebase
+                        onPressed: _signInWithGoogle,
                         icon: Image.asset(
                           'assets/images/google.png',
                           height: 24,
@@ -269,7 +261,6 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
                     MouseRegion(
                       onEnter: (_) => setState(() => _hoverRegister = true),

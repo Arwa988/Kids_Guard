@@ -84,7 +84,7 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                                   if (childId.isEmpty) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                            content: Text('Child ID is invalid!')));
+                                        content: Text('Child ID is invalid!')));
                                     return;
                                   }
 
@@ -96,19 +96,17 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                                           .doc(childId)
                                           .update({'doctor': selectedDoctor});
 
-
-
                                       Navigator.pushNamed(context, '/add_photo');
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                              content: Text('Error: $e')));
+                                          content: Text('Error: $e')));
                                     }
                                   } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
-                                            content: Text(
-                                                'Please select a doctor first!')));
+                                        content: Text(
+                                            'Please select a doctor first!')));
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

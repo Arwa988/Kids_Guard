@@ -4,8 +4,8 @@ import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/health_
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/home_detector.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/heart_animation.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/home_app_bar_animation.dart';
-import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/chatbot.dart';
-
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/chatbot/chatbot.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/Messaging/messaging.dart';
 class HomeScreenTab extends StatelessWidget {
   static const String routname = "./home_screen";
 
@@ -20,12 +20,11 @@ class HomeScreenTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔽 Top app bar icons
+            //  Top app bar icons
             Padding(
               padding: const EdgeInsets.only(top: 25.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Builder(
                     builder: (context) => IconButton(
@@ -51,7 +50,7 @@ class HomeScreenTab extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 💓 Child health summary box
+            //  Child health summary box
             Center(
               child: Container(
                 width: double.infinity,
@@ -72,13 +71,10 @@ class HomeScreenTab extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Transform.scale(
-                      scale: 1.2,
-                      child: const Image(
-                        image: AssetImage("assets/images/happyheart.png"),
-                        width: 100,
-                        height: 100,
-                      ),
+                    const Image(
+                      image: AssetImage("assets/images/happyheart.png"),
+                      width: 110,
+                      height: 110,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -109,12 +105,11 @@ class HomeScreenTab extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // ✅ Three main feature boxes
+            //  Three main feature boxes
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 🧠 Ask The AI Guide
+                //  Ask The AI Guide
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -130,10 +125,10 @@ class HomeScreenTab extends StatelessWidget {
                         DetectorAnimation: Padding(
                           padding: const EdgeInsets.only(top: 6.0),
                           child: SizedBox(
-                            width: 60,
-                            height: 60,
+                            width: 65,
+                            height: 65,
                             child: HomeAppBarAnimation(
-                              LottiePath: "assets/lottie/Cloudroboticsabstract.json",
+                              lottiePath: "assets/lottie/Cloudroboticsabstract.json",
                             ),
                           ),
                         ),
@@ -143,34 +138,41 @@ class HomeScreenTab extends StatelessWidget {
                   ),
                 ),
 
-
-
-                // 🩺 Ask The Doctor
+                //  Ask The Doctor
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 9.0),
-                    child: HomeDetector(
-                      DetectorAnimation: const Padding(
-                        padding: EdgeInsets.only(top: 6.0),
-                        child: Image(
-                          image: AssetImage("assets/images/diagnosis.png"),
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.contain,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const DoctorScreen(),
+                          ),
+                        );
+                      },
+                      child: HomeDetector(
+                        DetectorAnimation: const Padding(
+                          padding: EdgeInsets.only(top: 6.0),
+                          child: Image(
+                            image: AssetImage("assets/images/diagnosis.png"),
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.contain,
+                          ),
                         ),
+                        text: "Ask The Doctor",
                       ),
-                      text: "Ask The Doctor",
                     ),
                   ),
-                ),
-
-                // 📍 Child Location
+                )
+,
+                //  Child Location
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: HomeDetector(
                       DetectorAnimation: HomeAppBarAnimation(
-                        LottiePath: "assets/lottie/LocationPin.json",
+                        lottiePath: "assets/lottie/LocationPin.json",
                       ),
                       text: "Child Location",
                     ),
@@ -181,7 +183,7 @@ class HomeScreenTab extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // ❤️ Health metrics section
+            //  Health metrics section
             Container(
               width: 500,
               height: 340,
@@ -193,7 +195,7 @@ class HomeScreenTab extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // 💓 Heart rate
+                  //  Heart rate
                   Container(
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -201,6 +203,14 @@ class HomeScreenTab extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFB4B4).withOpacity(0.8),
                       borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 0,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(top: 15, left: 20, right: 10),
@@ -234,7 +244,7 @@ class HomeScreenTab extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // 💨 Blood pressure + oxygen
+                  //  Blood pressure + oxygen
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/real_time_animation.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/emergency_alerts_doctor_screen.dart';
 
@@ -17,7 +18,9 @@ class RealTimeDoctor extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushNamed(LoginScreenDoctor.routname);
+                },
                 child: Text(
                   "Skip",
                   style: Theme.of(context).textTheme.bodySmall,
@@ -27,6 +30,8 @@ class RealTimeDoctor extends StatelessWidget {
           ),
 
           Container(
+
+
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
@@ -47,12 +52,12 @@ class RealTimeDoctor extends StatelessWidget {
             "Real-Time Monitoring",
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-          SizedBox(height: 4),
+          SizedBox(height: 5),
           Text(
             "Real time data access! View live heart rate, \n oxygen level, blood pressure",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 10),
           NextBtn(routname: EmergencyAlertsDoctor.routname, text: "Next"),
           SizedBox(height: 10),
           SafeArea(

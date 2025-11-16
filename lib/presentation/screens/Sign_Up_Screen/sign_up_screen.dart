@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
@@ -23,7 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   late String userRole;
 
-  // set Guardian Signup
+  // Set Guardian/Doctor Signup role
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -31,7 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     userRole = args?['role'] ?? 'guardian';
   }
 
-  // Normal Email Sign-Up (Create Account)
+  // Email Sign-Up (Create Account)
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -44,12 +45,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
         final user = userCredential.user;
         if (user == null) return;
 
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'userId': user.uid,
+          'email': emailC.text.trim(),
+          'role': userRole,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
         if (!user.emailVerified) {
           await user.sendEmailVerification();
         }
 
-
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Account created successfully 🎉. Please verify your email.',
+            ),
+          ),
+        );
 
         // Redirect based on role
         if (userRole == 'guardian') {
@@ -69,7 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  //  Show snackbar error
+  // Show snackbar error
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
@@ -82,7 +95,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
-      await googleSignIn.signOut(); // Force account chooser each time
+      // Force account chooser each time
+      await googleSignIn.signOut();
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) return null;
@@ -111,7 +125,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final user = userCredential.user;
       if (user == null) return;
 
+      final userDoc =
+      FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final snapshot = await userDoc.get();
 
+      // Create user doc if not exists
+      if (!snapshot.exists) {
+        await userDoc.set({
+          'userId': user.uid,
+          'email': user.email,
+          'role': userRole,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
+      );
 
       if (userRole == 'guardian') {
         Navigator.pushReplacementNamed(context, '/child_details');
@@ -129,9 +159,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding:
+          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
+              // Logo
               Center(
                 child: Image.asset(
                   'assets/images/kidsguard.png',
@@ -198,10 +230,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 14),
 
-                    // ✅ Google Sign-Up Button
+                    // Google Sign-Up Button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -227,7 +258,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 14),
 
                     MouseRegion(

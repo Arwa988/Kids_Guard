@@ -25,14 +25,13 @@ android {
     defaultConfig {
         applicationId = "com.example.kids_guard"
 
-        // 🚀 Fix: set minimum SDK to 23 for Firebase compatibility
+        // ✅ Fix: increase minSdk to 23 (Firebase plugins require it)
         minSdk = 23
 
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-
 
     buildTypes {
         release {

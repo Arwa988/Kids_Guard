@@ -6,21 +6,15 @@ import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animat
 
 class HomeTabDoctor extends StatelessWidget {
   static const String routname = "./doctor_home_screen";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/MotherBg.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
           child: Column(
             children: [
-              // 🔹 App bar icons
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Row(
@@ -34,7 +28,7 @@ class HomeTabDoctor extends StatelessWidget {
                         icon: Icon(
                           Icons.settings,
                           color: AppColors.kPrimaryColor,
-                          size: 30, // ⬆️ increased size
+                          size: 30,
                         ),
                       ),
                     ),
@@ -43,30 +37,22 @@ class HomeTabDoctor extends StatelessWidget {
                       icon: Icon(
                         Icons.notifications,
                         color: AppColors.kPrimaryColor,
-                        size: 30, // ⬆️ increased size
+                        size: 30,
                       ),
                     ),
                   ],
                 ),
               ),
 
-
-
-              // 🔹 Doctor animation centered
               Center(
                 child: Transform.scale(
-                  scale: 1.3, // 1.0 = original size, 1.5 = 50% bigger
+                  scale: 1.3,
                   child: DoctorlistAnimation(),
                 ),
               ),
 
-
-
-
-              // 🔹 Body container
               Container(
                 width: double.infinity,
-
                 decoration: BoxDecoration(
                   color: AppColors.HomeScreenBodybg,
                   borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -76,6 +62,8 @@ class HomeTabDoctor extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 10),
+
+                      // Total Patient and Unstable Patient Row with shadows
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16.0,
@@ -85,18 +73,44 @@ class HomeTabDoctor extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: Patient(
-                                text: "Total Patient",
-                                number: "10",
-                                bgColor: AppColors.lightBlue,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.15),
+                                      spreadRadius: 0,
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Patient(
+                                  text: "Total Patient",
+                                  number: "10",
+                                  bgColor: AppColors.lightBlue,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
-                              child: Patient(
-                                text: "Unstable Patient",
-                                number: "5",
-                                bgColor: const Color(0xFFF7CFD8),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.15),
+                                      spreadRadius: 0,
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Patient(
+                                  text: "Unstable Patient",
+                                  number: "5",
+                                  bgColor: const Color(0xFFF7CFD8),
+                                ),
                               ),
                             ),
                           ],
@@ -105,7 +119,7 @@ class HomeTabDoctor extends StatelessWidget {
 
                       const SizedBox(height: 10),
 
-                      // 🔸 Patients in danger
+                      // Patient in Danger Container with shadow
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -113,6 +127,14 @@ class HomeTabDoctor extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.heartRed,
                           borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -155,7 +177,7 @@ class HomeTabDoctor extends StatelessWidget {
 
                       const SizedBox(height: 10),
 
-                      // 🔸 View patient list
+                      // View Patient List Container with shadow
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -163,6 +185,14 @@ class HomeTabDoctor extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: const Color(0xFFC7C5DE),
                           borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(

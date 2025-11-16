@@ -13,7 +13,8 @@ class CreateAccountScreen extends StatefulWidget {
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
 }
-// Backend of create account
+
+// Create Account Backend
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
   final firstC = TextEditingController();
@@ -29,33 +30,37 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User not logged in')));
+          const SnackBar(content: Text('User not logged in')),
+        );
         return;
       }
 
-      await FirebaseFirestore.instance.collection('doctors').doc(user.uid).update({
-        'firstName': firstC.text.trim(),
-        'lastName': lastC.text.trim(),
+      // Save data in the doctors collection
+      final firestore = FirebaseFirestore.instance;
+      await firestore.collection('Doctors').doc(user.uid).set({
+        'userId': user.uid,
+        'firstname': firstC.text.trim(),
+        'lastname': lastC.text.trim(),
         'gender': selectedGender,
-        'phoneNumber': phoneC.text.trim(),
-        'updatedAt': FieldValue.serverTimestamp(),
+        'phone_number': phoneC.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const ProfilePhotoScreen(userType: "doctor"),
-        ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Doctor details saved successfully')),
       );
+
+      Navigator.pushNamed(context, ProfilePhotoScreen.routname);
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving data: $e')),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
   }
-// UI of create account
+
+  // Create Account UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +78,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     fontWeight: FontWeight.w600,
                     color: AppColors.kTextColor),
               ),
+              const SizedBox(height: 18),
               Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Form(
@@ -88,68 +94,83 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       CustomTextField(
                         controller: lastC,
                         hintText: 'Last Name',
-                        validator: (v) => v!.isEmpty ? 'Enter last name' : null,
+                        validator: (v) =>
+                        v!.isEmpty ? 'Enter last name' : null,
                       ),
-                    DropdownButtonFormField<String>(
-                      value: selectedGender,
-                      decoration: InputDecoration(
-                        hintText: 'Gender',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: DropdownButtonFormField<String>(
+                          value: selectedGender,
+                          decoration: InputDecoration(
+                            hintText: 'Gender',
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 12),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'Male',
+                              child: Text('Male',
+                                  style:
+                                  TextStyle(color: AppColors.kTextColor)),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Female',
+                              child: Text('Female',
+                                  style:
+                                  TextStyle(color: AppColors.kTextColor)),
+                            ),
+                          ],
+                          onChanged: (v) => setState(() => selectedGender = v),
+                          validator: (v) => v == null ? 'Select gender' : null,
                         ),
                       ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Male',
-                          child: Text(
-                            'Male',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Female',
-                          child: Text(
-                            'Female',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ],
-                      onChanged: (v) => setState(() => selectedGender = v),
-                      validator: (v) => v == null ? 'Select gender' : null,
-                      style: const TextStyle(color: Colors.black), //
-                    ),
-
-                    const SizedBox(height: 10),
                       CustomTextField(
                         controller: phoneC,
                         hintText: 'Phone Number',
-                        keyboardType: TextInputType.phone,
-                        validator: (v) =>
-                        v!.isEmpty ? 'Enter phone number' : null,
+                        keyboardType: TextInputType.number,
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Enter phone';
+                          if (!RegExp(r'^\d+$').hasMatch(v)) return 'Only numbers';
+                          return null;
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                            if (_formKey.currentState!.validate()) {
-                              _saveDoctorDetails();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.kPrimaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            minimumSize: const Size(100, 44),
+                      const SizedBox(height: 18),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          SizedBox(
+                            width: 100,
+                            height: 44,
+                            child: ElevatedButton(
+                              onPressed: _isLoading
+                                  ? null
+                                  : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  await _saveDoctorDetails();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.kPrimaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                                  : const Text(
+                                'Next',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                           ),
-                          child: _isLoading
-                              ? const CircularProgressIndicator(
-                              color: Colors.white)
-                              : const Text('Next',
-                              style: TextStyle(color: Colors.white)),
-                        ),
+                        ],
                       ),
                     ],
                   ),

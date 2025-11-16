@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 class HomeDetector extends StatelessWidget {
   final Widget DetectorAnimation;
   final String text;
-  final VoidCallback? onTap; // ← أضفنا ده
+  final VoidCallback? onTap;
 
   HomeDetector({
     required this.DetectorAnimation,
     required this.text,
-    this.onTap, // ← أضفنا ده
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, 
+      onTap: onTap,
       child: Container(
         width: 140,
         height: 100,
@@ -39,12 +39,12 @@ class HomeDetector extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               text,
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    fontSize: 10,
-                    fontFamily: "Lexend",
-                    fontWeight: FontWeight.w800,
-                  ),
               textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                fontSize: 10,
+                fontFamily: "Lexend",
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ],
         ),

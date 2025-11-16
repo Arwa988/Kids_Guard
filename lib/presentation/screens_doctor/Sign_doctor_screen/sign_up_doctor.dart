@@ -14,7 +14,7 @@ class DoctorSignUpScreen extends StatefulWidget {
   @override
   State<DoctorSignUpScreen> createState() => _DoctorSignUpScreenState();
 }
-// Sign up backend
+//Signup Backend
 class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
@@ -22,6 +22,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final confirmC = TextEditingController();
   bool _hoverLogin = false;
 
+  // Email/Password signup
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -45,7 +46,6 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
           await user.sendEmailVerification();
         }
 
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
@@ -61,6 +61,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
+  // Google Sign-Up
   Future<void> _signUpWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -73,13 +74,14 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
       if (googleUser == null) return;
 
       final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+      UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithCredential(
+        GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        ),
       );
 
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCredential(credential);
       final user = userCredential.user;
       if (user == null) return;
 
@@ -102,7 +104,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
       _showError("Google Sign-Up failed: $e");
     }
   }
-// UI of Signup
+// Signup UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +113,8 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
           child: Column(
             children: [
-              Image.asset('assets/images/kidsguard.png', height: 200, width: 200),
+              Image.asset('assets/images/kidsguard.png',
+                  height: 200, width: 200),
               const SizedBox(height: 36),
               Form(
                 key: _formKey,
@@ -131,9 +134,8 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
                       controller: passwordC,
                       hintText: 'Password',
                       isPassword: true,
-                      validator: (v) => v!.length < 6
-                          ? 'Password must be at least 6 characters'
-                          : null,
+                      validator: (v) =>
+                      v!.length < 6 ? 'Password must be at least 6 characters' : null,
                     ),
                     CustomTextField(
                       controller: confirmC,

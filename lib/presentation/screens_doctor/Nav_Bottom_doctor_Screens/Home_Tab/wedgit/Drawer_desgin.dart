@@ -15,9 +15,7 @@ class DrawerDesginDoctor extends StatelessWidget {
     final firestore = FirebaseFirestore.instance;
 
     try {
-      // Directly get document by UID
       final docSnap = await firestore.collection('doctors').doc(user.uid).get();
-
       if (docSnap.exists) {
         final data = docSnap.data()!;
         final firstName = data['firstName'] ?? '';
@@ -35,11 +33,16 @@ class DrawerDesginDoctor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const Color babyBlue = Color(0xFFB4CEFF);
+
     return Drawer(
       child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppColors.textPrimary, AppColors.textSecondary],
+            colors: [
+              Color(0xFFB4CEFF), // baby blue
+              Color(0xFFB4CEFF), // soft blue
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -63,27 +66,22 @@ class DrawerDesginDoctor extends StatelessWidget {
                     child: FutureBuilder<String>(
                       future: _getUserName(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text(
-                            "Loading...",
-                            style:
-                            Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          );
+                        String displayName = "Loading...";
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          displayName = "Loading...";
+                        } else if (snapshot.hasError) {
+                          displayName = "Error";
+                        } else if (snapshot.hasData) {
+                          displayName = snapshot.data!;
                         }
 
-                        final name = snapshot.data ?? "Unknown User";
                         return Text(
-                          "Dr. $name",
-                          style:
-                          Theme.of(context).textTheme.titleLarge!.copyWith(
+                          "Dr. $displayName",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Colors.white, // white text
                           ),
                         );
                       },
@@ -94,41 +92,20 @@ class DrawerDesginDoctor extends StatelessWidget {
 
               const SizedBox(height: 50),
 
-              // 📋 Drawer Items
-              _drawerRow(
-                icon: Icons.person,
-                text: "Profile",
-              ),
+              // Drawer Items
+              _drawerRow(Icons.person, "Profile", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.language,
-                text: "Language",
-              ),
+              _drawerRow(Icons.language, "Language", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.notifications_rounded,
-                text: "Notification",
-              ),
+              _drawerRow(Icons.notifications_rounded, "Notification", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.palette_sharp,
-                text: "Color Theme",
-              ),
+              _drawerRow(Icons.palette_sharp, "Color Theme", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.star_purple500_sharp,
-                text: "Rate Us",
-              ),
+              _drawerRow(Icons.star_purple500_sharp, "Rate Us", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.people,
-                text: "Share with a friend",
-              ),
+              _drawerRow(Icons.people, "Share with a friend", babyBlue),
               _divider(),
-              _drawerRow(
-                icon: Icons.login_outlined,
-                text: "Logout",
-              ),
+              _drawerRow(Icons.login_outlined, "Logout", babyBlue),
             ],
           ),
         ),
@@ -136,27 +113,27 @@ class DrawerDesginDoctor extends StatelessWidget {
     );
   }
 
-  // ✅ Reusable row builder
-  Widget _drawerRow({required IconData icon, required String text}) {
+  // Helper method for Drawer row
+  Widget _drawerRow(IconData icon, String text, Color babyBlue) {
     return Row(
       children: [
         CircleAvatar(
-          backgroundColor: AppColors.pink,
-          foregroundColor: AppColors.kPrimaryColor,
-          child: Icon(icon),
+          backgroundColor: Colors.white, // white circle
+          child: Icon(icon, color: babyBlue), // baby blue icon
         ),
-        const SizedBox(width: 24),
+        const SizedBox(width: 18),
         DrawerItemDoc(text: text),
       ],
     );
   }
 
-  // ✅ Divider image between items
+  // Helper for divider and spacing
   Widget _divider() {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
-      child: Image(
-        image: AssetImage("assets/images/Line.png"),
+      child: Divider(
+        color: Colors.white, // white line
+        thickness: 1,
       ),
     );
   }

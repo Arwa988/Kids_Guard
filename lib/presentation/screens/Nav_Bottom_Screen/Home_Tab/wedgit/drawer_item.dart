@@ -151,8 +151,7 @@ class _DrawerItemState extends State<DrawerItem> {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
+                                      builder: (context) => const LoginScreen()),
                                       (route) => false,
                                 );
                               },
@@ -174,7 +173,7 @@ class _DrawerItemState extends State<DrawerItem> {
       child: Text(
         text,
         style: const TextStyle(
-          color: Colors.pinkAccent,
+          color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.w100,
         ),
@@ -197,9 +196,7 @@ class _DrawerItemState extends State<DrawerItem> {
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
-      trailing: isSelected
-          ? const Icon(Icons.check, color: AppColors.primaryBlue)
-          : null,
+      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primaryBlue) : null,
       onTap: () => _updatePreference(keyName, title),
     );
   }
@@ -231,11 +228,9 @@ class _RatingStarsState extends State<_RatingStars> {
                 setState(() {
                   _selectedStars = index + 1;
                 });
-
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content:
-                    Text('Thank you for rating us ${index + 1} stars!'),
+                    content: Text('Thank you for rating us ${index + 1} stars!'),
                   ),
                 );
               },
