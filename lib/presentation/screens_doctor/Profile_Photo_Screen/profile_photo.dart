@@ -5,14 +5,18 @@ import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.da
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
 
 class ProfilePhotoScreen extends StatelessWidget {
-  final String userType; // "guardian" or "doctor"
+  final String? userType; // Now optional, we can get it from arguments
 
-  const ProfilePhotoScreen({required this.userType, Key? key}) : super(key: key);
+  const ProfilePhotoScreen({this.userType, Key? key}) : super(key: key);
 
   static const String routname = "/add_photo";
 
   @override
   Widget build(BuildContext context) {
+    // Get userType from arguments if not passed directly
+    final String type =
+        userType ?? ModalRoute.of(context)?.settings.arguments as String? ?? "guardian";
+
     return Scaffold(
       body: Stack(
         children: [
@@ -99,9 +103,9 @@ class ProfilePhotoScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               child: ElevatedButton(
                 onPressed: () {
-                  if (userType == "guardian") {
+                  if (type == "guardian") {
                     Navigator.pushReplacementNamed(context, HomeScreen.routname);
-                  } else if (userType == "doctor") {
+                  } else if (type == "doctor") {
                     Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
                   }
                 },

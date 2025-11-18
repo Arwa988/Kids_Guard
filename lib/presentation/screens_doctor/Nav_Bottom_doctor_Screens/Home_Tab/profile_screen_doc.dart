@@ -11,7 +11,7 @@ class ProfileScreenDoc extends StatefulWidget {
   @override
   State<ProfileScreenDoc> createState() => _ProfileScreenDocState();
 }
-// Backend of Doc profile
+// Profile screen backend
 class _ProfileScreenDocState extends State<ProfileScreenDoc> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
@@ -28,7 +28,7 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
     _loadDoctorData();
   }
 
-  // Load doctor data from Firestore
+  /// Load doctor data from Firestore (doctors collection)
   Future<void> _loadDoctorData() async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return;
@@ -36,43 +36,43 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
     setState(() => _isLoading = true);
 
     try {
-      final docSnap =
-      await _firestore.collection('doctors').doc(currentUser.uid).get();
+      final docSnap = await _firestore
+          .collection('doctors')
+          .doc(currentUser.uid)
+          .get();
 
       if (docSnap.exists) {
         final data = docSnap.data()!;
-        print("Fetched doctor data: $data");
-
         setState(() {
-          firstname = data['firstName'] ?? "Not provided";
-          lastname = data['lastName'] ?? "Not provided";
+          firstname = data['firstname'] ?? "Not provided";
+          lastname = data['lastname'] ?? "Not provided";
           gender = data['gender'] ?? "Not provided";
-          phoneNumber = data['phoneNumber'] ?? "Not provided";
+          phoneNumber = data['phone_number'] ?? "Not provided";
           _isLoading = false;
         });
       } else {
-        print("No doctor found for UID: ${currentUser.uid}");
         setState(() => _isLoading = false);
+        print("No doctor found for UID: ${currentUser.uid}");
       }
     } catch (e) {
-      print("Error loading doctor data: $e");
       setState(() => _isLoading = false);
+      print("Error loading doctor data: $e");
     }
   }
 
-  // Update a specific field in Firestore
-  Future<void> _updateField(String fieldName, String newValue) async {
+  /// Update a specific field in Firestore
+  Future<void> _updateField(String firestoreKey, String newValue) async {
     final user = _auth.currentUser;
     if (user != null) {
       await _firestore.collection("doctors").doc(user.uid).update({
-        fieldName: newValue,
+        firestoreKey: newValue,
       });
     }
   }
 
-  //  Edit field dialog
-  void _editField(
-      String fieldName, String firestoreKey, String currentValue, ValueChanged<String> onSave) {
+  /// Edit field dialog
+  void _editField(String fieldName, String firestoreKey, String currentValue,
+      ValueChanged<String> onSave) {
     final controller = TextEditingController(text: currentValue);
     final formKey = GlobalKey<FormState>();
 
@@ -125,7 +125,8 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
       ),
     );
   }
-//Ui of Profile doc
+
+  /// UI of Profile Doc
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,8 +140,8 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
             children: [
               // 🔙 Back Button
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.arrow_back_ios,
@@ -150,8 +151,8 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
 
               // 👤 Title + Avatar
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40, vertical: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
@@ -196,7 +197,7 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
                       value: firstname,
                       onTap: () => _editField(
                         "First Name",
-                        "firstName",
+                        "firstname",
                         firstname,
                             (val) => setState(() => firstname = val),
                       ),
@@ -206,7 +207,7 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
                       value: lastname,
                       onTap: () => _editField(
                         "Last Name",
-                        "lastName",
+                        "lastname",
                         lastname,
                             (val) => setState(() => lastname = val),
                       ),
@@ -226,7 +227,7 @@ class _ProfileScreenDocState extends State<ProfileScreenDoc> {
                       value: phoneNumber,
                       onTap: () => _editField(
                         "Phone Number",
-                        "phoneNumber",
+                        "phone_number",
                         phoneNumber,
                             (val) => setState(() => phoneNumber = val),
                       ),

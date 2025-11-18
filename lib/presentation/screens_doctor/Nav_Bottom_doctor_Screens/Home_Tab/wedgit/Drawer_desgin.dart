@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class DrawerDesginDoctor extends StatelessWidget {
   const DrawerDesginDoctor({super.key});
 
-  // ✅ Fetch doctor name from Firestore
+  // Fetch doctor name from Firestore
   Future<String> _getUserName() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return "Unknown User";
@@ -18,8 +18,8 @@ class DrawerDesginDoctor extends StatelessWidget {
       final docSnap = await firestore.collection('doctors').doc(user.uid).get();
       if (docSnap.exists) {
         final data = docSnap.data()!;
-        final firstName = data['firstName'] ?? '';
-        final lastName = data['lastName'] ?? '';
+        final firstName = data['firstname'] ?? '';
+        final lastName = data['lastname'] ?? '';
         if (firstName.isNotEmpty || lastName.isNotEmpty) {
           return "$firstName $lastName".trim();
         }
@@ -40,8 +40,8 @@ class DrawerDesginDoctor extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFFB4CEFF), // baby blue
-              Color(0xFFB4CEFF), // soft blue
+              Color(0xFFB4CEFF),
+              Color(0xFFB4CEFF),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -53,8 +53,6 @@ class DrawerDesginDoctor extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 50),
-
-              // 👤 Doctor Info
               Row(
                 children: [
                   const CircleAvatar(
@@ -81,7 +79,7 @@ class DrawerDesginDoctor extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white, // white text
+                            color: Colors.white,
                           ),
                         );
                       },
@@ -89,7 +87,6 @@ class DrawerDesginDoctor extends StatelessWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 50),
 
               // Drawer Items
@@ -113,13 +110,12 @@ class DrawerDesginDoctor extends StatelessWidget {
     );
   }
 
-  // Helper method for Drawer row
   Widget _drawerRow(IconData icon, String text, Color babyBlue) {
     return Row(
       children: [
         CircleAvatar(
-          backgroundColor: Colors.white, // white circle
-          child: Icon(icon, color: babyBlue), // baby blue icon
+          backgroundColor: Colors.white,
+          child: Icon(icon, color: babyBlue),
         ),
         const SizedBox(width: 18),
         DrawerItemDoc(text: text),
@@ -127,12 +123,11 @@ class DrawerDesginDoctor extends StatelessWidget {
     );
   }
 
-  // Helper for divider and spacing
   Widget _divider() {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Divider(
-        color: Colors.white, // white line
+        color: Colors.white,
         thickness: 1,
       ),
     );

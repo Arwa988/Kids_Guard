@@ -14,7 +14,7 @@ class DoctorSignUpScreen extends StatefulWidget {
   @override
   State<DoctorSignUpScreen> createState() => _DoctorSignUpScreenState();
 }
-//Signup Backend
+// Signup Backend
 class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailC = TextEditingController();
@@ -22,46 +22,43 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final confirmC = TextEditingController();
   bool _hoverLogin = false;
 
-  // Email/Password signup
   Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailC.text.trim(),
-          password: passwordC.text.trim(),
-        );
+    if (!_formKey.currentState!.validate()) return;
 
-        final user = userCredential.user;
-        if (user == null) return;
+    try {
+      // Create user in Firebase Auth
+      UserCredential userCredential =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailC.text.trim(),
+        password: passwordC.text.trim(),
+      );
 
-        await FirebaseFirestore.instance.collection('doctors').doc(user.uid).set({
-          'email': emailC.text.trim(),
-          'uid': user.uid,
-          'role': 'doctor',
-          'createdAt': Timestamp.now(),
-        });
+      final user = userCredential.user;
+      if (user == null) return;
 
-        if (!user.emailVerified) {
-          await user.sendEmailVerification();
-        }
+      //  Save in `users` collection
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'email': emailC.text.trim(),
+        'uid': user.uid,
+        'role': 'doctor',
+        'createdAt': Timestamp.now(),
+      });
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
-        );
-      } on FirebaseAuthException catch (e) {
-        _showError(e.message ?? "Signup failed");
+      // Send email verification if needed
+      if (!user.emailVerified) {
+        await user.sendEmailVerification();
       }
+
+      //  Navigate to CreateAccountScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      _showError(e.message ?? "Signup failed");
     }
   }
 
-  void _showError(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  // Google Sign-Up
   Future<void> _signUpWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -85,17 +82,15 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
       final user = userCredential.user;
       if (user == null) return;
 
-      await FirebaseFirestore.instance.collection('doctors').doc(user.uid).set({
+      // Save in `users` collection
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'email': user.email,
         'uid': user.uid,
         'role': 'doctor',
         'createdAt': Timestamp.now(),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
-      );
-
+      // Navigate to CreateAccountScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const CreateAccountScreen()),
@@ -103,6 +98,11 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
     } catch (e) {
       _showError("Google Sign-Up failed: $e");
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 // Signup UI
   @override
@@ -134,8 +134,9 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
                       controller: passwordC,
                       hintText: 'Password',
                       isPassword: true,
-                      validator: (v) =>
-                      v!.length < 6 ? 'Password must be at least 6 characters' : null,
+                      validator: (v) => v!.length < 6
+                          ? 'Password must be at least 6 characters'
+                          : null,
                     ),
                     CustomTextField(
                       controller: confirmC,

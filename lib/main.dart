@@ -41,6 +41,8 @@ void main() async {
 }
 
 class App extends StatelessWidget {
+  const App({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -61,14 +63,20 @@ class App extends StatelessWidget {
         LoginScreenDoctor.routname: (context) => LoginScreenDoctor(),
         DoctorSignUpScreen.routname: (context) => DoctorSignUpScreen(),
         CreateAccountScreen.routname: (context) => CreateAccountScreen(),
-        ProfilePhotoScreen.routname: (context) =>
-            ProfilePhotoScreen(userType: "guardian"),
+
+        // ProfilePhotoScreen now reads userType dynamically
+        ProfilePhotoScreen.routname: (context) {
+          final args =
+              ModalRoute.of(context)?.settings.arguments as String? ?? "guardian";
+          return ProfilePhotoScreen(userType: args);
+        },
+
         ChildDetailsScreen.routname: (context) => ChildDetailsScreen(),
         ChooseDoctorScreen.routname: (context) => ChooseDoctorScreen(),
 
-        //  Home Screens
-        HomeScreen.routname: (context) => HomeScreen(),
-        HomeScreenDoctor.routname: (context) => HomeScreenDoctor(),
+        // Home Screens
+        HomeScreen.routname: (context) =>  HomeScreen(),
+        HomeScreenDoctor.routname: (context) =>  HomeScreenDoctor(),
         ProfileScreen.routname: (context) => ProfileScreen(),
         ProfileScreenDoc.routname: (context) => ProfileScreenDoc(),
 

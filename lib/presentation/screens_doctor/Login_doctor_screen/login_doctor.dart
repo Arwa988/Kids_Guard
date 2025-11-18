@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 
 class LoginScreenDoctor extends StatefulWidget {
   static const String routname = "/login_screen_doctor";
@@ -13,6 +14,7 @@ class LoginScreenDoctor extends StatefulWidget {
   @override
   State<LoginScreenDoctor> createState() => _LoginScreenDoctorState();
 }
+
 ///Login Backend
 class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
   final _formKey = GlobalKey<FormState>();
@@ -22,30 +24,46 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
 
   /// Email/Password login
   Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailC.text.trim(),
-          password: passwordC.text,
-        );
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailC.text.trim(),
+        password: passwordC.text,
+      );
+
+      final user = userCredential.user;
+      if (user == null) return;
+
+      // Check if doctor profile exists
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('doctors')
+          .doc(user.uid)
+          .get();
+
+      if (docSnapshot.exists) {
         Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
-      } on FirebaseAuthException catch (e) {
-        String message = '';
-        if (e.code == 'user-not-found') {
-          message = 'No account found for this email.';
-        } else if (e.code == 'wrong-password') {
-          message = 'Wrong password provided for that user.';
-        } else {
-          message = 'Login failed. Please check your email and password.';
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+      } else {
+        Navigator.pushReplacementNamed(
+            context, CreateAccountScreen.routname);
       }
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (e.code == 'user-not-found') {
+        message = 'No account found for this email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Wrong password provided for that user.';
+      } else {
+        message = 'Login failed. Please check your email and password.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 
@@ -74,6 +92,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
 
       final user = userCredential.user;
       if (user != null) {
+        // Save basic user info
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'userId': user.uid,
           'email': user.email,
@@ -81,7 +100,18 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
           'createdAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
 
-        Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
+        // Check if doctor profile exists
+        final docSnapshot = await FirebaseFirestore.instance
+            .collection('doctors')
+            .doc(user.uid)
+            .get();
+
+        if (docSnapshot.exists) {
+          Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
+        } else {
+          Navigator.pushReplacementNamed(
+              context, CreateAccountScreen.routname);
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
