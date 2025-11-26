@@ -26,7 +26,7 @@ android {
         applicationId = "com.example.kids_guard"
 
         // ✅ Fix: increase minSdk to 23 (Firebase plugins require it)
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
 
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
