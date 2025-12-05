@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/core/utils/date_helpers.dart';
 
 class MonthCalendar extends StatelessWidget {
   final DateTime showingMonth;
@@ -64,10 +65,12 @@ class MonthCalendar extends StatelessWidget {
             ),
             Expanded(
               child: Center(
-                child: Text(
-                  DateFormat.yMMMM().format(showingMonth),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                child: Column(
+                  children: [
+                    Text(DateHelpers.friendlyDayText(selectedDate)),
+                    Text(DateFormat.yMMMM().format(showingMonth)),
+                  ],
+                )
               ),
             ),
             IconButton(

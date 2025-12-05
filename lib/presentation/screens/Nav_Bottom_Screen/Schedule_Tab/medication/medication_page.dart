@@ -22,8 +22,20 @@ class _MedicationPageState extends State<MedicationPage> {
   void initState() {
     super.initState();
     // create sample data for demo
-    final m1 = Medication(id: const Uuid().v4(), name: 'Paracetamol', dosage: '500 mg', frequencyType: FrequencyType.daily, times: [const TimeOfDay(hour: 8, minute: 0), const TimeOfDay(hour: 20, minute: 0)]);
-    final m2 = Medication(id: const Uuid().v4(), name: 'Vitamin D', dosage: '1 tablet', frequencyType: FrequencyType.specificDays, specificDays: [DateTime.now().weekday], times: [const TimeOfDay(hour: 9, minute: 0)]);
+    final m1 = Medication(
+        id: const Uuid().v4(),
+        name: 'Paracetamol',
+        dosage: '500 mg', frequencyType: FrequencyType.daily,
+        times: [const TimeOfDay(hour: 8, minute: 0), const TimeOfDay(hour: 20, minute: 0)]
+    );
+    final m2 = Medication(
+        id: const Uuid().v4(),
+        name: 'Vitamin D',
+        dosage: '1 tablet',
+        frequencyType: FrequencyType.specificDays,
+        specificDays: [DateTime.now().weekday],
+        times: [const TimeOfDay(hour: 9, minute: 0)]
+    );
     _controller.addMedication(m1);
     _controller.addMedication(m2);
     _controller.generateTodaysDoses();

@@ -20,7 +20,7 @@ class AppColors {
   static const Color errorRed = Color(0xFFE74C3C);
   static const Color heartRed = Color(0xFFFFB4B4);
   static const Color pink = Color(0xFFF8F8F8);
-
+  static const Color lightGrey = Color(0xFFBABABA);
   static const Color successGreen = Color(0xFF2ECC71);
   static const Color kPrimaryColor = Color(0xFF1977BD); // login / main button
   static const Color kLightBlue = Color(0xFF8EACCD); // top background shape

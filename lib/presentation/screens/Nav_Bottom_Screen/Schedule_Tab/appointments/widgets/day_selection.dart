@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/core/utils/date_helpers.dart';
 
 class DaySelection extends StatelessWidget {
   final DateTime selectedDate;
@@ -64,8 +65,10 @@ class DaySelection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat.E().format(d),
+                    DateHelpers.friendlyDayText(d),
                     style: TextStyle(
+                      fontSize: 13, // optional
+                      fontWeight: FontWeight.w600,
                       color: selected ? Colors.white : Colors.black54,
                     ),
                   ),
