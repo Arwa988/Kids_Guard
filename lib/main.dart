@@ -16,8 +16,9 @@ import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.da
 import 'package:kids_guard/presentation/screens/Splash_Screen/splash_screen.dart';
 import 'package:kids_guard/presentation/screens/Languge_Screen/languge_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_details.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_list.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/profile_screen_doc.dart';
-import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/health_tab_doc.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/AiProgress.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/MedProgress.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/familyProgress.dart';
@@ -33,9 +34,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(App());
 }
@@ -67,7 +66,8 @@ class App extends StatelessWidget {
         // ProfilePhotoScreen now reads userType dynamically
         ProfilePhotoScreen.routname: (context) {
           final args =
-              ModalRoute.of(context)?.settings.arguments as String? ?? "guardian";
+              ModalRoute.of(context)?.settings.arguments as String? ??
+              "guardian";
           return ProfilePhotoScreen(userType: args);
         },
 
@@ -75,8 +75,8 @@ class App extends StatelessWidget {
         ChooseDoctorScreen.routname: (context) => ChooseDoctorScreen(),
 
         // Home Screens
-        HomeScreen.routname: (context) =>  HomeScreen(),
-        HomeScreenDoctor.routname: (context) =>  HomeScreenDoctor(),
+        HomeScreen.routname: (context) => HomeScreen(),
+        HomeScreenDoctor.routname: (context) => HomeScreenDoctor(),
         ProfileScreen.routname: (context) => ProfileScreen(),
         ProfileScreenDoc.routname: (context) => ProfileScreenDoc(),
 
@@ -87,6 +87,8 @@ class App extends StatelessWidget {
         MedicalProgess.routname: (context) => MedicalProgess(),
         Aiprogress.routname: (context) => Aiprogress(),
         Familyprogress.routname: (context) => Familyprogress(),
+        PatientList.routname: (context) => PatientList(),
+        PatientDetails.routname: (context) => PatientDetails(),
       },
       theme: AppTheme.lighttheme,
     );
