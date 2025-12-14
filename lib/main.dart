@@ -16,8 +16,9 @@ import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.da
 import 'package:kids_guard/presentation/screens/Splash_Screen/splash_screen.dart';
 import 'package:kids_guard/presentation/screens/Languge_Screen/languge_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_details.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_list.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/profile_screen_doc.dart';
-import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/health_tab_doc.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/AiProgress.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/MedProgress.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/Articles_Detalis_Doc/familyProgress.dart';
@@ -28,6 +29,8 @@ import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/prof
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 import 'package:kids_guard/presentation/screens/Child_Details_Screen/child_details.dart';
 import 'package:kids_guard/presentation/screens/Choose_Doctor_Screen/choose_doctor.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_list.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_details.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -45,6 +48,7 @@ void main() async {
   } catch (e) {
     print('❌ Firebase initialization error: $e');
   }
+
 
   runApp(App());
 }
@@ -76,7 +80,8 @@ class App extends StatelessWidget {
         // ProfilePhotoScreen now reads userType dynamically
         ProfilePhotoScreen.routname: (context) {
           final args =
-              ModalRoute.of(context)?.settings.arguments as String? ?? "guardian";
+              ModalRoute.of(context)?.settings.arguments as String? ??
+              "guardian";
           return ProfilePhotoScreen(userType: args);
         },
 
@@ -96,9 +101,13 @@ class App extends StatelessWidget {
         MedicalProgess.routname: (context) => MedicalProgess(),
         Aiprogress.routname: (context) => Aiprogress(),
         Familyprogress.routname: (context) => Familyprogress(),
+
         
       
         MedicationPage.routname: (context) => MedicationPage(),
+        PatientList.routname: (context) => PatientList(),
+PatientDetails.routname: (context) => PatientDetails(),
+
       },
       theme: AppTheme.lighttheme,
     );

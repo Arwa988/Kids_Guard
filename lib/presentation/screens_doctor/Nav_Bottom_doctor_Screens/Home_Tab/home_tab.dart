@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_list.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/wedgit/patient.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/doctorlist_animation.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/people_animation.dart';
@@ -152,7 +153,7 @@ class HomeTabDoctor extends StatelessWidget {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "2",
@@ -207,9 +208,18 @@ class HomeTabDoctor extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 8),
-                                  const Text(
-                                    "View Patient List",
-                                    style: TextStyle(fontSize: 25),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(
+                                        context,
+                                      ).pushReplacementNamed(
+                                        PatientList.routname,
+                                      );
+                                    },
+                                    child: const Text(
+                                      "View Patient List",
+                                      style: TextStyle(fontSize: 25),
+                                    ),
                                   ),
                                   const SizedBox(height: 8),
                                   Icon(
