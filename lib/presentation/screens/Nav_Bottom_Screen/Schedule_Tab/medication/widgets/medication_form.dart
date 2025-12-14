@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
-import 'medication_model.dart';
+import 'package:kids_guard/core/constants/services/medication_service.dart'; 
 import 'package:uuid/uuid.dart';
 
 class MedicationForm extends StatefulWidget {

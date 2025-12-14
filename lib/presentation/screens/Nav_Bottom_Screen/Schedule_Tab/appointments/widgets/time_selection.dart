@@ -42,32 +42,50 @@ class TimeSelection extends StatelessWidget {
         return GestureDetector(
           onTap: isBooked ? null : () => onTapTime(t),
           child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.lightBlue : Colors.white,
-              borderRadius: BorderRadius.circular(20),
+              color: isBooked 
+                  ? Colors.grey[100] 
+                  : (isSelected ? AppColors.lightBlue : Colors.white),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected
-                    ? Colors.transparent
-                    : Colors.grey.shade300,
+                color: isBooked 
+                    ? Colors.grey[300]!
+                    : (isSelected ? Colors.transparent : Colors.grey.shade300),
               ),
-              boxShadow: isSelected
+              boxShadow: isSelected && !isBooked
                   ? [
-                BoxShadow(
-                    color: Colors.orange.withOpacity(0.15),
-                    blurRadius: 8,
-                    offset: Offset(0, 6))
-              ]
+                      BoxShadow(
+                        color: AppColors.lightBlue.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      )
+                    ]
                   : null,
             ),
-            child: Text(
-              t,
-              style: TextStyle(
-                color: isSelected
-                    ? Colors.white
-                    : (isBooked ? Colors.grey : Colors.black87),
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  t,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: isSelected
+                        ? Colors.white
+                        : (isBooked ? Colors.grey : Colors.black87),
+                    decoration: isBooked ? TextDecoration.lineThrough : TextDecoration.none,
+                  ),
+                ),
+                if (isBooked) ...[
+                  const SizedBox(width: 6),
+                  const Icon(
+                    Icons.lock_clock,
+                    size: 14,
+                    color: Colors.grey,
+                  ),
+                ],
+              ],
             ),
           ),
         );

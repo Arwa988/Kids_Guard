@@ -1,125 +1,114 @@
-import 'package:flutter/material.dart';
-import 'medication_model.dart';
-import 'package:intl/intl.dart';
-import 'package:collection/collection.dart';
+// File: lib/presentation/screens/Nav_Bottom_Screen/Schedule_Tab/medication/widgets/medication_controller.dart
 
+import 'package:flutter/material.dart';
+import '../../../../../../core/constants/services/medication_service.dart';
 
 class MedicationController extends ChangeNotifier {
-  final List<Medication> _meds = [];
-  final List<MedicationDose> _todayDoses = [];
+  final MedicationService _medicationService = MedicationService();
+  List<Medication> _meds = [];
+  List<MedicationDose> _todayDoses = [];
 
-  /// You can replace this with real API
+  Stream<List<Medication>> get medicationsStream => 
+      _medicationService.getMedicationsStream();
+  
+  Stream<List<MedicationDose>> get todayDosesStream => 
+      _medicationService.getTodayDosesStream();
+
   List<Medication> get allMeds => List.unmodifiable(_meds);
-
+  
   List<MedicationDose> get todayDoses {
-    // return copies sorted: untaken first, taken last
     List<MedicationDose> copy = List.from(_todayDoses);
     copy.sort((a, b) {
-      if (a.taken == b.taken) return a.time.hour != b.time.hour ? a.time.hour - b.time.hour : a.time.minute - b.time.minute;
+      if (a.taken == b.taken) {
+        return a.time.hour != b.time.hour 
+            ? a.time.hour - b.time.hour 
+            : a.time.minute - b.time.minute;
+      }
       return a.taken ? 1 : -1;
     });
     return copy;
   }
 
-  void addMedication(Medication m) {
-    _meds.add(m);
-    // regenerate today's doses so UI updates
-    generateTodaysDoses();
-    notifyListeners();
-  }
-
-  void editMedication(String id, Medication updated) {
-    final idx = _meds.indexWhere((e) => e.id == id);
-    if (idx >= 0) {
-      _meds[idx] = updated;
-      generateTodaysDoses();
+  void initializeStreams() {
+    medicationsStream.listen((medications) {
+      _meds = medications;
       notifyListeners();
+    });
+
+    todayDosesStream.listen((doses) {
+      _todayDoses = doses;
+      notifyListeners();
+    });
+  }
+
+  Future<void> addMedication(Medication medication) async {
+    try {
+      await _medicationService.addMedication(medication);
+    } catch (e) {
+      print('❌ Error in controller adding medication: $e');
+      rethrow;
     }
   }
 
-  void deleteMedication(String id) {
-    _meds.removeWhere((m) => m.id == id);
-    generateTodaysDoses();
-    notifyListeners();
+  Future<void> editMedication(String id, Medication updated) async {
+    try {
+      await _medicationService.updateMedication(updated);
+    } catch (e) {
+      print('❌ Error in controller updating medication: $e');
+      rethrow;
+    }
   }
 
-  /// doses for "today"
-  void generateTodaysDoses([DateTime? forDate]) {
-    final DateTime today = forDate ?? DateTime.now();
-    final DateTime onlyDate = DateTime(today.year, today.month, today.day);
-    _todayDoses.clear();
-
-    for (var med in _meds) {
-      if (_medAppliesOnDate(med, onlyDate)) {
-        for (var t in med.times) {
-          final dateTime = DateTime(
-              onlyDate.year,
-              onlyDate.month,
-              onlyDate.day, t.hour, t.minute
-          );
-          final id = '${med.id}|${DateFormat('yyyy-MM-dd').format(onlyDate)}|${t.hour.toString().padLeft(2,'0')}:${t.minute.toString().padLeft(2,'0')}';
-          _todayDoses.add(MedicationDose(
-            id: id,
-            medId: med.id,
-            medName: med.name,
-            dosage: med.dosage,
-            date: onlyDate,
-            time: t,
-          ));
-        }
-      }
+  Future<void> deleteMedication(String id) async {
+    try {
+      await _medicationService.deleteMedication(id);
+    } catch (e) {
+      print('❌ Error in controller deleting medication: $e');
+      rethrow;
     }
-    notifyListeners();
   }
 
-  bool _medAppliesOnDate(Medication med, DateTime date) {
-    // FrequencyType.daily => every day
-    if (med.frequencyType == FrequencyType.daily) return true;
-
-    if (med.frequencyType == FrequencyType.specificDays) {
-      // DateTime.weekday: Mon=1..Sun=7 -> med.specificDays uses same encoding
-      return med.specificDays.contains(date.weekday);
+  Future<void> toggleTaken(String doseId) async {
+    try {
+      final dose = _todayDoses.firstWhere((d) => d.id == doseId);
+      await _medicationService.updateDoseStatus(doseId, !dose.taken);
+    } catch (e) {
+      print('❌ Error toggling dose: $e');
+      rethrow;
     }
-
-    if (med.frequencyType == FrequencyType.everyXDays) {
-      final diffDays = date.difference(DateTime(date.year, date.month, date.day)).inDays; // always 0
-      // without a default start date we assume everyXDays means repeating from the date the medication was added
-      // We'll assume meds are effective since the day they were added and we can't access that here; so for simplicity, return true.
-      return true;
-    }
-    return false;
   }
 
-  void toggleTaken(String doseId) {
-    final idx = _todayDoses.indexWhere((d) => d.id == doseId);
-    if (idx >= 0) {
+  Future<bool> markTakenWithCheck(String doseId) async {
+    try {
+      final idx = _todayDoses.indexWhere((d) => d.id == doseId);
+      if (idx < 0) return false;
+      
       final dose = _todayDoses[idx];
-      dose.taken = !dose.taken;
-      dose.takenAt = dose.taken ? DateTime.now() : null;
-      notifyListeners();
-    }
-  }
-
-  // taken with reason (late/on-time) --> returns bool for onTime
-  bool markTakenWithCheck(String doseId) {
-    final idx = _todayDoses.indexWhere((d) => d.id == doseId);
-    if (idx < 0) return false;
-    final dose = _todayDoses[idx];
-    final scheduled = DateTime(
+      final scheduled = DateTime(
         dose.date.year,
         dose.date.month,
         dose.date.day,
         dose.time.hour,
-        dose.time.minute);
-    final now = DateTime.now();
-    final diffInMinutes = now.difference(scheduled).inMinutes;
-    final onTime = diffInMinutes <= 30 && diffInMinutes >= -60; // 60m early or 30m late considered on-time
-    dose.taken = true;
-    dose.takenAt = now;
-    notifyListeners();
-    return onTime;
+        dose.time.minute,
+      );
+      final now = DateTime.now();
+      final diffInMinutes = now.difference(scheduled).inMinutes;
+      final onTime = diffInMinutes <= 30 && diffInMinutes >= -60;
+      
+      await _medicationService.updateDoseStatus(doseId, true);
+      return onTime;
+    } catch (e) {
+      print('❌ Error marking dose with check: $e');
+      return false;
+    }
   }
 
-  Medication? getMedicationById(String id) =>
-      _meds.firstWhereOrNull((m) => m.id == id);
+
+  Medication? getMedicationById(String id) {
+    try {
+      return _meds.firstWhere((m) => m.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }

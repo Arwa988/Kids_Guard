@@ -28,14 +28,23 @@ import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/prof
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 import 'package:kids_guard/presentation/screens/Child_Details_Screen/child_details.dart';
 import 'package:kids_guard/presentation/screens/Choose_Doctor_Screen/choose_doctor.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Schedule_Tab/medication/medication_page.dart'; // صفحة الأدوية
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  
+  try {
+    // تهيئة Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ Firebase initialized successfully');
+  } catch (e) {
+    print('❌ Firebase initialization error: $e');
+  }
 
   runApp(App());
 }
@@ -75,8 +84,8 @@ class App extends StatelessWidget {
         ChooseDoctorScreen.routname: (context) => ChooseDoctorScreen(),
 
         // Home Screens
-        HomeScreen.routname: (context) =>  HomeScreen(),
-        HomeScreenDoctor.routname: (context) =>  HomeScreenDoctor(),
+        HomeScreen.routname: (context) => HomeScreen(),
+        HomeScreenDoctor.routname: (context) => HomeScreenDoctor(),
         ProfileScreen.routname: (context) => ProfileScreen(),
         ProfileScreenDoc.routname: (context) => ProfileScreenDoc(),
 
@@ -87,6 +96,9 @@ class App extends StatelessWidget {
         MedicalProgess.routname: (context) => MedicalProgess(),
         Aiprogress.routname: (context) => Aiprogress(),
         Familyprogress.routname: (context) => Familyprogress(),
+        
+      
+        MedicationPage.routname: (context) => MedicationPage(),
       },
       theme: AppTheme.lighttheme,
     );

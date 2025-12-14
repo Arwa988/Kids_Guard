@@ -56,7 +56,10 @@ class _ScheduleTabState extends State<ScheduleTab>
         controller: _tabController,
         children: const [
           MedicationPage(),
-          DocAppointment(),
+          DocAppointment(
+            doctorId: 'HEEH0twV0rWVvVdhLcUkyc8cszH2',
+            doctorName: 'Dr. ali',
+          ),
         ],
       ),
     );

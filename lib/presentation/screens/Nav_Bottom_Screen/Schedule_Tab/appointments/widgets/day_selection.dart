@@ -36,49 +36,69 @@ class DaySelection extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final d = days[index];
           final selected = _isSameDate(d, selectedDate);
           final disabled = !_isInRange(d);
+          final today = DateTime.now();
+          final isToday = _isSameDate(d, today);
 
           return GestureDetector(
             onTap: disabled ? null : () => onSelectDate(d),
             child: Container(
-              width: 72,
+              width: 70,
               decoration: BoxDecoration(
-                color: selected ? AppColors.lightBlue : Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                color: selected ? AppColors.lightBlue : 
+                       isToday ? AppColors.lightBlue.withOpacity(0.1) : 
+                       Colors.white,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                    color:
-                    selected ? Colors.transparent : Colors.grey.shade300),
-                boxShadow: selected
-                    ? [
+                  color: selected ? AppColors.lightBlue : 
+                         isToday ? AppColors.lightBlue : 
+                         Colors.grey.shade300,
+                  width: selected ? 2 : 1,
+                ),
+                boxShadow: selected ? [
                   BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4))
-                ]
-                    : null,
+                    color: AppColors.lightBlue.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: Offset(0, 4)
+                  )
+                ] : null,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    DateHelpers.friendlyDayText(d),
+                    DateHelpers.friendlyDayText(d).substring(0, 3),
                     style: TextStyle(
-                      fontSize: 13, // optional
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: selected ? Colors.white : Colors.black54,
+                      color: selected ? Colors.white : 
+                             isToday ? AppColors.lightBlue : 
+                             Colors.black54,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "${d.day}",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: selected ? Colors.white : Colors.black87,
+                  const SizedBox(height: 4),
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: selected ? Colors.white : Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "${d.day}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: selected ? AppColors.lightBlue : 
+                                 isToday ? AppColors.lightBlue : 
+                                 Colors.black87,
+                        ),
+                      ),
                     ),
                   ),
                 ],
