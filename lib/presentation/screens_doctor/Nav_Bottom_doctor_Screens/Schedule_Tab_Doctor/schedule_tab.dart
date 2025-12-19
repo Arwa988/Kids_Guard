@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/core/services/appointment_service.dart';
 import 'Edit_Hours/doctor_edit_hours_screen.dart';
@@ -19,7 +19,7 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
   DateTime selectedDate = DateTime.now();
   DateTime showingMonth = DateTime.now();
   bool showFullCalendar = false;
-  
+
   late AppointmentService _appointmentService;
   late String _doctorId;
 
@@ -30,10 +30,9 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
   void initState() {
     super.initState();
     _appointmentService = AppointmentService();
-    
+
     _doctorId = 'doctors_HEEH0twV0rWVvVdhLcUkyc8cszH2';
     print('👨‍⚕️ DOCTOR ID set to: $_doctorId');
-    
   }
 
   void _selectDate(DateTime d) {
@@ -50,6 +49,7 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
       backgroundColor: AppColors.background,
 
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.kLightBlue,
         elevation: 0,
         title: const Padding(
@@ -72,7 +72,10 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
                 return Stack(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.edit_calendar_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.edit_calendar_rounded,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -112,7 +115,10 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
 
               if (!snapshot.hasData) {
                 return IconButton(
-                  icon: const Icon(Icons.edit_calendar_rounded, color: Colors.white),
+                  icon: const Icon(
+                    Icons.edit_calendar_rounded,
+                    color: Colors.white,
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -127,11 +133,14 @@ class _ScheduleTabDoctorState extends State<ScheduleTabDoctor> {
               final pendingCount = snapshot.data!
                   .where((apt) => apt["status"] == "pending")
                   .length;
-              
+
               return Stack(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_calendar_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.edit_calendar_rounded,
+                      color: Colors.white,
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,

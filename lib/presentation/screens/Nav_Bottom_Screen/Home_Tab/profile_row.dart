@@ -51,11 +51,7 @@ class ProfileRow extends StatelessWidget {
             ),
 
             // Right side (arrow icon)
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
-              size: 24,
-            ),
+            const Icon(Icons.chevron_right, color: Colors.grey, size: 24),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
@@ -21,7 +22,7 @@ class EmergencyAlertsDoctor extends StatelessWidget {
                   Navigator.of(context).pushNamed(LoginScreenDoctor.routname);
                 },
                 child: Text(
-                  "Skip",
+                  AppLocalizations.of(context)!.skip,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -41,17 +42,23 @@ class EmergencyAlertsDoctor extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            "Emergency Alerts",
+            AppLocalizations.of(context)!.emergency_alert,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           SizedBox(height: 5),
-          Text(
-            "Got Alerted Instantly! Receive emergency \n notifications when a child’s health is at risk ",
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              AppLocalizations.of(context)!.emergency_desc,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(height: 10),
-          NextBtn(routname: LoginScreenDoctor.routname, text: "Next"),
+          NextBtn(
+            routname: LoginScreenDoctor.routname,
+            text: AppLocalizations.of(context)!.next,
+          ),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -68,7 +75,7 @@ class EmergencyAlertsDoctor extends StatelessWidget {
                     ).pushNamed(CreateAccountScreen.routname);
                   },
                   child: Text(
-                    "Create account",
+                    AppLocalizations.of(context)!.create_account,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),

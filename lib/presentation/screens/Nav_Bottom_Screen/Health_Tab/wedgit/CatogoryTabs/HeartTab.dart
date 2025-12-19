@@ -23,7 +23,6 @@ class Hearttab extends StatelessWidget {
                 current is HealthTabLoadingState,
             builder: (context, state) {
               if (state is HealthTabSucessState) {
-                // ✅ Get the data from the Bloc instance
                 final articles = context.read<HealthTabModel>().articlesList;
                 return HeartGribbulider(articleList: articles ?? []);
               }

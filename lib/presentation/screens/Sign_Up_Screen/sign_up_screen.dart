@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 
@@ -38,9 +39,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-          email: emailC.text.trim(),
-          password: passwordC.text.trim(),
-        );
+              email: emailC.text.trim(),
+              password: passwordC.text.trim(),
+            );
 
         final user = userCredential.user;
         if (user == null) return;
@@ -57,11 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Account created successfully 🎉. Please verify your email.',
-            ),
-          ),
+          SnackBar(content: Text(AppLocalizations.of(context)!.account_sucess)),
         );
 
         // Redirect based on role
@@ -72,9 +69,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          _showError('The password provided is too weak.');
+          _showError(AppLocalizations.of(context)!.password_weak);
         } else if (e.code == 'email-already-in-use') {
-          _showError('The account already exists for that email.');
+          _showError(AppLocalizations.of(context)!.acc_exists);
         }
       } catch (e) {
         _showError('Error: $e');
@@ -84,7 +81,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // Show snackbar error
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   // Google Sign-In (Android only)
@@ -92,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
+            '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
       // Force account chooser each time
@@ -102,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -125,8 +124,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final user = userCredential.user;
       if (user == null) return;
 
-      final userDoc =
-      FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userDoc = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
       final snapshot = await userDoc.get();
 
       // Create user doc if not exists
@@ -140,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signed up successfully with Google 🎉')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.sign_sucess)),
       );
 
       if (userRole == 'guardian') {
@@ -159,8 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
               // Logo
@@ -179,31 +178,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     CustomTextField(
                       controller: emailC,
-                      hintText: 'Email',
+                      hintText: AppLocalizations.of(context)!.email,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Enter email';
-                        if (!v.contains('@')) return 'Invalid email';
+                        if (v == null || v.trim().isEmpty)
+                          return AppLocalizations.of(context)!.enter_email;
+                        if (!v.contains('@'))
+                          return AppLocalizations.of(context)!.invalid_email;
                         return null;
                       },
                     ),
                     CustomTextField(
                       controller: passwordC,
-                      hintText: 'Password',
+                      hintText: AppLocalizations.of(context)!.password,
                       isPassword: true,
                       validator: (v) {
                         if (v == null || v.length < 6) {
-                          return 'At least 6 characters';
+                          return AppLocalizations.of(context)!.return_six;
                         }
                         return null;
                       },
                     ),
                     CustomTextField(
                       controller: confirmC,
-                      hintText: 'Confirm Password',
+                      hintText: AppLocalizations.of(context)!.conf_pass,
                       isPassword: true,
-                      validator: (v) =>
-                      v != passwordC.text ? 'Passwords do not match' : null,
+                      validator: (v) => v != passwordC.text
+                          ? AppLocalizations.of(context)!.pass_match
+                          : null,
                     ),
                     const SizedBox(height: 18),
 
@@ -219,8 +221,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: const Text(
-                          'Sign up',
+                        child: Text(
+                          AppLocalizations.of(context)!.signup,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -242,8 +244,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           'assets/images/google.png',
                           height: 20,
                         ),
-                        label: const Text(
-                          'Sign up with Google',
+                        label: Text(
+                          AppLocalizations.of(context)!.sign_google,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: "Lexend",
@@ -264,12 +266,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onEnter: (_) => setState(() => _hoverLogin = true),
                       onExit: (_) => setState(() => _hoverLogin = false),
                       child: GestureDetector(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          LoginScreen.routname,
-                        ),
+                        onTap: () =>
+                            Navigator.pushNamed(context, LoginScreen.routname),
                         child: Text(
-                          'Already have an account? Log In',
+                          AppLocalizations.of(context)!.have_account,
                           style: TextStyle(
                             color: _hoverLogin
                                 ? AppColors.kPrimaryColor

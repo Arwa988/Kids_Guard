@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/patient_list.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/wedgit/patient.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/animations/doctorlist_animation.dart';
@@ -66,7 +67,7 @@ class HomeTabDoctor extends StatelessWidget {
 
                       // Total Patient and Unstable Patient Row with shadows
                       Padding(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 16.0,
                           vertical: 8,
                         ),
@@ -87,7 +88,9 @@ class HomeTabDoctor extends StatelessWidget {
                                   ],
                                 ),
                                 child: Patient(
-                                  text: "Total Patient",
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.total_patients,
                                   number: "10",
                                   bgColor: AppColors.lightBlue,
                                 ),
@@ -108,7 +111,9 @@ class HomeTabDoctor extends StatelessWidget {
                                   ],
                                 ),
                                 child: Patient(
-                                  text: "Unstable Patient",
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.unstable_patient,
                                   number: "5",
                                   bgColor: const Color(0xFFF7CFD8),
                                 ),
@@ -147,8 +152,8 @@ class HomeTabDoctor extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 8),
-                              const Text(
-                                "Patient in danger",
+                              Text(
+                                AppLocalizations.of(context)!.pat_danger,
                                 style: TextStyle(fontSize: 25),
                               ),
                               Row(
@@ -216,8 +221,10 @@ class HomeTabDoctor extends StatelessWidget {
                                         PatientList.routname,
                                       );
                                     },
-                                    child: const Text(
-                                      "View Patient List",
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.view_patients,
                                       style: TextStyle(fontSize: 25),
                                     ),
                                   ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations_ar.dart';
+import 'package:kids_guard/l10n/app_localizations_en.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/wedgit/Drawer_desgin.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/cubit/Home_Screen_Cubit/home_screen_modal.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/cubit/Home_Screen_Cubit/home_screen_state.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routname = "/home_screen";
@@ -22,11 +25,11 @@ class HomeScreen extends StatelessWidget {
           // Body with loading support
           body: state is HomescreenLoadingstate
               ? Center(
-            child: LoadingAnimationWidget.staggeredDotsWave(
-              color: AppColors.textSecondary,
-              size: 40,
-            ),
-          )
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: AppColors.textSecondary,
+                    size: 40,
+                  ),
+                )
               : viewModal.screens[viewModal.selectedIndex],
 
           // Bottom Navigation Bar
@@ -47,19 +50,22 @@ class HomeScreen extends StatelessWidget {
                 color: AppColors.kTextColor,
               ),
               unselectedIconTheme: const IconThemeData(color: Colors.grey),
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+              items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.track_changes),
-                  label: "Tracker",
+                  icon: const Icon(Icons.home),
+                  label: AppLocalizations.of(context)!.home,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Icon(Icons.track_changes),
+                  label: AppLocalizations.of(context)!.track,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.health_and_safety_outlined),
-                  label: "Health",
+                  label: AppLocalizations.of(context)!.health,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.schedule),
-                  label: "Schedule",
+                  label: AppLocalizations.of(context)!.schedule,
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/wedgit/Drawer_item_doc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -90,19 +91,19 @@ class DrawerDesginDoctor extends StatelessWidget {
               const SizedBox(height: 50),
 
               // Drawer Items
-              _drawerRow(Icons.person, "Profile", babyBlue),
+              _drawerRow(Icons.person, AppLocalizations.of(context)!.profile, babyBlue),
               _divider(),
-              _drawerRow(Icons.language, "Language", babyBlue),
+              _drawerRow(Icons.language, AppLocalizations.of(context)!.lang, babyBlue),
               _divider(),
-              _drawerRow(Icons.notifications_rounded, "Notification", babyBlue),
+              _drawerRow(Icons.notifications_rounded, AppLocalizations.of(context)!.notfication, babyBlue),
               _divider(),
-              _drawerRow(Icons.palette_sharp, "Color Theme", babyBlue),
+              _drawerRow(Icons.palette_sharp, AppLocalizations.of(context)!.color_theme, babyBlue),
               _divider(),
-              _drawerRow(Icons.star_purple500_sharp, "Rate Us", babyBlue),
+              _drawerRow(Icons.star_purple500_sharp, AppLocalizations.of(context)!.rate_us, babyBlue),
               _divider(),
-              _drawerRow(Icons.people, "Share with a friend", babyBlue),
+              _drawerRow(Icons.people, AppLocalizations.of(context)!.share, babyBlue),
               _divider(),
-              _drawerRow(Icons.login_outlined, "Logout", babyBlue),
+              _drawerRow(Icons.login_outlined, AppLocalizations.of(context)!.log, babyBlue),
             ],
           ),
         ),

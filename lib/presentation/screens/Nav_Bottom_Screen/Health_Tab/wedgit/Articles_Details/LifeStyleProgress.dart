@@ -4,10 +4,7 @@ import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/data/model/LifeStyleResponse.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/cubit/Health_tab_model.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/cubit/Health_tab_state.dart';
-import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/health_tab.dart';
-import 'package:kids_guard/data/model/ArticlesResponse.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/Loading_Desgin/loadingDesgin.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Lifestyleprogress extends StatefulWidget {
   const Lifestyleprogress({super.key});
@@ -28,6 +25,7 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
   }
 
   void _updateProgress() {
+    if (!_scrollController.hasClients) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
     if (maxScroll > 0) {
@@ -47,9 +45,10 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
-    // line dah by stkbl el argument el etba3t fy file healthtab
     final lifestyleData? passedArticle = args is lifestyleData ? args : null;
-    // by5zn el args dy by2olo hya data esm list byt3t el articles
+
+    // ✅ التأكد من لغة التطبيق
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
       create: (context) => HealthTabModel()..getStyle(),
@@ -57,23 +56,13 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
         backgroundColor: AppColors.background,
         body: BlocBuilder<HealthTabModel, HealthTabState>(
           builder: (context, state) {
-            if (state is LifeStyleLoadingState) {
-              return Loadingdesgin();
-            } else if (state is LifeStyleErrorState) {
-              return Center(
-                child: Text(
-                  "Error: ${state.error}",
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            } else if (state is LifeStyleSucessState) {
-              // dy sabab en 4a4aha el red lma a3ml refreash mattl34
+            if (state is LifeStyleLoadingState) return Loadingdesgin();
+            if (state is LifeStyleErrorState)
+              return Center(child: Text("Error: ${state.error}"));
+
+            if (state is LifeStyleSucessState) {
               final lifestyle =
-                  passedArticle ??
-                  (state.response.dataList != null &&
-                          state.response.dataList!.isNotEmpty
-                      ? state.response.dataList!.first
-                      : null);
+                  passedArticle ?? (state.response.dataList?.first);
 
               return Stack(
                 children: [
@@ -83,7 +72,7 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
                       SliverAppBar(
                         backgroundColor: AppColors.background,
                         expandedHeight: 250,
-
+                        pinned: true, // عشان يفضل موجود وإنتِ بتعملي سكرول
                         flexibleSpace: FlexibleSpaceBar(
                           background: lifestyle?.image != null
                               ? Image.network(
@@ -97,57 +86,81 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
                             Icons.arrow_back_ios_new,
                             color: Colors.white,
                           ),
-                          onPressed: () {
-                           Navigator.of(context).pop(); // <-- go back to previous screen
-                          },
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ),
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 30,
+                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // ✅ الاتجاه حسب اللغة
+                            crossAxisAlignment: isArabic
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Kids Guard",
-                                style: Theme.of(context).textTheme.bodySmall!
-                                    .copyWith(
-                                      color: Colors.pinkAccent,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                lifestyle?.source ?? "",
-                                style: Theme.of(context).textTheme.bodySmall!
-                                    .copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                lifestyle?.title ?? "",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge!
-                                    .copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                lifestyle?.content ?? "",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  height:
-                                      2, // <— increases line height between lines
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w500,
+                                style: const TextStyle(
+                                  color: Colors.pinkAccent,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 100),
+                              const SizedBox(height: 8),
+                              // ✅ عرض المصدر المترجم
+                              SizedBox(
+                                
+                                child: Text(
+                                  isArabic
+                                      ? (lifestyle?.sourceAr ?? "")
+                                      : (lifestyle?.source ?? ""),
+                                  style: const TextStyle(color: Colors.black45),
+                                  textAlign: isArabic
+                                      ? TextAlign.right
+                                      : TextAlign.left,
+                                  textDirection: isArabic
+                                      ? TextDirection.rtl
+                                      : TextDirection.ltr,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+
+                              // ✅ العنوان المترجم
+                              Text(
+                                isArabic
+                                    ? (lifestyle?.titleAr ?? "")
+                                    : (lifestyle?.title ?? ""),
+                                textDirection: isArabic
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                                style: const TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  height: 1.3,
+                                ),
+                              ),
+                              const SizedBox(height: 25),
+
+                              // ✅ المحتوى المترجم الكامل
+                              Text(
+                                isArabic
+                                    ? (lifestyle?.contentAr ?? "")
+                                    : (lifestyle?.content ?? ""),
+                                textDirection: isArabic
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                                style: const TextStyle(
+                                  fontSize: 19,
+                                  height: 1.9,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(height: 120),
                             ],
                           ),
                         ),
@@ -155,23 +168,22 @@ class _LifestyleprogressState extends State<Lifestyleprogress> {
                     ],
                   ),
 
-                  // 🔵 Progress bar at the top
+                  // 🔴 شريط التقدم (Progress Bar) - يظهر في أعلى الشاشة
                   Positioned(
-                    top: 0,
+                    top: MediaQuery.of(context).padding.top,
                     left: 0,
                     right: 0,
                     child: LinearProgressIndicator(
                       value: _scrollProgress,
                       color: AppColors.kPrimaryColor,
-                      backgroundColor: Colors.grey.withOpacity(0.3),
-                      minHeight: 4,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      minHeight: 5,
                     ),
                   ),
                 ],
               );
             }
-
-            return Loadingdesgin();
+            return const SizedBox();
           },
         ),
       ),

@@ -1,42 +1,91 @@
 class FamilyData {
+  int? id; // تم تغيير النوع لـ int ليتوافق مع الـ JSON
   String? image;
   String? title;
   String? content;
   String? source;
   String? url;
 
-  FamilyData({this.image, this.title, this.content, this.source, this.url});
+  FamilyData({
+    this.id,
+    this.image,
+    this.title,
+    this.content,
+    this.source,
+    this.url,
+  });
 
-  FamilyData copyWith({
-    String? image,
-    String? title,
-    String? content,
-    String? source,
-    String? url,
-  }) => FamilyData(
-    image: image ?? this.image,
-    title: title ?? this.title,
-    content: content ?? this.content,
-    source: source ?? this.source,
-    url: url ?? this.url,
-  );
+  // ✅ العناوين العربية
+  String get titleAr {
+    switch (id) {
+      case 1:
+        return "بناء تواصل قوي بين الأهل والأطباء";
+      case 2:
+        return "مساعدة الإخوة والأخوات على الفهم والتكيف";
+      case 3:
+        return "الدعم النفسي للأهل ومقدمي الرعاية";
+      case 4:
+        return "كيفية التحدث مع طفلك عن حالته القلبية";
+      case 5:
+        return "التواصل مع مجموعات الدعم والمجتمعات";
+      default:
+        return title ?? "";
+    }
+  }
+
+  // ✅ المحتوى العربي الكامل
+  String get contentAr {
+    switch (id) {
+      case 1:
+        return "يُعد التواصل الجيد بين الأهل والأطباء أمرًا أساسيًا لرعاية الطفل المصاب بمشكلة في القلب. يعرف الأهل الروتين اليومي لطفلهم وأي تغيّرات تطرأ عليه، بينما يمتلك الأطباء المعرفة الطبية اللازمة. العمل معًا يساعد الطرفين على اتخاذ أفضل القرارات. من المهم أن يطرح الأهل الأسئلة ويشاركوا ملاحظاتهم حتى وإن بدت بسيطة. وعلى الأطباء الاستماع بعناية وشرح المصطلحات الطبية بكلمات سهلة. يمكن لاستخدام دفتر مشترك أو تطبيق لتسجيل الأعراض والأدوية والتحديثات أن يساعد الجميع على البقاء على اطلاع. التواصل الواضح واللطيف والمفتوح يبني الثقة، ويقلل التوتر، ويضمن حصول الطفل على أفضل رعاية ممكنة.";
+      case 2:
+        return "عندما يعاني أحد الأطفال من مشكلة في القلب، قد يشعر إخوته أو أخواته بالحيرة أو الخوف أو حتى بالإهمال. من المهم إشراكهم في الرحلة. يمكن للأهل شرح الحالة بأسلوب بسيط ومناسب للعمر، لمساعدة الإخوة على فهم سبب احتياج أخيهم أو أختهم لرعاية خاصة. شجّعوهم على طرح الأسئلة والتعبير عن مشاعرهم. قضاء لحظات صغيرة معًا — مثل القراءة أو اللعب أو الحديث — يساعد الإخوة على الشعور بالحب والتقدير. كما يمكن للمدارس والمعلمين دعم الفهم العاطفي بين الزملاء. بالتواصل الجيد، تصبح الأسرة كلها أقوى ومتحدة في رعاية الطفل.";
+      case 3:
+        return "قد تكون رعاية طفل مصاب بمشكلة في القلب عبئًا نفسيًا كبيرًا. غالبًا ما يشعر الأهل بالقلق أو الإرهاق أو الذنب. من المهم تذكّر أن طلب المساعدة دليل قوة وليس ضعفًا. التحدث مع مستشار نفسي، أو الانضمام إلى مجموعة دعم، أو مشاركة التجارب مع عائلات أخرى يمكن أن يخفف التوتر. كما أن تخصيص وقت للراحة، والتغذية الجيدة، والاسترخاء هو جزء من رعاية الطفل — لأن مقدم الرعاية السليم نفسيًا يقدم رعاية أفضل. غالبًا ما توفر المستشفيات والمراكز المجتمعية موارد مجانية للدعم النفسي. الدعم العاطفي يعزز الصمود ويساعد الأهل على البقاء أقوياء في مواجهة التحديات.";
+      case 4:
+        return "غالبًا ما يكون الأطفال فضوليين بشأن حالتهم الصحية، خاصة مع تقدمهم في العمر. الصدق بلطف يساعدهم على الشعور بالأمان والمشاركة. استخدم كلمات بسيطة لشرح وظيفة القلب وسبب الحاجة إلى أدوية أو زيارات طبية معينة. تجنب جعل المرض يبدو كعقاب. شجّع طفلك على طرح الأسئلة والتعبير عن مشاعره، حتى الخوف أو الحزن. يستخدم بعض الأهل الرسومات أو القصص أو الألعاب لشرح الأفكار الطبية. عندما يفهم الأطفال حالتهم، يشعرون بثقة أكبر ويتعاونون بشكل أفضل. الحوار المفتوح يساعدهم أيضًا على تكوين موقف إيجابي وشجاع تجاه رحلتهم الصحية.";
+      case 5:
+        return "لا ينبغي لأي والد أو والدة مواجهة مرض قلب طفلهم بمفردهم. تُعد مجموعات الدعم والمجتمعات عبر الإنترنت أماكن قوية لمشاركة التجارب وطرح الأسئلة والحصول على الدعم. الحديث مع أهالٍ آخرين يفهمون وضعك يمكن أن يقلل التوتر والشعور بالوحدة. تربط العديد من المستشفيات العائلات ببرامج دعم محلية أو أخصائيين اجتماعيين للمساعدة والإرشاد. كما توفر المنصات الإلكترونية مثل فيسبوك ومجتمعات المرضى دعمًا عاطفيًا وعمليًا. غالبًا ما تتبادل هذه المجموعات النصائح حول المدرسة، وزيارات المستشفى، والدعم النفسي. الانتماء إلى مجتمع يذكّر الأهل بأنهم ليسوا وحدهم — ومعًا يمكنهم إيجاد الأمل والقوة.";
+      default:
+        return content ?? "";
+    }
+  }
+
+  String get sourceAr {
+    switch (id) {
+      case 1:
+        return "الأكاديمية الأمريكية لطب الأطفال";
+      case 2:
+        return "المعهد الوطني للقلب والرئة والدم";
+      case 3:
+        return "مايو كلينك";
+      case 4:
+        return "اتحاد قلوب الأطفال";
+      case 5:
+        return "جمعية القلب الأمريكية";
+      default:
+        return source ?? "";
+    }
+  }
+
+  FamilyData.fromJson(dynamic json) {
+    id = json["id"];
+    image = json["image"];
+    title = json["title"];
+    content = json["content"];
+    source = json["source"];
+    url = json["url"];
+  }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map["id"] = id;
     map["image"] = image;
     map["title"] = title;
     map["content"] = content;
     map["source"] = source;
     map["url"] = url;
     return map;
-  }
-
-  FamilyData.fromJson(dynamic json) {
-    image = json["image"];
-    title = json["title"];
-    content = json["content"];
-    source = json["source"];
-    url = json["url"];
   }
 }
 
@@ -47,45 +96,18 @@ class FamilyResponse {
 
   FamilyResponse({this.dataList, this.statusMsg, this.message});
 
-  FamilyResponse copyWith({
-    List<FamilyData>? dataList,
-    String? statusMsg,
-    String? message,
-  }) => FamilyResponse(
-    dataList: dataList ?? this.dataList,
-    statusMsg: statusMsg ?? this.statusMsg,
-    message: message ?? this.message,
-  );
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (dataList != null) {
-      map["data"] = dataList?.map((v) => v.toJson()).toList();
-    }
-    if (statusMsg != null) map["statusMsg"] = statusMsg;
-    if (message != null) map["message"] = message;
-    return map;
-  }
-
   FamilyResponse.fromJson(dynamic json) {
     if (json != null) {
       if (json is List) {
-        // API returns a list directly
-        dataList = [];
-        for (var v in json) {
-          dataList?.add(FamilyData.fromJson(v));
-        }
+        dataList = json.map((v) => FamilyData.fromJson(v)).toList();
         statusMsg = "success";
-        message = "Family data fetched successfully";
       } else if (json is Map<String, dynamic>) {
-        // API returns a wrapped object
         statusMsg = json["statusMsg"];
         message = json["message"];
-        if (json["data"] != null && json["data"] is List) {
-          dataList = [];
-          for (var v in json["data"]) {
-            dataList?.add(FamilyData.fromJson(v));
-          }
+        if (json["data"] is List) {
+          dataList = (json["data"] as List)
+              .map((v) => FamilyData.fromJson(v))
+              .toList();
         }
       }
     }

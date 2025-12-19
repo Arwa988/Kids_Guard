@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/easy_setup_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/emergency_animation.dart';
@@ -22,7 +23,7 @@ class EmergencyAlerts extends StatelessWidget {
                     context,
                   ).pushReplacementNamed(LoginScreen.routname);},
                 child: Text(
-                  "Skip",
+                  AppLocalizations.of(context)!.skip,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -42,17 +43,20 @@ class EmergencyAlerts extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            "Emergency Alerts",
+            AppLocalizations.of(context)!.emergency_alert,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           SizedBox(height: 5),
-          Text(
-            "Got Notified Instantly! if something goes wrong,\n you and your doctor will be alerted right away",
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              AppLocalizations.of(context)!.emergency_desc,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(height: 10),
-          NextBtn(routname: EasySetupScreen.routname, text: "Next"),
+          NextBtn(routname: EasySetupScreen.routname, text: AppLocalizations.of(context)!.next),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -65,7 +69,7 @@ class EmergencyAlerts extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
-                    "Create account",
+                    AppLocalizations.of(context)!.create_account,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),

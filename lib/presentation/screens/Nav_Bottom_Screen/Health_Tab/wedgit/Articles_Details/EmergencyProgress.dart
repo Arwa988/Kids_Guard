@@ -20,7 +20,6 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
   double _scrollProgress = 0.0;
   YoutubePlayerController? _youtubeController;
 
-  // Map article ID to video URLs
   final Map<num, String> articleVideos = {
     1: "https://youtu.be/a9lR6Z4gzwQ",
     2: "https://youtu.be/c7Q1s7ppSwc",
@@ -37,12 +36,10 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     final args = ModalRoute.of(context)?.settings.arguments;
     final EmergencyData? passedArticle = args is EmergencyData ? args : null;
 
-    if (passedArticle != null) {
-      // Use article ID to get video URL
+    if (passedArticle != null && _youtubeController == null) {
       final videoUrl = articleVideos[passedArticle.id ?? 0];
       if (videoUrl != null && videoUrl.isNotEmpty) {
         _initYoutubeController(videoUrl);
@@ -55,12 +52,13 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
     if (videoId != null) {
       _youtubeController = YoutubePlayerController(
         initialVideoId: videoId,
-        flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
+        flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
       );
     }
   }
 
   void _updateProgress() {
+    if (!_scrollController.hasClients) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
     if (maxScroll > 0) {
@@ -83,68 +81,73 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
     final args = ModalRoute.of(context)?.settings.arguments;
     final EmergencyData? passedArticle = args is EmergencyData ? args : null;
 
+    // ✅ التحقق من لغة التطبيق
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+
     return BlocProvider(
       create: (context) => HealthTabModel()..getEmergency(),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocBuilder<HealthTabModel, HealthTabState>(
           builder: (context, state) {
-            if (state is EmergencyLoadingState) {
-              return const Loadingdesgin();
-            } else if (state is EmergencyErrortate) {
-              return Center(
-                child: Text(
-                  "Error: ${state.error}",
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            } else if (state is EmergencySucesstate) {
-              final emergency = passedArticle ??
-                  (state.response.dataList != null &&
-                      state.response.dataList!.isNotEmpty
-                      ? state.response.dataList!.first
-                      : null);
+            if (state is EmergencyLoadingState) return const Loadingdesgin();
+            if (state is EmergencyErrortate)
+              return Center(child: Text("Error: ${state.error}"));
+
+            if (state is EmergencySucesstate) {
+              final emergency =
+                  passedArticle ?? (state.response.dataList?.first);
 
               return Stack(
                 children: [
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: [
+                      // ✅ الجزء الخاص بالفيديو
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(16.0, 80.0, 16.0, 0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            80.0,
+                            16.0,
+                            0,
+                          ),
                           child: Stack(
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
                                 child: _youtubeController != null
                                     ? YoutubePlayer(
-                                  controller: _youtubeController!,
-                                  showVideoProgressIndicator: true,
-                                  progressIndicatorColor:
-                                  AppColors.kPrimaryColor,
-                                )
+                                        controller: _youtubeController!,
+                                        showVideoProgressIndicator: true,
+                                        progressIndicatorColor:
+                                            AppColors.kPrimaryColor,
+                                      )
                                     : Container(
-                                  height: 200,
-                                  color: Colors.grey.shade300,
-                                  child: const Center(
-                                      child: Text("No video available")),
-                                ),
+                                        height: 200,
+                                        color: Colors.grey.shade300,
+                                        child: const Center(
+                                          child: Text("No video available"),
+                                        ),
+                                      ),
                               ),
+                              // زر الرجوع
                               Positioned(
                                 top: 8,
-                                left: 8,
+                                left: isArabic ? null : 8,
+                                right: isArabic ? 8 : null,
                                 child: CircleAvatar(
                                   backgroundColor: Colors.black45,
                                   child: IconButton(
-                                    icon: const Icon(
-                                      Icons.arrow_back_ios_new,
+                                    icon: Icon(
+                                      isArabic
+                                          ? Icons.arrow_back_ios_new
+                                          : Icons.arrow_back_ios_new,
                                       color: Colors.white,
+                                      size: 18,
                                     ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
                                   ),
                                 ),
                               ),
@@ -152,40 +155,60 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
                           ),
                         ),
                       ),
+
+                      // ✅ الجزء الخاص بالنصوص
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 30,
+                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // ضبط المحاذاة حسب اللغة
+                            crossAxisAlignment: isArabic
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 20),
                               Text(
                                 "Kids Guard",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
+                                style: const TextStyle(
                                   color: Colors.pinkAccent,
                                   fontWeight: FontWeight.w900,
+                                  fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
+
+                              // العنوان المترجم
                               Text(
-                                emergency?.title ?? "",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge!
-                                    .copyWith(
+                                isArabic
+                                    ? (emergency?.titleAr ?? "")
+                                    : (emergency?.title ?? ""),
+                                textDirection: isArabic
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.black,
-                                  fontWeight: FontWeight.w900,
+                                  height: 1.3,
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 25),
+
+                              // المحتوى المترجم (الخطوات)
                               Text(
-                                (emergency?.contentList ?? []).join("\n"),
+                                isArabic
+                                    ? (emergency?.contentListAr.join("\n\n") ??
+                                          "")
+                                    : (emergency?.contentList?.join("\n\n") ??
+                                          ""),
+                                textDirection: isArabic
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  height: 2,
+                                  height: 1.8,
                                   color: Colors.black87,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -197,15 +220,17 @@ class _EmergencyprogressState extends State<Emergencyprogress> {
                       ),
                     ],
                   ),
+
+                  // 🔴 شريط التقدم (Progress Bar)
                   Positioned(
-                    top: 0,
+                    top: MediaQuery.of(context).padding.top,
                     left: 0,
                     right: 0,
                     child: LinearProgressIndicator(
                       value: _scrollProgress,
                       color: AppColors.kPrimaryColor,
-                      backgroundColor: Colors.grey.withOpacity(0.3),
-                      minHeight: 4,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      minHeight: 5,
                     ),
                   ),
                 ],

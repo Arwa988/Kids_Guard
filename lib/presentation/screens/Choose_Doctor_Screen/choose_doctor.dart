@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -53,8 +54,8 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        const Text(
-                          'Choose A Doctor',
+                        Text(
+                          AppLocalizations.of(context)!.choose_doctor,
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w600,
@@ -65,11 +66,20 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                         Column(
                           children: [
                             _buildDoctorOption(
-                                'Dr. Sara Mahmoud', 'assets/images/pfp.png', 0),
+                              AppLocalizations.of(context)!.sara,
+                              'assets/images/pfp.png',
+                              0,
+                            ),
                             _buildDoctorOption(
-                                'Dr. Ahmed El-Sayed', 'assets/images/pfp.png', 1),
+                              AppLocalizations.of(context)!.ahmed,
+                              'assets/images/pfp.png',
+                              1,
+                            ),
                             _buildDoctorOption(
-                                'Dr. Leila Hassan', 'assets/images/pfp.png', 2),
+                              AppLocalizations.of(context)!.leila,
+                              'assets/images/pfp.png',
+                              2,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -82,9 +92,15 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (childId.isEmpty) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                        content: Text('Child ID is invalid!')));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.child_invalid,
+                                        ),
+                                      ),
+                                    );
                                     return;
                                   }
 
@@ -96,17 +112,27 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                                           .doc(childId)
                                           .update({'doctor': selectedDoctor});
 
-                                      Navigator.pushNamed(context, '/add_photo');
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/add_photo',
+                                      );
                                     } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                          content: Text('Error: $e')));
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text('Error: $e')),
+                                      );
                                     }
                                   } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
                                         content: Text(
-                                            'Please select a doctor first!')));
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.choose_doc_first,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -115,8 +141,8 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                child: const Text(
-                                  'Next',
+                                child: Text(
+                                  AppLocalizations.of(context)!.next,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
@@ -172,7 +198,9 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
           color: isSelected ? selectedColor : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? selectedColor.withOpacity(0.8) : Colors.grey.shade300,
+            color: isSelected
+                ? selectedColor.withOpacity(0.8)
+                : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
@@ -186,10 +214,7 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage(imagePath),
-            ),
+            CircleAvatar(radius: 30, backgroundImage: AssetImage(imagePath)),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
@@ -207,10 +232,7 @@ class _ChooseDoctorScreenState extends State<ChooseDoctorScreen> {
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.7),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(25),
-                      blurRadius: 4,
-                    ),
+                    BoxShadow(color: Colors.black.withAlpha(25), blurRadius: 4),
                   ],
                 ),
                 child: const Padding(

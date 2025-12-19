@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
+import 'package:kids_guard/l10n/app_localizations_ar.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/cubit/Health_tab_model.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/cubit/Health_tab_state.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Health_Tab/wedgit/CatogoryTabs/EmergencyTab.dart';
@@ -46,10 +48,10 @@ class _HealthTabState extends State<HealthTab> {
               fontFamily: "Lexend",
               fontWeight: FontWeight.bold,
             ),
-            tabs: const [
-              Tab(text: "First Aids"),
-              Tab(text: "Heart\nHealth"),
-              Tab(text: "Lifestyle"),
+            tabs: [
+              Tab(text: AppLocalizations.of(context)!.first_aid),
+              Tab(text: AppLocalizations.of(context)!.heart_health),
+              Tab(text: AppLocalizations.of(context)!.lifestyle),
             ],
           ),
         ),

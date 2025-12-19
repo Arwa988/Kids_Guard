@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
+import 'package:kids_guard/presentation/screens/provider/app_conf_provider.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Tab/profile_screen_doc.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerItemDoc extends StatefulWidget {
   final String text;
@@ -13,27 +17,59 @@ class DrawerItemDoc extends StatefulWidget {
 }
 
 class _DrawerItemDocState extends State<DrawerItemDoc> {
-  String _selectedLanguage = 'English';
-  String _selectedNotification = 'Enable';
-  String _selectedTheme = 'Light Mode';
+  String? selectedLanguage; // سيكون كود اللغة مثل 'en' أو 'ar'
+  String? selectedTheme;
+  String? selectedNotification;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedLanguage =
+          prefs.getString('language') ?? 'en'; // الافتراضي انجليزي
+      selectedTheme = prefs.getString('theme') ?? 'Light Mode';
+      selectedNotification = prefs.getString('notification') ?? 'Enable';
+    });
+  }
+
+  Future<void> _savePreference(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
+    setState(() {
+      if (key == 'language') selectedLanguage = value;
+      if (key == 'theme') selectedTheme = value;
+      if (key == 'notification') selectedNotification = value;
+    });
+  }
+
+  void _updatePreference(String key, String value) {
+    _savePreference(key, value);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     final text = widget.text;
+    var provider = Provider.of<AppConfProvider>(context);
 
     return GestureDetector(
       onTap: () {
-        if (text == "Profile") {
+        if (text == AppLocalizations.of(context)!.profile) {
           Navigator.pop(context);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProfileScreenDoc()),
           );
-        } else if (text == "Language" ||
-            text == "Notification" ||
-            text == "Color Theme" ||
-            text == "Rate Us" ||
-            text == "Logout") {
+        } else if (text == AppLocalizations.of(context)!.lang ||
+            text == AppLocalizations.of(context)!.notfication ||
+            text == AppLocalizations.of(context)!.color_theme ||
+            text == AppLocalizations.of(context)!.rate_us ||
+            text == AppLocalizations.of(context)!.log) {
           showModalBottomSheet(
             context: context,
             backgroundColor: Colors.white,
@@ -47,15 +83,15 @@ class _DrawerItemDocState extends State<DrawerItemDoc> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      text == "Language"
-                          ? 'Choose Language'
-                          : text == "Notification"
-                          ? 'Notifications'
-                          : text == "Color Theme"
-                          ? 'Choose Theme'
-                          : text == "Logout"
-                          ? 'Are You Sure?'
-                          : 'Rate Us',
+                      text == AppLocalizations.of(context)!.lang
+                          ? AppLocalizations.of(context)!.choose_lang
+                          : text == AppLocalizations.of(context)!.notfication
+                          ? AppLocalizations.of(context)!.notfication
+                          : text == AppLocalizations.of(context)!.color_theme
+                          ? AppLocalizations.of(context)!.color_theme
+                          : text == AppLocalizations.of(context)!.log
+                          ? AppLocalizations.of(context)!.sure
+                          : AppLocalizations.of(context)!.rate_us,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -64,105 +100,134 @@ class _DrawerItemDocState extends State<DrawerItemDoc> {
                     const SizedBox(height: 10),
 
                     // 💬 LANGUAGE OPTIONS
-                    if (text == "Language") ...[
+                    // 🌍 LANGUAGE OPTIONS
+                    if (text == AppLocalizations.of(context)!.lang) ...[
+                      // خيار الإنجليزية
                       ListTile(
-                        title: const Text('English'),
-                        trailing: _selectedLanguage == 'English'
-                            ? const Icon(Icons.check, color: Colors.blue)
+                        title: Text(
+                          AppLocalizations.of(context)!.eng,
+                          style: TextStyle(
+                            color: selectedLanguage == 'en'
+                                ? AppColors.primaryBlue
+                                : Colors.black87,
+                            fontWeight: selectedLanguage == 'en'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        trailing: selectedLanguage == 'en'
+                            ? const Icon(
+                                Icons.check,
+                                color: AppColors.primaryBlue,
+                              )
                             : null,
-                        onTap: () {
-                          setState(() => _selectedLanguage = 'English');
+                        onTap: () async {
+                          await _savePreference('language', 'en');
+                          provider.changeLanguage("en");
                           Navigator.pop(context);
                         },
                       ),
+                      // خيار العربية
                       ListTile(
-                        title: const Text('Arabic'),
-                        trailing: _selectedLanguage == 'Arabic'
-                            ? const Icon(Icons.check, color: Colors.blue)
+                        title: Text(
+                          AppLocalizations.of(context)!.arb,
+                          style: TextStyle(
+                            color: selectedLanguage == 'ar'
+                                ? AppColors.primaryBlue
+                                : Colors.black87,
+                            fontWeight: selectedLanguage == 'ar'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        trailing: selectedLanguage == 'ar'
+                            ? const Icon(
+                                Icons.check,
+                                color: AppColors.primaryBlue,
+                              )
                             : null,
-                        onTap: () {
-                          setState(() => _selectedLanguage = 'Arabic');
+                        onTap: () async {
+                          await _savePreference('language', 'ar');
+                          provider.changeLanguage("ar");
                           Navigator.pop(context);
                         },
                       ),
                     ]
-
                     // 🔔 NOTIFICATION OPTIONS
-                    else if (text == "Notification") ...[
+                    else if (text ==
+                        AppLocalizations.of(context)!.notfication) ...[
                       ListTile(
-                        title: const Text('Enable'),
-                        trailing: _selectedNotification == 'Enable'
+                        title: Text(AppLocalizations.of(context)!.enable),
+                        trailing: selectedNotification == 'Enable'
                             ? const Icon(Icons.check, color: Colors.blue)
                             : null,
                         onTap: () {
-                          setState(() => _selectedNotification = 'Enable');
+                          setState(() => selectedNotification = 'Enable');
                           Navigator.pop(context);
                         },
                       ),
                       ListTile(
-                        title: const Text('Turn Off'),
-                        trailing: _selectedNotification == 'Turn Off'
+                        title: Text(AppLocalizations.of(context)!.turn_off),
+                        trailing: selectedNotification == 'Turn Off'
                             ? const Icon(Icons.check, color: Colors.blue)
                             : null,
                         onTap: () {
-                          setState(() => _selectedNotification = 'Turn Off');
+                          setState(() => selectedNotification = 'Turn Off');
                           Navigator.pop(context);
                         },
                       ),
                     ]
-
                     // 🎨 THEME OPTIONS
-                    else if (text == "Color Theme") ...[
-                        ListTile(
-                          title: const Text('Light Mode'),
-                          trailing: _selectedTheme == 'Light Mode'
-                              ? const Icon(Icons.check, color: Colors.blue)
-                              : null,
-                          onTap: () {
-                            setState(() => _selectedTheme = 'Light Mode');
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Dark Mode'),
-                          trailing: _selectedTheme == 'Dark Mode'
-                              ? const Icon(Icons.check, color: Colors.blue)
-                              : null,
-                          onTap: () {
-                            setState(() => _selectedTheme = 'Dark Mode');
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ]
-
-                      // ⭐ RATING OPTIONS
-                      else if (text == "Rate Us") ...[
-                          _RatingStars(),
-                        ]
-
-                        // 🚪 LOGOUT OPTIONS
-                        else if (text == "Logout") ...[
-                            ListTile(
-                              title: const Text('Logout'),
-                              onTap: () async {
-                                Navigator.pop(context);
-                                await FirebaseAuth.instance.signOut();
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginScreenDoctor(),
-                                  ),
-                                      (route) => false,
-                                );
-                              },
+                    else if (text ==
+                        AppLocalizations.of(context)!.color_theme) ...[
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.light),
+                        trailing: selectedTheme == 'Light Mode'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          setState(() => selectedTheme = 'Light Mode');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.dark),
+                        trailing: selectedTheme == 'Dark Mode'
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          setState(() => selectedTheme = 'Dark Mode');
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ]
+                    // ⭐ RATING OPTIONS
+                    else if (text == AppLocalizations.of(context)!.rate_us) ...[
+                      _RatingStars(),
+                    ]
+                    // 🚪 LOGOUT OPTIONS
+                    else if (text == AppLocalizations.of(context)!.log) ...[
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.log),
+                        onTap: () async {
+                          Navigator.pop(context);
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreenDoctor(),
                             ),
-                            ListTile(
-                              title: const Text('Cancel'),
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
+                            (route) => false,
+                          );
+                        },
+                      ),
+                      ListTile(
+                        title: Text(AppLocalizations.of(context)!.cancel),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
                   ],
                 ),
               );
@@ -211,8 +276,9 @@ class _RatingStarsState extends State<_RatingStars> {
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content:
-                    Text('Thank you for rating us ${index + 1} stars!'),
+                    content: Text(
+                      'Thank you for rating us ${index + 1} stars!',
+                    ),
                   ),
                 );
               },
@@ -222,7 +288,7 @@ class _RatingStarsState extends State<_RatingStars> {
         const SizedBox(height: 10),
         Text(
           _selectedStars == 0
-              ? 'Tap a star to rate the app!'
+              ? AppLocalizations.of(context)!.tap_rate
               : 'You rated $_selectedStars ⭐',
           style: const TextStyle(color: Colors.grey),
         ),

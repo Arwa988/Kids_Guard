@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
 import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
@@ -22,7 +23,7 @@ class RealTimeDoctor extends StatelessWidget {
                   Navigator.of(context).pushNamed(LoginScreenDoctor.routname);
                 },
                 child: Text(
-                  "Skip",
+                  AppLocalizations.of(context)!.skip,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -30,8 +31,6 @@ class RealTimeDoctor extends StatelessWidget {
           ),
 
           Container(
-
-
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.55,
             decoration: BoxDecoration(
@@ -41,24 +40,27 @@ class RealTimeDoctor extends StatelessWidget {
               ),
             ),
 
-              child: Transform.scale(
-                scale: 1.2,
-                child: RealTimeAnimation(),
-              ),
-            ),
+            child: Transform.scale(scale: 1.2, child: RealTimeAnimation()),
+          ),
 
           SizedBox(height: 8),
           Text(
-            "Real-Time Monitoring",
+            AppLocalizations.of(context)!.real_time,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           SizedBox(height: 5),
-          Text(
-            "Real time data access! View live heart rate, \n oxygen level, blood pressure",
-            style: Theme.of(context).textTheme.bodyLarge,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              AppLocalizations.of(context)!.real_time_desc,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
           SizedBox(height: 10),
-          NextBtn(routname: EmergencyAlertsDoctor.routname, text: "Next"),
+          NextBtn(
+            routname: EmergencyAlertsDoctor.routname,
+            text: AppLocalizations.of(context)!.next,
+          ),
           SizedBox(height: 10),
           SafeArea(
             child: Row(
@@ -78,7 +80,7 @@ class RealTimeDoctor extends StatelessWidget {
                       ).pushNamed(CreateAccountScreen.routname);
                     },
                     child: Text(
-                      "Create account",
+                      AppLocalizations.of(context)!.create_account,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),

@@ -1,123 +1,124 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
 import 'package:kids_guard/data/model/MedicalResponse.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:readmore/readmore.dart';
 
-// ignore: must_be_immutable
 class MedicalcardDesgin extends StatelessWidget {
-  // final String article;
-  // final String articlePath;
-  MedicalData medicalData;
+  final MedicalData medicalData;
 
-  MedicalcardDesgin({required this.medicalData});
+  const MedicalcardDesgin({required this.medicalData, Key? key})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 8,
-        ), // ✅ space between cards
-        width: 315,
+    // ✅ تحديد اللغة الحالية
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Color(0xFF818589)),
-          ),
-          elevation: 4,
-
-          shadowColor: Colors.black26,
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ✅ Top image
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: medicalData.image ?? "",
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      width: 315,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0xFF818589)),
+        ),
+        elevation: 4,
+        shadowColor: Colors.black26,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          // ✅ ضبط اتجاه عناصر الكولوم
+          crossAxisAlignment: isArabic
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            // صورة المقال
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: medicalData.image ?? "",
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => Container(
                   height: 140,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-
-                  errorWidget: (context, url, error) => Container(
-                    height: 140,
-                    color: Colors.grey[200],
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.broken_image, color: Colors.grey),
-                  ),
+                  color: Colors.grey[200],
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.broken_image, color: Colors.grey),
                 ),
               ),
+            ),
 
-              // ✅ Title and content
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+            // ✅ العنوان (Title)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: double.infinity,
                 child: Text(
-                  medicalData.title ?? "",
+                  isArabic ? medicalData.titleAr : (medicalData.title ?? ""),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: Colors.black87,
                   ),
+                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                  textDirection: isArabic
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
                   maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              // ✅ Title and content
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+            ),
+
+            // ✅ المصدر (Source)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SizedBox(
+                width: double.infinity,
                 child: Text(
-                  medicalData.source ?? "",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: Colors.black87,
+                  isArabic ? medicalData.sourceAr : (medicalData.source ?? ""),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: AppColors
+                        .kPrimaryColor, // تم تمييز المصدر بلون التطبيق الأساسي
                   ),
-                  maxLines: 2,
+                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                  textDirection: isArabic
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.all(12.0),
-              //   child: Row(
-              //     children: [
-              //       Text(
-              //         "Read",
-              //         style: const TextStyle(
-              //           fontWeight: FontWeight.w400,
-              //           fontSize: 14,
-              //           color: Colors.black87,
-              //         ),
-              //         maxLines: 2,
-              //       ),
-              //       Icon(Icons.arrow_back),
-              //     ],
-              //   ),
-              // ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ReadMoreText(
-                  medicalData.content ?? "",
-                  style: const TextStyle(color: Colors.grey),
-                  trimLines: 2,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: '', // still visible
-                  postDataText: "Read More",
-                  postDataTextStyle: TextStyle(color: AppColors.errorRed),
-                  // no "Show less" after expansion
-                  moreStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color:
-                        Colors.grey, // match regular text or any color you want
-                  ),
-                  colorClickableText: Colors.transparent, // disables click
+            ),
+
+            // ✅ المحتوى المختصر (Content)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ReadMoreText(
+                isArabic ? medicalData.contentAr : (medicalData.content ?? ""),
+                style: const TextStyle(color: Colors.grey, fontSize: 13),
+                trimLines: 2,
+                trimMode: TrimMode.Line,
+                textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                trimExpandedText: "",
+
+                trimCollapsedText: '',
+
+                postDataTextStyle: TextStyle(color: AppColors.errorRed),
+                postDataText: AppLocalizations.of(context)!.read_more,
+                colorClickableText: AppColors.errorRed,
+
+                moreStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.errorRed,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

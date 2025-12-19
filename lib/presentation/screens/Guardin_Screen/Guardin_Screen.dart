@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/guardin_select.dart';
 import 'package:kids_guard/presentation/screens_doctor/Onboarding_Screens/real_time_monitoring_doctor_screen.dart';
@@ -45,7 +46,7 @@ class _GuardinScreenState extends State<GuardinScreen> {
                 child: Column(
                   children: [
                     Text(
-                      "Pick One",
+                      AppLocalizations.of(context)!.pick_one,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontFamily: "Lexend",
                         color: AppColors.splashScreenLinearBlue,
@@ -55,14 +56,14 @@ class _GuardinScreenState extends State<GuardinScreen> {
                     const SizedBox(height: 20),
                     _buildOption(
                       index: 0,
-                      label: "Guardian",
+                      label: AppLocalizations.of(context)!.guardian,
                       icon: Icons.family_restroom,
                       selectedColor: const Color(0xFFFFC0CB), // Baby Pink
                     ),
                     const SizedBox(height: 20),
                     _buildOption(
                       index: 1,
-                      label: "Doctor",
+                      label: AppLocalizations.of(context)!.doctor,
                       icon: Icons.medical_information,
                       selectedColor: const Color(0xFFADD8E6), // Baby Blue
                     ),
@@ -87,8 +88,9 @@ class _GuardinScreenState extends State<GuardinScreen> {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content:
-                          Text('Please select Guardian or Doctor first'),
+                          content: Text(
+                            'Please select Guardian or Doctor first',
+                          ),
                         ),
                       );
                     }
@@ -99,8 +101,8 @@ class _GuardinScreenState extends State<GuardinScreen> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text(
-                    "Next",
+                  child: Text(
+                    AppLocalizations.of(context)!.next,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -166,19 +168,15 @@ class _GuardinScreenState extends State<GuardinScreen> {
               margin: const EdgeInsets.only(right: 12),
               child: isSelected
                   ? Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: selectedColor.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: selectedColor, width: 1.2),
-                ),
-                child: Icon(
-                  Icons.check,
-                  color: selectedColor,
-                  size: 14,
-                ),
-              )
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: selectedColor.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: selectedColor, width: 1.2),
+                      ),
+                      child: Icon(Icons.check, color: selectedColor, size: 14),
+                    )
                   : const SizedBox(width: 22, height: 22),
             ),
           ],

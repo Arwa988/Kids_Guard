@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens/Choose_Doctor_Screen/choose_doctor.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
@@ -36,9 +37,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
       setState(() => _isLoading = true);
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User not logged in')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('User not logged in')));
         return;
       }
 
@@ -73,9 +74,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
         arguments: {'childId': docRef.id},
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error saving data: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -113,8 +114,8 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          "Your Child's Details",
+                        Text(
+                          AppLocalizations.of(context)!.child_details,
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w600,
@@ -127,10 +128,9 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                         // Child Name
                         CustomTextField(
                           controller: nameC,
-                          hintText: 'Name',
-                          validator: (v) =>
-                          (v == null || v.trim().isEmpty)
-                              ? 'Enter full name'
+                          hintText: AppLocalizations.of(context)!.name,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? AppLocalizations.of(context)!.enter_name
                               : null,
                         ),
                         const SizedBox(height: 4),
@@ -141,14 +141,16 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                             Expanded(
                               child: CustomTextField(
                                 controller: phoneC,
-                                hintText: 'Phone No.',
+                                hintText: AppLocalizations.of(context)!.phone,
                                 keyboardType: TextInputType.number,
                                 validator: (v) {
                                   if (v == null || v.trim().isEmpty) {
-                                    return 'Please enter phone number';
+                                    return AppLocalizations.of(context)!.phone;
                                   }
                                   if (!RegExp(r'^\d{11}$').hasMatch(v)) {
-                                    return 'Phone number must be 11 digits';
+                                    return AppLocalizations.of(
+                                      context,
+                                    )!.phone_rule;
                                   }
                                   return null;
                                 },
@@ -168,17 +170,21 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                                   if (picked != null) {
                                     setState(() {
                                       birthC.text =
-                                      "${picked.day}/${picked.month}/${picked.year}";
+                                          "${picked.day}/${picked.month}/${picked.year}";
                                     });
                                   }
                                 },
                                 child: AbsorbPointer(
                                   child: CustomTextField(
                                     controller: birthC,
-                                    hintText: 'Birth Date',
+                                    hintText: AppLocalizations.of(
+                                      context,
+                                    )!.birth_date,
                                     validator: (v) =>
-                                    (v == null || v.trim().isEmpty)
-                                        ? 'Enter birth date'
+                                        (v == null || v.trim().isEmpty)
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.enter_birth
                                         : null,
                                   ),
                                 ),
@@ -191,7 +197,7 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                         // Address
                         CustomTextField(
                           controller: addressC,
-                          hintText: 'Address',
+                          hintText: AppLocalizations.of(context)!.address,
                         ),
                         const SizedBox(height: 4),
 
@@ -202,34 +208,47 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                               child: DropdownButtonFormField<String>(
                                 value: selectedGender,
                                 decoration: InputDecoration(
-                                  hintText: 'Gender',
+                                  hintText: AppLocalizations.of(
+                                    context,
+                                  )!.gender,
                                   contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 14, horizontal: 12),
+                                    vertical: 14,
+                                    horizontal: 12,
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                items: const [
+                                items: [
                                   DropdownMenuItem(
-                                      value: 'Male',
-                                      child: Text('Male',
-                                          style: TextStyle(color: Colors.black))),
+                                    value: AppLocalizations.of(context)!.male,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.male,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
                                   DropdownMenuItem(
-                                      value: 'Female',
-                                      child: Text('Female',
-                                          style: TextStyle(color: Colors.black))),
+                                    value: AppLocalizations.of(context)!.female,
+                                    child: Text(
+                                      AppLocalizations.of(context)!.female,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
                                 ],
                                 onChanged: (v) =>
                                     setState(() => selectedGender = v),
-                                validator: (v) =>
-                                v == null ? 'Select gender' : null,
+                                validator: (v) => v == null
+                                    ? AppLocalizations.of(
+                                        context,
+                                      )!.select_gender
+                                    : null,
                               ),
                             ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: CustomTextField(
                                 controller: weightC,
-                                hintText: 'Weight',
+                                hintText: AppLocalizations.of(context)!.weight,
                                 keyboardType: TextInputType.number,
                               ),
                             ),
@@ -241,26 +260,35 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                         DropdownButtonFormField<String>(
                           value: selectedSurgery,
                           decoration: InputDecoration(
-                            hintText: 'Surgery',
+                            hintText: AppLocalizations.of(context)!.surgery,
                             contentPadding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 12),
+                              vertical: 14,
+                              horizontal: 12,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
-                                value: 'Yes',
-                                child: Text('Yes',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.yes,
+                              child: Text(
+                                AppLocalizations.of(context)!.yes,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'No',
-                                child: Text('No',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.no,
+                              child: Text(
+                                AppLocalizations.of(context)!.no,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ],
                           onChanged: (v) => setState(() => selectedSurgery = v),
-                          validator: (v) =>
-                          v == null ? 'Select surgery' : null,
+                          validator: (v) => v == null
+                              ? AppLocalizations.of(context)!.select_surg
+                              : null,
                         ),
                         const SizedBox(height: 5),
 
@@ -268,49 +296,81 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                         DropdownButtonFormField<String>(
                           value: selectedAllergy,
                           decoration: InputDecoration(
-                            hintText: 'Allergy',
+                            hintText: AppLocalizations.of(context)!.allergy,
                             contentPadding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 12),
+                              vertical: 14,
+                              horizontal: 12,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
-                                value: 'None',
-                                child: Text('None',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.none,
+                              child: Text(
+                                AppLocalizations.of(context)!.none,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'I Don\'t Know',
-                                child: Text('I Don\'t Know',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.donot_know,
+                              child: Text(
+                                AppLocalizations.of(context)!.donot_know,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Drug Allergies',
-                                child: Text('Drug Allergies',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.drug_allergy,
+                              child: Text(
+                                AppLocalizations.of(context)!.drug_allergy,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Food Allergies',
-                                child: Text('Food Allergies',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.food_allergy,
+                              child: Text(
+                                AppLocalizations.of(context)!.food_allergy,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Environmental Allergies',
-                                child: Text('Environmental Allergies',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(
+                                context,
+                              )!.enviro_allergy,
+                              child: Text(
+                                AppLocalizations.of(context)!.enviro_allergy,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Insect Allergies',
-                                child: Text('Insect Allergies',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(
+                                context,
+                              )!.insect_allergy,
+                              child: Text(
+                                AppLocalizations.of(context)!.insect_allergy,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Other',
-                                child: Text('Other',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.other,
+                              child: Text(
+                                AppLocalizations.of(context)!.other,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'More Than 1 Type of Allergies',
-                                child: Text('More Than 1 Type of Allergies',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.more_type,
+                              child: Text(
+                                AppLocalizations.of(context)!.more_type,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ],
                           onChanged: (v) => setState(() => selectedAllergy = v),
-                          validator: (v) => v == null ? 'Select allergy' : null,
+                          validator: (v) => v == null
+                              ? AppLocalizations.of(context)!.select_allergy
+                              : null,
                         ),
                         const SizedBox(height: 4),
 
@@ -318,27 +378,38 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                         DropdownButtonFormField<String>(
                           value: selectedDiseaseType,
                           decoration: InputDecoration(
-                            hintText: 'Select Disease Type',
+                            hintText: AppLocalizations.of(
+                              context,
+                            )!.select_disease,
                             contentPadding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 12),
+                              vertical: 14,
+                              horizontal: 12,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
-                                value: 'Cardiac Arrhythmia',
-                                child: Text('Cardiac Arrhythmia',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.cardiac,
+                              child: Text(
+                                AppLocalizations.of(context)!.cardiac,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                             DropdownMenuItem(
-                                value: 'Cyanotic Congenital',
-                                child: Text('Cyanotic Congenital',
-                                    style: TextStyle(color: Colors.black))),
+                              value: AppLocalizations.of(context)!.cyanotic,
+                              child: Text(
+                                AppLocalizations.of(context)!.cyanotic,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
                           ],
                           onChanged: (v) =>
                               setState(() => selectedDiseaseType = v),
-                          validator: (v) =>
-                          v == null ? 'Select disease type' : null,
+                          validator: (v) => v == null
+                              ? AppLocalizations.of(context)!.select_disease
+                              : null,
                         ),
                         const SizedBox(height: 5),
 
@@ -352,10 +423,10 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                               onPressed: _isLoading
                                   ? null
                                   : () {
-                                if (_formKey.currentState!.validate()) {
-                                  _saveChildDetails();
-                                }
-                              },
+                                      if (_formKey.currentState!.validate()) {
+                                        _saveChildDetails();
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primaryBlue,
                                 shape: RoundedRectangleBorder(
@@ -364,17 +435,17 @@ class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
                               ),
                               child: _isLoading
                                   ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                                  : const Text(
-                                'Next',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                  fontFamily: "Lexend",
-                                ),
-                              ),
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.next,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        fontFamily: "Lexend",
+                                      ),
+                                    ),
                             ),
                           ),
                         ),

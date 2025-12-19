@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Profile_Photo_Screen/profile_photo.dart';
@@ -9,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
   static const String routname = "/create_account";
-// create account backend
+  // create account backend
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
 }
@@ -31,9 +32,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User not logged in')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('User not logged in')));
         return;
       }
 
@@ -48,7 +49,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Doctor details saved successfully')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.doctor_details_saved),
+        ),
       );
 
       // Navigate to ProfilePhotoScreen for doctor
@@ -58,9 +61,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         arguments: "doctor",
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error saving data: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -73,7 +76,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     phoneC.dispose();
     super.dispose();
   }
-// create account ui
+
+  // create account ui
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,8 +87,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             children: [
               const CloudDesgin(),
               const SizedBox(height: 20),
-              const Text(
-                'Create Account',
+              Text(
+                AppLocalizations.of(context)!.create_account,
                 style: TextStyle(
                   fontFamily: "Lexend",
                   fontSize: 24,
@@ -101,49 +105,63 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     children: [
                       CustomTextField(
                         controller: firstC,
-                        hintText: 'First Name',
-                        validator: (v) => v!.isEmpty ? 'Enter first name' : null,
+                        hintText: AppLocalizations.of(context)!.first_name,
+                        validator: (v) => v!.isEmpty
+                            ? AppLocalizations.of(context)!.first_name
+                            : null,
                       ),
                       const SizedBox(height: 10),
                       CustomTextField(
                         controller: lastC,
-                        hintText: 'Last Name',
-                        validator: (v) => v!.isEmpty ? 'Enter last name' : null,
+                        hintText: AppLocalizations.of(context)!.last_name,
+                        validator: (v) => v!.isEmpty
+                            ? AppLocalizations.of(context)!.last_name
+                            : null,
                       ),
                       const SizedBox(height: 10),
                       DropdownButtonFormField<String>(
                         value: selectedGender,
                         decoration: InputDecoration(
-                          hintText: 'Gender',
+                          hintText: AppLocalizations.of(context)!.gender,
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 12),
+                            vertical: 14,
+                            horizontal: 12,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        items: const [
+                        items: [
                           DropdownMenuItem(
-                            value: 'Male',
-                            child: Text('Male',
-                                style: TextStyle(color: AppColors.kTextColor)),
+                            value: AppLocalizations.of(context)!.male,
+                            child: Text(
+                              AppLocalizations.of(context)!.male,
+                              style: TextStyle(color: AppColors.kTextColor),
+                            ),
                           ),
                           DropdownMenuItem(
-                            value: 'Female',
-                            child: Text('Female',
-                                style: TextStyle(color: AppColors.kTextColor)),
+                            value: AppLocalizations.of(context)!.female,
+                            child: Text(
+                              AppLocalizations.of(context)!.female,
+                              style: TextStyle(color: AppColors.kTextColor),
+                            ),
                           ),
                         ],
                         onChanged: (v) => setState(() => selectedGender = v),
-                        validator: (v) => v == null ? 'Select gender' : null,
+                        validator: (v) => v == null
+                            ? AppLocalizations.of(context)!.select_gender
+                            : null,
                       ),
                       const SizedBox(height: 10),
                       CustomTextField(
                         controller: phoneC,
-                        hintText: 'Phone Number',
+                        hintText: AppLocalizations.of(context)!.phone_number,
                         keyboardType: TextInputType.number,
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty) return 'Enter phone';
-                          if (!RegExp(r'^\d+$').hasMatch(v)) return 'Only numbers allowed';
+                          if (v == null || v.trim().isEmpty)
+                            return AppLocalizations.of(context)!.enter_phone;
+                          if (!RegExp(r'^\d+$').hasMatch(v))
+                            return AppLocalizations.of(context)!.only_numbers;
                           return null;
                         },
                       ),
@@ -164,14 +182,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                               ),
                               child: _isLoading
                                   ? const CircularProgressIndicator(
-                                  color: Colors.white)
-                                  : const Text(
-                                'Next',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.next,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                             ),
                           ),
                         ],

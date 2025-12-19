@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Create_Account_Screen/create_account.dart';
+import 'package:kids_guard/presentation/screens_doctor/Login_doctor_screen/login_doctor.dart';
 
 class DoctorSignUpScreen extends StatefulWidget {
   const DoctorSignUpScreen({super.key});
@@ -14,6 +16,7 @@ class DoctorSignUpScreen extends StatefulWidget {
   @override
   State<DoctorSignUpScreen> createState() => _DoctorSignUpScreenState();
 }
+
 // Signup Backend
 class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -27,11 +30,11 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
 
     try {
       // Create user in Firebase Auth
-      UserCredential userCredential =
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailC.text.trim(),
-        password: passwordC.text.trim(),
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailC.text.trim(),
+            password: passwordC.text.trim(),
+          );
 
       final user = userCredential.user;
       if (user == null) return;
@@ -63,7 +66,7 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
+            '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
       await googleSignIn.signOut();
@@ -71,13 +74,13 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
       if (googleUser == null) return;
 
       final googleAuth = await googleUser.authentication;
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCredential(
-        GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        ),
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(
+            GoogleAuthProvider.credential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            ),
+          );
 
       final user = userCredential.user;
       if (user == null) return;
@@ -101,10 +104,12 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
-// Signup UI
+
+  // Signup UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,8 +118,11 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
           child: Column(
             children: [
-              Image.asset('assets/images/kidsguard.png',
-                  height: 200, width: 200),
+              Image.asset(
+                'assets/images/kidsguard.png',
+                height: 200,
+                width: 200,
+              ),
               const SizedBox(height: 36),
               Form(
                 key: _formKey,
@@ -122,28 +130,31 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
                   children: [
                     CustomTextField(
                       controller: emailC,
-                      hintText: 'Email',
+                      hintText: AppLocalizations.of(context)!.email,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Enter email';
-                        if (!v.contains('@')) return 'Invalid email';
+                        if (v == null || v.isEmpty)
+                          return AppLocalizations.of(context)!.enter_email;
+                        if (!v.contains('@'))
+                          return AppLocalizations.of(context)!.invalid_email;
                         return null;
                       },
                     ),
                     CustomTextField(
                       controller: passwordC,
-                      hintText: 'Password',
+                      hintText: AppLocalizations.of(context)!.password,
                       isPassword: true,
                       validator: (v) => v!.length < 6
-                          ? 'Password must be at least 6 characters'
+                          ? AppLocalizations.of(context)!.return_six
                           : null,
                     ),
                     CustomTextField(
                       controller: confirmC,
-                      hintText: 'Confirm Password',
+                      hintText: AppLocalizations.of(context)!.conf_pass,
                       isPassword: true,
-                      validator: (v) =>
-                      v != passwordC.text ? 'Passwords do not match' : null,
+                      validator: (v) => v != passwordC.text
+                          ? AppLocalizations.of(context)!.pass_match
+                          : null,
                     ),
                     const SizedBox(height: 18),
                     ElevatedButton(
@@ -152,33 +163,40 @@ class _DoctorSignUpScreenState extends State<DoctorSignUpScreen> {
                         backgroundColor: AppColors.kPrimaryColor,
                         minimumSize: const Size(double.infinity, 52),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                      child: const Text('Sign up as Doctor',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                      child: Text(
+                        AppLocalizations.of(context)!.signup,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                     const SizedBox(height: 14),
                     OutlinedButton.icon(
                       onPressed: _signUpWithGoogle,
                       icon: Image.asset('assets/images/google.png', height: 20),
-                      label: const Text('Sign up with Google'),
+                      label: Text(AppLocalizations.of(context)!.sigup_google),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),
                         side: BorderSide(color: Colors.grey.shade300),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),
                     GestureDetector(
-                      onTap: () =>
-                          Navigator.pushNamed(context, LoginScreen.routname),
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        LoginScreenDoctor.routname,
+                      ),
                       child: Text(
-                        'Already have an account? Log In',
+                        AppLocalizations.of(context)!.have_account,
                         style: TextStyle(
-                            color: _hoverLogin
-                                ? AppColors.kPrimaryColor
-                                : AppColors.kTextColor),
+                          color: _hoverLogin
+                              ? AppColors.kPrimaryColor
+                              : AppColors.kTextColor,
+                        ),
                       ),
                     ),
                   ],

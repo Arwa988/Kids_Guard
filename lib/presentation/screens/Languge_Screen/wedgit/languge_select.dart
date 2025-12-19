@@ -1,41 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:kids_guard/core/constants/App_Colors.dart';
 
-// ignore: must_be_immutable
 class LangugeSelect extends StatelessWidget {
-  String text;
-  LangugeSelect({super.key, required this.text});
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color selectedColor;
+  final VoidCallback onTap;
+
+  const LangugeSelect({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.selectedColor,
+    required this.onTap,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: isSelected ? selectedColor.withOpacity(0.2) : Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: isSelected ? selectedColor : Colors.grey.shade300,
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// Left side
+            Row(
+              children: [
+                const SizedBox(width: 15),
+                Icon(
+                  icon,
+                  color: isSelected ? selectedColor : Colors.grey.shade600,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: "Lexend",
+                    color: isSelected ? selectedColor : Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
 
-        border: Border.all(color: AppColors.splashScreenLinearBlue),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontFamily: "Lexend",
-                color: AppColors.splashScreenLinearBlue,
-              ),
+            /// Check Icon
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              margin: const EdgeInsets.only(right: 12),
+              child: isSelected
+                  ? Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: selectedColor.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: selectedColor, width: 1.2),
+                      ),
+                      child: Icon(Icons.check, color: selectedColor, size: 14),
+                    )
+                  : const SizedBox(width: 22, height: 22),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              Icons.check_circle_outline_rounded,
-              color: AppColors.splashScreenLinearBlue,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

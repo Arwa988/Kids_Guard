@@ -5,8 +5,6 @@ import 'package:kids_guard/data/model/AiResponse.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/Loading_Desgin/loadingDesgin.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/cubit/HealthDoc_Model.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/cubit/HealthDoc_State.dart';
-import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/health_tab_doc.dart';
-
 
 class Aiprogress extends StatefulWidget {
   const Aiprogress({super.key});
@@ -27,6 +25,7 @@ class _AiprogressState extends State<Aiprogress> {
   }
 
   void _updateProgress() {
+    if (!_scrollController.hasClients) return; // ✅ تأكد من وجود المتحكم
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
     if (maxScroll > 0) {
@@ -46,9 +45,10 @@ class _AiprogressState extends State<Aiprogress> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
-    // line dah by stkbl el argument el etba3t fy file healthtab
     final AIData? passedArticle = args is AIData ? args : null;
-    // by5zn el args dy by2olo hya data esm list byt3t el articles
+
+    // ✅ تحديد اللغة الحالية
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
       create: (context) => HealthdocModel()..getAi(),
@@ -56,7 +56,8 @@ class _AiprogressState extends State<Aiprogress> {
         backgroundColor: AppColors.background,
         body: BlocBuilder<HealthdocModel, HealthdocState>(
           builder: (context, state) {
-            if (state is AILoadingState) return Loadingdesgin();
+            if (state is AILoadingState) return const Loadingdesgin();
+
             if (state is AIErrorState) {
               return Center(
                 child: Text(
@@ -79,28 +80,20 @@ class _AiprogressState extends State<Aiprogress> {
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: [
+                      // ✅ الجزء العلوي: الصورة مع زر الرجوع
                       SliverAppBar(
                         backgroundColor: AppColors.background,
                         expandedHeight: 250,
+                        automaticallyImplyLeading:
+                            false, // نضعه يدويًا حسب اللغة
                         flexibleSpace: FlexibleSpaceBar(
                           background: ai?.image != null
                               ? Image.network(ai!.image!, fit: BoxFit.cover)
                               : const Icon(Icons.image_not_supported),
                         ),
-                        leading: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                            ).pop();
-                          },
-                        ),
                       ),
 
-                      // 👇 White rounded container BELOW the image
+                      // ✅ محتوى المقال داخل حاوية بيضاء مستديرة
                       SliverToBoxAdapter(
                         child: ClipRRect(
                           borderRadius: const BorderRadius.only(
@@ -112,7 +105,10 @@ class _AiprogressState extends State<Aiprogress> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // ✅ ضبط المحاذاة حسب اللغة
+                                crossAxisAlignment: isArabic
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Kids Guard",
@@ -125,30 +121,57 @@ class _AiprogressState extends State<Aiprogress> {
                                         ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
-                                    ai?.source ?? "",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                  SizedBox(
+                                    child: Text(
+                                      isArabic
+                                          ? (ai?.sourceAr ?? "")
+                                          : (ai?.source ?? ""),
+                                      style: const TextStyle(
+                                        color: Colors.black45,
+                                      ),
+                                      textAlign: isArabic
+                                          ? TextAlign.right
+                                          : TextAlign.left,
+                                      textDirection: isArabic
+                                          ? TextDirection.rtl
+                                          : TextDirection.ltr,
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
+
+                                  // ✅ العنوان المترجم
                                   Text(
-                                    ai?.title ?? "",
+                                    isArabic
+                                        ? (ai?.titleAr ?? "")
+                                        : (ai?.title ?? ""),
+                                    textDirection: isArabic
+                                        ? TextDirection.rtl
+                                        : TextDirection.ltr,
+                                    textAlign: isArabic
+                                        ? TextAlign.right
+                                        : TextAlign.left,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge!
                                         .copyWith(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w900,
+                                          fontSize: 24,
                                         ),
                                   ),
                                   const SizedBox(height: 20),
+
+                                  // ✅ المحتوى المترجم
                                   Text(
-                                    ai?.content ?? "",
+                                    isArabic
+                                        ? (ai?.contentAr ?? "")
+                                        : (ai?.content ?? ""),
+                                    textDirection: isArabic
+                                        ? TextDirection.rtl
+                                        : TextDirection.ltr,
+                                    textAlign: isArabic
+                                        ? TextAlign.justify
+                                        : TextAlign.left,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       height: 2,
@@ -166,23 +189,45 @@ class _AiprogressState extends State<Aiprogress> {
                     ],
                   ),
 
-                  // 🔵 progress bar
+                  // ✅ شريط التقدم العلوي
                   Positioned(
                     top: 0,
                     left: 0,
                     right: 0,
-                    child: LinearProgressIndicator(
-                      value: _scrollProgress,
-                      color: AppColors.kPrimaryColor,
-                      backgroundColor: Colors.grey.withOpacity(0.3),
-                      minHeight: 4,
+                    child: Directionality(
+                      textDirection: isArabic
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+                      child: LinearProgressIndicator(
+                        value: _scrollProgress,
+                        color: AppColors.kPrimaryColor,
+                        backgroundColor: Colors.grey.withOpacity(0.3),
+                        minHeight: 4,
+                      ),
+                    ),
+                  ),
+
+                  // ✅ زر الرجوع (يتغير مكانه حسب اللغة)
+                  Positioned(
+                    top: 40,
+                    left: isArabic ? null : 15,
+                    right: isArabic ? 15 : null,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black26,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
                     ),
                   ),
                 ],
               );
             }
-
-            return Loadingdesgin();
+            return const Loadingdesgin();
           },
         ),
       ),

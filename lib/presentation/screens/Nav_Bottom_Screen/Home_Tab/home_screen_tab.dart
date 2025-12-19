@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/health_box.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/home_detector.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/heart_animation.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/animations/home_app_bar_animation.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/chatbot/chatbot.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/Messaging/messaging.dart';
+
 class HomeScreenTab extends StatelessWidget {
   static const String routname = "./home_screen";
 
@@ -82,18 +84,20 @@ class HomeScreenTab extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Child Overall Health",
-                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w300,
-                            ),
+                            AppLocalizations.of(context)!.child_overall,
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w300,
+                                ),
                           ),
                           Text(
-                            "Great!",
-                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            AppLocalizations.of(context)!.great,
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -128,11 +132,12 @@ class HomeScreenTab extends StatelessWidget {
                             width: 65,
                             height: 65,
                             child: HomeAppBarAnimation(
-                              lottiePath: "assets/lottie/Cloudroboticsabstract.json",
+                              lottiePath:
+                                  "assets/lottie/Cloudroboticsabstract.json",
                             ),
                           ),
                         ),
-                        text: "Ask The AI Guide",
+                        text: AppLocalizations.of(context)!.ask_ai,
                       ),
                     ),
                   ),
@@ -160,12 +165,11 @@ class HomeScreenTab extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        text: "Ask The Doctor",
+                        text: AppLocalizations.of(context)!.ask_doctor,
                       ),
                     ),
                   ),
-                )
-,
+                ),
                 //  Child Location
                 Expanded(
                   child: Padding(
@@ -174,7 +178,7 @@ class HomeScreenTab extends StatelessWidget {
                       DetectorAnimation: HomeAppBarAnimation(
                         lottiePath: "assets/lottie/LocationPin.json",
                       ),
-                      text: "Child Location",
+                      text: AppLocalizations.of(context)!.location,
                     ),
                   ),
                 ),
@@ -213,7 +217,11 @@ class HomeScreenTab extends StatelessWidget {
                       ],
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 15, left: 20, right: 10),
+                      padding: const EdgeInsets.only(
+                        top: 15,
+                        left: 20,
+                        right: 10,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -221,17 +229,17 @@ class HomeScreenTab extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 8),
-                              const Text("Heart Beats"),
+                              Text(AppLocalizations.of(context)!.heart_beats),
                               Row(
                                 children: [
                                   Text(
-                                    "89 ",
+                                    AppLocalizations.of(context)!.beat_no,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge
                                         ?.copyWith(fontSize: 50),
                                   ),
-                                  const Text("bpm"),
+                                  Text(AppLocalizations.of(context)!.bpm),
                                 ],
                               ),
                             ],
@@ -253,9 +261,9 @@ class HomeScreenTab extends StatelessWidget {
                         height: 120,
                         child: HealthBox(
                           boxColor: const Color(0xFFF7CFD8),
-                          perenctage: "100/75",
-                          symbol: "mmHg",
-                          text: "Blood Pressure",
+                          perenctage: AppLocalizations.of(context)!.press_no,
+                          symbol: AppLocalizations.of(context)!.mmHg,
+                          text: AppLocalizations.of(context)!.blood_pressure,
                         ),
                       ),
                       SizedBox(
@@ -263,9 +271,9 @@ class HomeScreenTab extends StatelessWidget {
                         height: 120,
                         child: HealthBox(
                           boxColor: AppColors.HomeScreenBg,
-                          perenctage: "95%",
-                          symbol: "SPO2",
-                          text: "Blood Oxygen",
+                          perenctage: AppLocalizations.of(context)!.oxgy_no,
+                          symbol: AppLocalizations.of(context)!.spo2,
+                          text: AppLocalizations.of(context)!.blood_oxgyen,
                         ),
                       ),
                     ],

@@ -26,6 +26,7 @@ class _ScheduleTabState extends State<ScheduleTab>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.kLightBlue,
+        automaticallyImplyLeading: false,
         elevation: 0,
         centerTitle: true,
         title: null,
@@ -41,9 +42,7 @@ class _ScheduleTabState extends State<ScheduleTab>
               fontSize: 20,
               fontWeight: FontWeight.w600,
             ),
-            unselectedLabelStyle: const TextStyle(
-              fontSize: 18,
-            ),
+            unselectedLabelStyle: const TextStyle(fontSize: 18),
             tabs: const [
               Tab(text: "Medication"),
               Tab(text: "Appointments"),

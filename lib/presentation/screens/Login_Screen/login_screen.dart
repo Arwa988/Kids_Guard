@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/Guardin_Screen.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens/Sign_Up_Screen/sign_up_screen.dart';
@@ -34,11 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
       } on FirebaseAuthException catch (e) {
         String message = '';
         if (e.code == 'user-not-found') {
-          message = 'No account found for this email.';
+          message = AppLocalizations.of(context)!.no_account;
         } else if (e.code == 'wrong-password') {
-          message = 'Wrong password provided for that user.';
+          message = AppLocalizations.of(context)!.wrong_pass;
         } else {
-          message = 'Login failed. Please check your email and password.';
+          message = AppLocalizations.of(context)!.wrong_pass;
         }
         _showError(message);
       } catch (e) {
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-        '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
+            '50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com',
       );
 
       // Always show account chooser
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -89,9 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final user = userCredential.user;
     if (user != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logged in successfully with Google 🎉')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.login_sucess)),
       );
-      Navigator.pushReplacementNamed(context, '/home_screen'); // go to home page
+      Navigator.pushReplacementNamed(
+        context,
+        '/home_screen',
+      ); // go to home page
     }
   }
 
@@ -103,11 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Reset Password'),
+          title: Text(AppLocalizations.of(context)!.reset_password),
           content: TextField(
             controller: emailController,
-            decoration: const InputDecoration(
-              hintText: 'Enter your registered email',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.enter_reset,
             ),
           ),
           actions: [
@@ -116,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.pop(context);
 
                 if (emailController.text.trim().isEmpty) {
-                  _showError('Please enter your email first.');
+                  _showError(AppLocalizations.of(context)!.email_first);
                   return;
                 }
 
@@ -129,14 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Password Reset Email Sent'),
-                      content: const Text(
-                        'A reset link has been sent to your email. Please check your inbox to reset your password.',
-                      ),
+                      title:  Text(AppLocalizations.of(context)!.reset_password,),
+                      content: Text(AppLocalizations.of(context)!.reset_link),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('OK'),
+                          child: Text(AppLocalizations.of(context)!.ok),
                         ),
                       ],
                     ),
@@ -144,11 +146,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 } on FirebaseAuthException catch (e) {
                   String message = '';
                   if (e.code == 'user-not-found') {
-                    message = 'No account found for this email.';
+                    message = AppLocalizations.of(context)!.no_account;
                   } else if (e.code == 'invalid-email') {
-                    message = 'Invalid email address.';
+                    message = AppLocalizations.of(context)!.invalid_email;
                   } else {
-                    message = 'Failed to send reset email. Try again later.';
+                    message = AppLocalizations.of(context)!.failed_email_send;
                   }
 
                   _showError(message);
@@ -156,11 +158,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   _showError('Error: $e');
                 }
               },
-              child: const Text('Send'),
+              child: Text(AppLocalizations.of(context)!.send),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ],
         );
@@ -174,8 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
               Center(
@@ -193,21 +194,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     CustomTextField(
                       controller: emailC,
-                      hintText: 'Email',
+                      hintText: AppLocalizations.of(context)!.email,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Enter email';
-                        if (!v.contains('@')) return 'Invalid email';
+                        if (v == null || v.trim().isEmpty)
+                          return AppLocalizations.of(context)!.enter_email;
+                        if (!v.contains('@'))
+                          return AppLocalizations.of(context)!.invalid_email;
                         return null;
                       },
                     ),
                     CustomTextField(
                       controller: passwordC,
-                      hintText: 'Password',
+                      hintText: AppLocalizations.of(context)!.password,
                       isPassword: true,
                       validator: (v) {
                         if (v == null || v.length < 6)
-                          return 'At least 6 characters';
+                          return AppLocalizations.of(context)!.return_six;
                         return null;
                       },
                     ),
@@ -215,8 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Center(
                       child: TextButton(
                         onPressed: _resetPassword,
-                        child: const Text(
-                          'Forgot password? Reset your password',
+                        child: Text(
+                          AppLocalizations.of(context)!.forget_pass,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             decoration: TextDecoration.underline,
@@ -240,8 +243,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: const Text(
-                          'Login',
+                        child: Text(
+                          AppLocalizations.of(context)!.login,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -263,8 +266,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           'assets/images/google.png',
                           height: 20,
                         ),
-                        label: const Text(
-                          'Signin with Google',
+                        label: Text(
+                          AppLocalizations.of(context)!.sign_google,
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: "Lexend",
@@ -296,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                         child: Text(
-                          "Don't have an account? Sign Up",
+                          AppLocalizations.of(context)!.donot_have_account,
                           style: TextStyle(
                             color: _hoverRegister
                                 ? AppColors.kPrimaryColor

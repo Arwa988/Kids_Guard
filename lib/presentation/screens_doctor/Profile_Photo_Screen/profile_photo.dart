@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Guardin_Screen/wedgit/cloud_desgin.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/home_screen.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/home_screen_doctor.dart';
@@ -15,13 +16,14 @@ class ProfilePhotoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get userType from arguments if not passed directly
     final String type =
-        userType ?? ModalRoute.of(context)?.settings.arguments as String? ?? "guardian";
+        userType ??
+        ModalRoute.of(context)?.settings.arguments as String? ??
+        "guardian";
 
     return Scaffold(
       body: Stack(
         children: [
           const CloudDesgin(), // Background design
-
           // Center profile photo area
           Center(
             child: Column(
@@ -83,8 +85,8 @@ class ProfilePhotoScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 25),
-                const Text(
-                  "Add a profile photo",
+                Text(
+                  AppLocalizations.of(context)!.add_photo,
                   style: TextStyle(
                     fontFamily: "Lexend",
                     fontSize: 24,
@@ -104,9 +106,15 @@ class ProfilePhotoScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   if (type == "guardian") {
-                    Navigator.pushReplacementNamed(context, HomeScreen.routname);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      HomeScreen.routname,
+                    );
                   } else if (type == "doctor") {
-                    Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      HomeScreenDoctor.routname,
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -116,8 +124,8 @@ class ProfilePhotoScreen extends StatelessWidget {
                   ),
                   minimumSize: const Size(150, 50),
                 ),
-                child: const Text(
-                  "Done",
+                child: Text(
+                  AppLocalizations.of(context)!.next,
                   style: TextStyle(
                     fontFamily: "Lexend",
                     fontSize: 18,

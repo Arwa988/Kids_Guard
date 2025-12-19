@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/wedgit/custom_text_field.dart';
 import 'package:kids_guard/presentation/screens_doctor/Sign_doctor_screen/sign_up_doctor.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,11 +28,11 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailC.text.trim(),
-        password: passwordC.text,
-      );
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: emailC.text.trim(),
+            password: passwordC.text,
+          );
 
       final user = userCredential.user;
       if (user == null) return;
@@ -45,8 +46,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
       if (docSnapshot.exists) {
         Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
       } else {
-        Navigator.pushReplacementNamed(
-            context, CreateAccountScreen.routname);
+        Navigator.pushReplacementNamed(context, CreateAccountScreen.routname);
       }
     } on FirebaseAuthException catch (e) {
       String message = '';
@@ -57,13 +57,13 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
       } else {
         message = 'Login failed. Please check your email and password.';
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -72,7 +72,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
-        "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
+            "50621609901-daui7cd621mnelnrpuegvh3iot1e2jfl.apps.googleusercontent.com",
       );
       await googleSignIn.signOut(); // force account chooser
 
@@ -80,15 +80,16 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
       if (googleUser == null) return; // cancelled
 
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       final user = userCredential.user;
       if (user != null) {
@@ -109,14 +110,13 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
         if (docSnapshot.exists) {
           Navigator.pushReplacementNamed(context, HomeScreenDoctor.routname);
         } else {
-          Navigator.pushReplacementNamed(
-              context, CreateAccountScreen.routname);
+          Navigator.pushReplacementNamed(context, CreateAccountScreen.routname);
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google sign-in failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Google sign-in failed: $e')));
     }
   }
 
@@ -128,11 +128,11 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Reset Password'),
+          title: Text(AppLocalizations.of(context)!.reset_password),
           content: TextField(
             controller: emailController,
-            decoration: const InputDecoration(
-              hintText: 'Enter your registered email',
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.email,
             ),
           ),
           actions: [
@@ -146,14 +146,12 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Email Sent'),
-                      content: const Text(
-                        'A password reset link has been sent to your email. Please check your inbox.',
-                      ),
+                      title: Text(AppLocalizations.of(context)!.email_sent),
+                      content: Text(AppLocalizations.of(context)!.reset_link),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('OK'),
+                          child: Text(AppLocalizations.of(context)!.ok),
                         ),
                       ],
                     ),
@@ -161,21 +159,22 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                 } on FirebaseAuthException catch (e) {
                   String message = '';
                   if (e.code == 'user-not-found') {
-                    message = 'No user found with this email.';
+                    message = AppLocalizations.of(context)!.no_account;
                   } else if (e.code == 'invalid-email') {
-                    message = 'Invalid email format.';
+                    message = AppLocalizations.of(context)!.invalid_email;
                   } else {
-                    message = 'Failed to send reset email. Please try again.';
+                    message = AppLocalizations.of(context)!.failed_email_send;
                   }
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(message)));
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(message)));
                 }
               },
-              child: const Text('Send'),
+              child: Text(AppLocalizations.of(context)!.send),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ],
         );
@@ -189,8 +188,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding:
-          const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
+          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 48.0),
           child: Column(
             children: [
               Center(
@@ -208,21 +206,23 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                   children: [
                     CustomTextField(
                       controller: emailC,
-                      hintText: 'Email',
+                      hintText: AppLocalizations.of(context)!.email,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Enter email';
-                        if (!v.contains('@')) return 'Invalid email';
+                        if (v == null || v.trim().isEmpty)
+                          return AppLocalizations.of(context)!.enter_email;
+                        if (!v.contains('@'))
+                          return AppLocalizations.of(context)!.invalid_email;
                         return null;
                       },
                     ),
                     CustomTextField(
                       controller: passwordC,
-                      hintText: 'Password',
+                      hintText: AppLocalizations.of(context)!.password,
                       isPassword: true,
                       validator: (v) {
                         if (v == null || v.length < 6)
-                          return 'At least 6 characters';
+                          return AppLocalizations.of(context)!.return_six;
                         return null;
                       },
                     ),
@@ -230,8 +230,8 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                     Center(
                       child: TextButton(
                         onPressed: _resetPassword,
-                        child: const Text(
-                          'Forgot password? Reset your password',
+                        child: Text(
+                          AppLocalizations.of(context)!.forget_pass,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             decoration: TextDecoration.underline,
@@ -253,8 +253,8 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: const Text(
-                          'Login',
+                        child: Text(
+                          AppLocalizations.of(context)!.login,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -275,8 +275,8 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                           height: 24,
                           width: 24,
                         ),
-                        label: const Text(
-                          'Sign in with Google',
+                        label: Text(
+                          AppLocalizations.of(context)!.sign_google,
                           style: TextStyle(
                             fontSize: 16,
                             fontFamily: "Lexend",
@@ -307,7 +307,7 @@ class _LoginScreenDoctorState extends State<LoginScreenDoctor> {
                           }
                         },
                         child: Text(
-                          "Don't have an account? Sign Up",
+                          AppLocalizations.of(context)!.donot_have_account,
                           style: TextStyle(
                             color: _hoverRegister
                                 ? AppColors.kPrimaryColor

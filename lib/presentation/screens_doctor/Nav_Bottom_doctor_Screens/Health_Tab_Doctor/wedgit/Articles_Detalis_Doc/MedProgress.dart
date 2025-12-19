@@ -5,7 +5,6 @@ import 'package:kids_guard/data/model/MedicalResponse.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/Loading_Desgin/loadingDesgin.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/cubit/HealthDoc_Model.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/cubit/HealthDoc_State.dart';
-import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/health_tab_doc.dart';
 
 class MedicalProgess extends StatefulWidget {
   const MedicalProgess({super.key});
@@ -26,6 +25,7 @@ class _MedicalProgessState extends State<MedicalProgess> {
   }
 
   void _updateProgress() {
+    if (!_scrollController.hasClients) return;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
     if (maxScroll > 0) {
@@ -45,9 +45,10 @@ class _MedicalProgessState extends State<MedicalProgess> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
-    // line dah by stkbl el argument el etba3t fy file healthtab
     final MedicalData? passedArticle = args is MedicalData ? args : null;
-    // by5zn el args dy by2olo hya data esm list byt3t el articles
+    
+    // ✅ تحديد إذا كانت اللغة عربية
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return BlocProvider(
       create: (context) => HealthdocModel()..getMed(),
@@ -55,106 +56,100 @@ class _MedicalProgessState extends State<MedicalProgess> {
         backgroundColor: AppColors.background,
         body: BlocBuilder<HealthdocModel, HealthdocState>(
           builder: (context, state) {
-            if (state is MedicaldocLoadingState) {
-              return Loadingdesgin();
-            } else if (state is MedicaldocErrorState) {
-              return Center(
-                child: Text(
-                  "Error: ${state.error}",
-                  style: const TextStyle(color: Colors.red),
-                ),
-              );
-            } else if (state is MedicalTabSucessState) {
-              final med =
-                  passedArticle ??
-                  (state.response.medicalDataList != null &&
-                          state.response.medicalDataList!.isNotEmpty
-                      ? state.response.medicalDataList!.first
-                      : null);
+            if (state is MedicaldocLoadingState) return const Loadingdesgin();
+            
+            if (state is MedicaldocErrorState) {
+              return Center(child: Text("Error: ${state.error}", style: const TextStyle(color: Colors.red)));
+            }
+
+            if (state is MedicalTabSucessState) {
+              final med = passedArticle ?? (state.response.medicalDataList?.isNotEmpty == true 
+                  ? state.response.medicalDataList!.first 
+                  : null);
 
               return Stack(
                 children: [
                   CustomScrollView(
                     controller: _scrollController,
                     slivers: [
+                      // ✅ جزء الصورة العلوية
                       SliverAppBar(
                         backgroundColor: AppColors.background,
                         expandedHeight: 250,
-
+                        automaticallyImplyLeading: false, // سنضع زر الرجوع يدوياً للتحكم في مكانه
                         flexibleSpace: FlexibleSpaceBar(
                           background: med?.image != null
                               ? Image.network(med!.image!, fit: BoxFit.cover)
                               : const Icon(Icons.image_not_supported),
                         ),
-                        leading: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
                       ),
-                      // 👇 White rounded container BELOW the image
+
+                      // ✅ المحتوى النصي داخل حاوية بيضاء مستديرة
                       SliverToBoxAdapter(
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                          child: Container(
+                        child: Container(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Kids Guard",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Colors.pinkAccent,
-                                          fontWeight: FontWeight.w900,
-                                        ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30),
+                              topRight: Radius.circular(30),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              // ✅ محاذاة العمود حسب اللغة
+                              crossAxisAlignment: isArabic ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Kids Guard",
+                                  style: TextStyle(
+                                    color: Colors.pinkAccent,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16,
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    med?.source ?? "",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w400,
-                                        ),
+                                ),
+                                const SizedBox(height: 8),
+                                
+                                // ✅ المصدر المترجم
+                                Text(
+                                  isArabic ? (med?.sourceAr ?? "") : (med?.source ?? ""),
+                                  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    med?.title ?? "",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineLarge!
-                                        .copyWith(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w900,
-                                        ),
+                                ),
+                                const SizedBox(height: 10),
+
+                                // ✅ العنوان المترجم
+                                Text(
+                                  isArabic ? (med?.titleAr ?? "") : (med?.title ?? ""),
+                                  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                                  textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 24,
+                                    height: 1.3,
                                   ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    med?.content ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      height: 2,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                ),
+                                const SizedBox(height: 20),
+
+                                // ✅ المحتوى المترجم
+                                Text(
+                                  isArabic ? (med?.contentAr ?? "") : (med?.content ?? ""),
+                                  textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                                  textAlign: isArabic ? TextAlign.justify : TextAlign.left,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    height: 1.8,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                  const SizedBox(height: 100),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 100),
+                              ],
                             ),
                           ),
                         ),
@@ -162,23 +157,36 @@ class _MedicalProgessState extends State<MedicalProgess> {
                     ],
                   ),
 
-                  // 🔵 Progress bar at the top
+                  // ✅ زر الرجوع (يتغير مكانه حسب اللغة)
                   Positioned(
-                    top: 0,
+                    top: 40,
+                    left: isArabic ? null : 15,
+                    right: isArabic ? 15 : null,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black38,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                  ),
+
+                  // ✅ شريط التقدم العلوي
+                  Positioned(
+                    top: MediaQuery.of(context).padding.top,
                     left: 0,
                     right: 0,
                     child: LinearProgressIndicator(
                       value: _scrollProgress,
                       color: AppColors.kPrimaryColor,
-                      backgroundColor: Colors.grey.withOpacity(0.3),
-                      minHeight: 4,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      minHeight: 5,
                     ),
                   ),
                 ],
               );
             }
-
-            return Loadingdesgin();
+            return const Loadingdesgin();
           },
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/Home_Tab/wedgit/drawer_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,8 +30,10 @@ class DrawerDesgin extends StatelessWidget {
     }
 
     // Check 'guardian' collection
-    final guardianDoc =
-    await firestore.collection('guardian').doc(user.uid).get();
+    final guardianDoc = await firestore
+        .collection('guardian')
+        .doc(user.uid)
+        .get();
     if (guardianDoc.exists && guardianDoc.data()?['username'] != null) {
       return guardianDoc['username'];
     }
@@ -86,14 +89,12 @@ class DrawerDesgin extends StatelessWidget {
                         child: Text(
                           displayName,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
+                          style: Theme.of(context).textTheme.titleLarge!
                               .copyWith(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white, // white text
-                          ),
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white, // white text
+                              ),
                         ),
                       ),
                     ],
@@ -104,19 +105,19 @@ class DrawerDesgin extends StatelessWidget {
               const SizedBox(height: 50),
 
               // Drawer items
-              _drawerRow(Icons.person, "Profile", babyBlue),
+              _drawerRow(Icons.person,AppLocalizations.of(context)!.profile, babyBlue),
               _divider(),
-              _drawerRow(Icons.language, "Language", babyBlue),
+              _drawerRow(Icons.language, AppLocalizations.of(context)!.lang, babyBlue),
               _divider(),
-              _drawerRow(Icons.notifications_rounded, "Notification", babyBlue),
+              _drawerRow(Icons.notifications_rounded, AppLocalizations.of(context)!.notfication, babyBlue),
               _divider(),
-              _drawerRow(Icons.palette_sharp, "Color Theme", babyBlue),
+              _drawerRow(Icons.palette_sharp, AppLocalizations.of(context)!.color_theme, babyBlue),
               _divider(),
-              _drawerRow(Icons.star_purple500_sharp, "Rate Us", babyBlue),
+              _drawerRow(Icons.star_purple500_sharp, AppLocalizations.of(context)!.rate_us, babyBlue),
               _divider(),
-              _drawerRow(Icons.people, "Share with a friend", babyBlue),
+              _drawerRow(Icons.people, AppLocalizations.of(context)!.share, babyBlue),
               _divider(),
-              _drawerRow(Icons.login_outlined, "Logout", babyBlue),
+              _drawerRow(Icons.login_outlined, AppLocalizations.of(context)!.log, babyBlue),
             ],
           ),
         ),
@@ -133,10 +134,7 @@ class DrawerDesgin extends StatelessWidget {
           child: Icon(icon, color: babyBlue), // baby blue icon
         ),
         const SizedBox(width: 18),
-        DrawerItem(
-          text: text,
-
-        ),
+        DrawerItem(text: text),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Login_Screen/login_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/emergency_alerts_screen.dart';
 import 'package:kids_guard/presentation/screens/Onboarding_Screens/wedgit/next_btn.dart';
@@ -29,7 +30,7 @@ class _RealTimeState extends State<RealTime> {
                   ).pushReplacementNamed(LoginScreen.routname);
                 },
                 child: Text(
-                  "Skip",
+                  AppLocalizations.of(context)!.skip,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -49,16 +50,22 @@ class _RealTimeState extends State<RealTime> {
           ),
           SizedBox(height: 10),
           Text(
-            "Real-Time Monitoring",
+            AppLocalizations.of(context)!.real_time,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
           SizedBox(height: 5),
-          Text(
-            "Monitor heart rate, oxygen level,and \n      locations anytime, anywhere",
-            style: Theme.of(context).textTheme.bodyLarge,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Text(
+              AppLocalizations.of(context)!.real_time_desc,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
           SizedBox(height: 10),
-          NextBtn(routname: EmergencyAlerts.routname, text: "Next"),
+          NextBtn(
+            routname: EmergencyAlerts.routname,
+            text: AppLocalizations.of(context)!.next,
+          ),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -71,7 +78,7 @@ class _RealTimeState extends State<RealTime> {
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
-                    "Create account",
+                    AppLocalizations.of(context)!.create_account,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),

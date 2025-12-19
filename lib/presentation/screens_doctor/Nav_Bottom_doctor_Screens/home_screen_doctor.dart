@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/core/constants/app_colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens/Nav_Bottom_Screen/wedgit/Loading_Desgin/loadingDesgin.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Screen_Doctor_Cubit/home_screen_modal.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Home_Screen_Doctor_Cubit/home_screen_state.dart';
@@ -45,19 +46,22 @@ class HomeScreenDoctor extends StatelessWidget {
                 color: AppColors.kTextColor,
               ),
               unselectedIconTheme: const IconThemeData(color: Colors.grey),
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: AppLocalizations.of(context)!.home,
+                ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.health_and_safety_outlined),
-                  label: "Health",
+                  label: AppLocalizations.of(context)!.health,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.schedule),
-                  label: "Schedule",
+                  label: AppLocalizations.of(context)!.schedule,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.message),
-                  label: "Chat",
+                  label: AppLocalizations.of(context)!.chat,
                 ),
               ],
             ),

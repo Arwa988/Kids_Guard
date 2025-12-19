@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kids_guard/core/constants/App_Colors.dart';
+import 'package:kids_guard/l10n/app_localizations.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/CatgoryDocTabs/AiTab.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/CatgoryDocTabs/FamilyTab.dart';
 import 'package:kids_guard/presentation/screens_doctor/Nav_Bottom_doctor_Screens/Health_Tab_Doctor/wedgit/CatgoryDocTabs/MedicalTab.dart';
@@ -47,10 +48,10 @@ class _HealthTabDoctorState extends State<HealthTabDoctor> {
               fontFamily: "Lexend",
               fontWeight: FontWeight.bold,
             ),
-            tabs: const [
-              Tab(text: "Case\nStudies"),
-              Tab(text: "AI & Tech"),
-              Tab(text: "Family\nSupport"),
+            tabs: [
+              Tab(text: AppLocalizations.of(context)!.case_studies),
+              Tab(text: AppLocalizations.of(context)!.ai_tech),
+              Tab(text: AppLocalizations.of(context)!.family_support),
             ],
           ),
         ),
